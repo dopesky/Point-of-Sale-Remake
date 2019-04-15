@@ -3,7 +3,7 @@
 /**
 * This is a model to store all validation rules to be used in this project.
 */
-class Form_Validator {
+class Form_validator {
 
     //The constructor function
   	public function __construct(){
