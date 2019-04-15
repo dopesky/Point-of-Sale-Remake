@@ -1,0 +1,9 @@
+{
+	"require": {
+		"owasp/csrf-protector-php": "dev-master",
+		"vlucas/phpdotenv": "3.*"
+	},
+	"suggest": {
+		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
+	}
+}
