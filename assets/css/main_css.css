@@ -10,9 +10,8 @@ body{
 }
 
 body.with-background{
-	background: darkslategrey url(https://res.cloudinary.com/dkgtd3pil/image/upload/v1555356641/other_data/spesa.jpg) no-repeat center top;
+	background: url(https://res.cloudinary.com/dkgtd3pil/image/upload/b_rgb:222020,o_50/v1555356641/other_data/spesa.jpg) no-repeat center top;
 	background-size: cover;
-	background-blend-mode: overlay;
 	background-attachment: fixed !important;
 	color: whitesmoke;
 }

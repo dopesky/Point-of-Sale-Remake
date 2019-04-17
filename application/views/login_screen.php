@@ -1,4 +1,4 @@
-<form method="post" action="<?=base_url('auth/login')?>" onsubmit="return loginLogic(event)" class="text-center mt-5" autocomplete="off">
+<form method="post" action="<?=base_url('auth/login')?>" onsubmit="return loginLogic(event)" class="text-center mt-5 fade" autocomplete="off">
 	<fieldset>
 		<div class="display-4 header-text">Login <i class="fas fa-sign-in-alt"></i></div>
 		<div class="row mt-3">
@@ -9,11 +9,11 @@
 					<div class="form-group">
 						<div class="input-group">
 							<div class="input-group-prepend">
-								<div class="input-group-text"><i class="fas fa-user"></i></div>
+								<div class="input-group-text"><i class="fas fa-at"></i></div>
 							</div>
-							<input type="text" name="username" class="form-control" placeholder="Username">
+							<input type="email" name="username" class="form-control" placeholder="Email">
 						</div>
-						<span class="helper-text text-left" data-original='@dopesky'></span>
+						<span class="helper-text text-left" data-original='dopesky@example.com'></span>
 					</div>
 					<div class="form-group">
 						<div class="input-group">
@@ -25,7 +25,7 @@
 						<span class="helper-text text-left" data-original='********'></span>
 					</div>
 					<div class="form-group text-right">
-						<button type="submit" class="btn btn-primary width-100">Login</button>
+						<button type="submit" class="btn btn-primary width-100" id="login-button">Login</button>
 					</div>
 				</div>
 			</div>
@@ -34,6 +34,5 @@
 	</fieldset>
 </form>
 <script>
-	$($('form')[0]).hide()
 	$('body').addClass('with-background')
 </script>

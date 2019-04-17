@@ -2,19 +2,20 @@
 
 /**
 * This is a model to store all validation rules to be used in this project.
+* NOTE: Do NOT change this to anything other than a model otherwise it will not work.
 */
-class Form_validator {
+class Form_validator extends CI_Model {
 
     //The constructor function
   	public function __construct(){
-  		get_instance()->load->library('form_validation');
+  		parent::__construct();
+      $this->load->library('form_validation');
   	}
 
     /**
     * The file that runs validation rules based on what form was submitted.
-    * NOTE: The rules are only run in production environment. In development and testing environments the function
-    * returns true if formdata exists and false if it does not.
     * @var $form - The rules to run / the submitted form
+    * @var $required - specify if the form fields are required
     */
   	public function run_rules($form,$required=false){
       switch ($form) {
@@ -25,9 +26,9 @@ class Form_validator {
 
     //Runs form validation for login functionality
     private function run_login_rules(){
-      get_instance()->form_validation->set_rules('username','Username','trim|required|regex_match[/^[a-z 0-9]*$/i]');
-      get_instance()->form_validation->set_rules('password','Password','required|min_length[8]');
-      return get_instance()->form_validation->run();
+      $this->form_validation->set_rules('username','Email','trim|required|callback_check_email',array('check_email'=>"{field} is of Invalid Format!"));
+      $this->form_validation->set_rules('password','Password','required|min_length[8]');
+      return $this->form_validation->run($this);
     }
 
     //This function checks email to validate that it is a valid email by format not by existence. It is a callback function.

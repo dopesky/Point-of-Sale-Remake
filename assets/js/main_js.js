@@ -7,6 +7,7 @@ function loginLogic(form){
 
 	if(!validate_login_details(username,password)) return
 
+	$(form.currentTarget).find('button').attr('disabled',true).removeClass('width-100').addClass('disabled').html('<span class="spinner-border spinner-border-sm"></span> Signing in . . .')
 	$.ajax({
 		url: $(form.currentTarget).attr('action'),
 		data: {
@@ -17,6 +18,7 @@ function loginLogic(form){
 		method: 'POST'
 	}).then(response=>{
 		if(!response.ok){
+			$('#login-button').attr('disabled',false).removeClass('disabled').addClass('width-100').html('Login')
 			$('#login-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
 			return
 		}
@@ -27,11 +29,11 @@ function loginLogic(form){
 function validate_login_details(username,password){
 	reset_helper_texts()
 	if(!hasContent(username)){
-		change_helper_texts($('input[name=username]').parent().siblings('.helper-text'),'Username is required!','#dc3545')
+		change_helper_texts($('input[name=username]').parent().siblings('.helper-text'),'Email is required!','#dc3545')
 		return false
 	}
-	if(/[^a-z0-9 ]/.test(username)){
-		change_helper_texts($('input[name=username]').parent().siblings('.helper-text'),'Username contains invalid characters!','#dc3545')
+	if(!test_email(username)){
+		change_helper_texts($('input[name=username]').parent().siblings('.helper-text'),'Email is of invalid format!','#dc3545')
 		return false
 	}
 
@@ -45,6 +47,12 @@ function validate_login_details(username,password){
 		return false
 	}
 	return true;
+}
+
+function test_email(email){
+	var $find1 = email.indexOf('@');
+   	var $find2 = email.lastIndexOf('.');
+    return ($find1 !== -1 && $find2 !== -1 && ($find1+2)<$find2 && ($find2+2)<email.length);
 }
 
 function hasContent($var){
@@ -63,7 +71,10 @@ function change_helper_texts(span,text,color){
 }
 
 $(()=>{
-	$('form').fadeIn(800)
+	var forms = $('form')
+	for(var i=0; i<forms.length; i++){
+		if($(forms[i]).hasClass('fade')) $(forms[i]).hide().removeClass('fade').fadeIn(850)
+	}
 	reset_helper_texts()
 	$('input')[0].focus()
 })

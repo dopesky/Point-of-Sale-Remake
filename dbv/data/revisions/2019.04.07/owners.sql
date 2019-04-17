@@ -1,0 +1,10 @@
+ALTER TABLE `owner` DROP `Password`;
+ALTER TABLE `owner` DROP PRIMARY KEY;
+ALTER TABLE `owner` ADD `owner_id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`owner_id`);
+ALTER TABLE `owner` ADD `user_id` BIGINT(12) NOT NULL AFTER `Owner-email`, ADD UNIQUE (`user_id`);
+ALTER TABLE `owner` DROP `Owner-name`;
+ALTER TABLE `owner` ADD `first_name` VARCHAR(50) NOT NULL AFTER `owner_id`, ADD FULLTEXT (`first_name`);
+ALTER TABLE `owner` ADD `last_name` VARCHAR(50) NOT NULL AFTER `first_name`, ADD FULLTEXT (`last_name`);
+ALTER TABLE `owner` ADD `company` VARCHAR(100) NOT NULL AFTER `last_name`, ADD UNIQUE (`company`);
+ALTER TABLE `owner` DROP `Owner-email`;
+ALTER TABLE `owner` ADD FOREIGN KEY (`user_id`) REFERENCES `tbl_users`(`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;

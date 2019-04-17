@@ -24,9 +24,16 @@ class Authentication extends CI_Controller {
 			echo json_encode(array('ok'=>false,'errors'=>validation_errors('<br><br><span>','</span>')));
 			return false;
 		}
-		$userdata = array('homepage_url'=>'Kevin');
-		$this->session->set_userdata($userdata);
-		echo json_encode(array('ok'=>true));
-		return true;
+		$login_credentials = $this->users_model->get_user_by_email($this->input->post('username'));
+		if($login_credentials){
+			if(password_verify($this->input->post('password'), $login_credentials->password)){
+				$userdata = array('homepage_url'=>'Kevin');
+				$this->session->set_userdata($userdata);
+				echo json_encode(array('ok'=>true));
+				return true;
+			}
+		}
+		echo json_encode(array('ok'=>false,'errors'=>'<br><br><span>Invalid Email or Password!</span>'));
+		return false;
 	}
 }
