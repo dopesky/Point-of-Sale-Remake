@@ -49,6 +49,39 @@ function validate_login_details(username,password){
 	return true;
 }
 
+function signUpLogic(form,button,html,spinner){
+	form.preventDefault()
+
+	var username = $(form.currentTarget).find('input[name=username]').val().trim()
+
+	if(!hasContent(username)){
+		change_helper_texts($('input[name=username]').parent().siblings('.helper-text'),'Email is required!','#dc3545')
+		return
+	}
+
+	if(!test_email(username)){
+		change_helper_texts($('input[name=username]').parent().siblings('.helper-text'),'Email is of invalid format!','#dc3545')
+		return
+	}
+
+	$(form.currentTarget).find('button').attr('disabled',true).removeClass('width-100').addClass('disabled').html('<span class="spinner-border spinner-border-sm"></span> '+spinner)
+	$.ajax({
+		url: $(form.currentTarget).attr('action'),
+		data: {
+			username: username
+		},
+		dataType: 'json',
+		method: 'POST'
+	}).then(response=>{
+		if(!response.ok){
+			$(button).attr('disabled',false).removeClass('disabled').addClass('width-100').html(html)
+			$('#page-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			return
+		}
+		window.location.assign(`${base_url}`)
+	})
+}
+
 function test_email(email){
 	var $find1 = email.indexOf('@');
    	var $find2 = email.lastIndexOf('.');

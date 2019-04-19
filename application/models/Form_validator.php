@@ -21,6 +21,10 @@ class Form_validator extends CI_Model {
       switch ($form) {
         case 'login':
           return $this->run_login_rules();
+        case 'sign_up':
+          return $this->run_sign_up_rules();
+        case 'forgot_password':
+          return $this->run_forgot_password_rules();
       }
   	}
 
@@ -28,6 +32,16 @@ class Form_validator extends CI_Model {
     private function run_login_rules(){
       $this->form_validation->set_rules('username','Email','trim|required|callback_check_email',array('check_email'=>"{field} is of Invalid Format!"));
       $this->form_validation->set_rules('password','Password','required|min_length[8]');
+      return $this->form_validation->run($this);
+    }
+
+    private function run_sign_up_rules(){
+      $this->form_validation->set_rules('username','Email','trim|required|callback_check_email|is_unique[tbl_users.email]',array('check_email'=>"{field} is of Invalid Format!",'is_unique'=> '{field} has already been registered!'));
+      return $this->form_validation->run($this);
+    }
+
+    private function run_forgot_password_rules(){
+      $this->form_validation->set_rules('username','Email','trim|required|callback_check_email',array('check_email'=>"{field} is of Invalid Format!"));
       return $this->form_validation->run($this);
     }
 

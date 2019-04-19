@@ -1,6 +1,7 @@
 {
 	"require": {
 		"owasp/csrf-protector-php": "dev-master",
+		"phpmailer/phpmailer": "~6.0",
 		"vlucas/phpdotenv": "3.*"
 	},
 	"suggest": {
