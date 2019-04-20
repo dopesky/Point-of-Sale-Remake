@@ -1,3 +1,4 @@
 dbv/config.php
 .env
 vendor/
+csrfprotector.js
