@@ -7,7 +7,7 @@ return array(
 		"POST" => 0),
 	"errorRedirectionPage" => "",
 	"customErrorMessage" => "",
-	"jsUrl" => base_url("vendor/owasp/csrf-protector-php/js/csrfprotector.js"),
+	"jsUrl" => base_url("assets/js/csrfprotector/csrfprotector.js"),
 	"tokenLength" => 50,
 	"cookieConfig" => array(
 		"path" => '',
