@@ -7,7 +7,7 @@ return array(
 		"POST" => 0),
 	"errorRedirectionPage" => "",
 	"customErrorMessage" => "",
-	"jsUrl" => base_url("assets/js/csrfprotector/csrfprotector.js"),
+	"jsUrl" => base_url("csrfprotector.js"),
 	"tokenLength" => 50,
 	"cookieConfig" => array(
 		"path" => '',
