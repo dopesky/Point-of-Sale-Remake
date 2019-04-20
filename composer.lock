@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d903c567d1e0b8421cb72052520ff5c",
+    "content-hash": "14fb24cde8c745ef3da21d3f9b279ce3",
     "packages": [
         {
             "name": "owasp/csrf-protector-php",
@@ -277,6 +277,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "^7.1.0"
+    },
     "platform-dev": []
 }
