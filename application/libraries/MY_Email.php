@@ -65,16 +65,17 @@ class MY_Email extends CI_Email{
 	* body template from templates/email_templates/ and appends the email message to the email html body.
 	*
 	* @var $type - the type of email one is sending. e.g intro, password
-	* @var $data - data to send to the email message view. Defaults to an empty array if no data is to be sent.
+	* @var $pass - data to send to the email message view. Defaults to an empty array if no data is to be sent.
 	* @var $user - the name of the email recipient. Defaults to user.
-	* @var $body - the name of the html body view to be used under templates/email_templates/ folder. Defaults to basic_body.
+	* @var $body - the name of the html body view to be used under templates/email_templates/ folder. Defaults to basic_body. Pass empty string 
+	*              here to get message only without html body.
 	*/
-	public function get_email_body($type,$data=array(),$user='user',$body='basic_body'){
+	public function get_email_body($type,$pass=array(),$user='user',$body='basic_body'){
 		$views=array('intro'=>'templates/email_templates/introduction_email_message',
 			'password'=>'templates/email_templates/password_reset_message');
 		$data['user']=$user;
 		$data['type']=$views[$type];
-		$data['data']=$data;
+		$data['data']=$pass;
 		if($body===''){
 			return get_instance()->load->view($views[$type],$data,true);
 		}

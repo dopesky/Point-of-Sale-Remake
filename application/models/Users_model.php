@@ -10,6 +10,10 @@ class Users_model extends CI_Model {
 		return $this->db->select('*,tbl_users.user_id as user_id,tbl_users.suspended as suspended')->where('email',$email)->join('owner','tbl_users.user_id = owner.user_id','left')->get('tbl_users')->row();
 	}
 
+	function get_user_by_id($user_id){
+		return $this->db->select('*,tbl_users.user_id as user_id,tbl_users.suspended as suspended')->where('tbl_users.user_id',$user_id)->join('owner','tbl_users.user_id = owner.user_id','left')->get('tbl_users')->row();
+	}
+
 	function add_user($data){
 		if(is_array($data) && !array_key_exists('token_expire', $data)) $data['token_expire'] = 3600;
 		return $this->db->insert('tbl_users',$data) ? $this->db->insert_id() : false;

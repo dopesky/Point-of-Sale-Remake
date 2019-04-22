@@ -25,6 +25,8 @@ class Form_validator extends CI_Model {
           return $this->run_sign_up_rules();
         case 'forgot_password':
           return $this->run_forgot_password_rules();
+        case 'password_reset':
+          return $this->run_password_reset_rules();
       }
   	}
 
@@ -42,6 +44,12 @@ class Form_validator extends CI_Model {
 
     private function run_forgot_password_rules(){
       $this->form_validation->set_rules('username','Email','trim|required|callback_check_email',array('check_email'=>"{field} is of Invalid Format!"));
+      return $this->form_validation->run($this);
+    }
+
+    private function run_password_reset_rules(){
+      $this->form_validation->set_rules('new_password','New Password',"required|regex_match[/[a-z]/]|regex_match[/[A-Z]/]|regex_match[/[0-9]/]|min_length[8]",array('regex_match'=>'Passwords must have atleast one uppercase letter, one lowercase letter and one number'));
+      $this->form_validation->set_rules('repeat_password','Repeat Password',"required|matches[new_password]",array('matches'=>'Passwords must match.'));
       return $this->form_validation->run($this);
     }
 

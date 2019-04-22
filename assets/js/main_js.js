@@ -54,6 +54,8 @@ function signUpLogic(form,button,html,spinner){
 
 	var username = $(form.currentTarget).find('input[name=username]').val().trim()
 
+	reset_helper_texts()
+
 	if(!hasContent(username)){
 		change_helper_texts($('input[name=username]').parent().siblings('.helper-text'),'Email is required!','#dc3545')
 		return
@@ -75,6 +77,58 @@ function signUpLogic(form,button,html,spinner){
 	}).then(response=>{
 		if(!response.ok){
 			$(button).attr('disabled',false).removeClass('disabled').addClass('width-100').html(html)
+			$('#page-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			return
+		}
+		window.location.assign(`${base_url}`)
+	})
+}
+
+function changePasswordLogic(form){
+	form.preventDefault()
+
+	var newPassword = $(form.currentTarget).find('input[name=new_password]').val()
+	var repeatedPassword = $(form.currentTarget).find('input[name=repeat_password]').val()
+
+	reset_helper_texts()
+	if(!hasContent(newPassword.trim())){
+		$('input[name=new_password]').val('')
+		change_helper_texts($('input[name=new_password]').parent().siblings('.helper-text'),'Password is required!','#dc3545')
+		return false
+	}
+	if(!hasContent(repeatedPassword.trim())){
+		$('input[name=repeat_password]').val('')
+		change_helper_texts($('input[name=repeat_password]').parent().siblings('.helper-text'),'Password is required!','#dc3545')
+		return false
+	}
+
+	if(!(/[a-z]/).test(newPassword)||!(/[0-9]/).test(newPassword)||!(/[A-Z]/).test(newPassword)){
+		change_helper_texts($('input[name=new_password]').parent().siblings('.helper-text'),'Password must contain an uppercase, lowercase and numeric character!','#dc3545')
+		return false
+	}
+
+	if(newPassword.length<8){
+		change_helper_texts($('input[name=new_password]').parent().siblings('.helper-text'),'Password must be atleast 8 characters long!','#dc3545')
+		return false
+	}
+
+	if(newPassword.localeCompare(repeatedPassword)!==0){
+		change_helper_texts($('input[name=repeat_password]').parent().siblings('.helper-text'),'Passwords do NOT Match!','#dc3545')
+		return false
+	}
+
+	$(form.currentTarget).find('button').attr('disabled',true).removeClass('width-100').addClass('disabled').html('<span class="spinner-border spinner-border-sm"></span> Changing . . .')
+	$.ajax({
+		url: $(form.currentTarget).attr('action'),
+		data: {
+			new_password: newPassword,
+			repeat_password: repeatedPassword
+		},
+		dataType: 'json',
+		method: 'POST'
+	}).then(response=>{
+		if(!response.ok){
+			$('#change-password-button').attr('disabled',false).removeClass('disabled').addClass('width-100').html('Login')
 			$('#page-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
 			return
 		}
