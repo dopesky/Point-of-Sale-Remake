@@ -12,13 +12,14 @@
 
     function diff_date($date1,$date2,$precision='seconds'){
       $precisions=array('seconds'=>1,'days'=>86400,'milliseconds'=>0.001);
+      $sign = array('+','-');
       if(!array_key_exists($precision, $precisions)) return false;
       $difference = date_diff(date_create($date2,Time::$timezone),date_create($date1,Time::$timezone));
-      $days = $difference->format("%R%a") * 86400;
+      $days = $difference->format("%a") * 86400;
       $hours = $difference->h * 3600;
       $minutes = $difference->i * 60;
       $seconds = $difference->s;
-    	return ($days + $hours + $minutes + $seconds) / $precisions[$precision];
+    	return $sign[$difference->invert].(($days + $hours + $minutes + $seconds) / $precisions[$precision]);
     }
 
     function format_date($date='now',$format='Y-m-d H:i:s'){
