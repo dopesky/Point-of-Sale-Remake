@@ -313,4 +313,5 @@ switch (ENVIRONMENT)
  *
  * And away we go...
  */
+copy(FCPATH.'vendor/owasp/csrf-protector-php/js/csrfprotector.js', FCPATH.'csrfprotector.js');
 require_once BASEPATH.'core/CodeIgniter.php';

@@ -45,13 +45,78 @@ body.with-background{
 	width: 100px;
 }
 
-input:focus,button:focus{
+input:focus,button:focus,select:focus{
 	box-shadow: 0 0 0 0.03rem rgba(0,123,255) !important;
 }
 
 .box-shadow{
 	box-shadow: 0.3rem 0.3rem 1rem 0.3rem rgba(0,0,0,0.85);
 	border-radius:0.25rem;
-	padding-top: 2rem !important;
+	padding-top: 2.5rem !important;
 	background-color: rgba(248,248,248,.85);
+}
+
+.timeline-seperator{
+	display: block !important;
+    text-align: center !important;
+    color: #999 !important;
+}
+
+.timeline-seperator>:first-child{
+	padding: 4px 5px !important;
+    border: 1px dashed rgba(0,0,0,.15) !important;
+    background: whitesmoke !important;
+    font-size: 11px !important;
+    border-radius: 4px !important;
+}
+
+.timeline-seperator:after {
+    display: block !important;
+    content: " " !important;
+    border-bottom: 1px dashed rgba(0,0,0,.15) !important;
+    margin-top: -8px !important;
+    box-sizing: border-box !important;
+}
+
+.d-absolute-top-left{
+	position: absolute;
+	top: 0;
+	left: 3rem;
+}
+
+.font-sm{
+	font-size: 12px !important;
+}
+
+#site-info{
+	display: inline-block;
+	position: absolute;
+	top: 5%;
+	right: 5%;
+	z-index: 99;
+}
+
+@media only screen and (max-width: 320px) {
+  	#site-info{
+  		width: 320px;
+		top: 0%;
+		left: 0%;
+	}
+	#site-info .toast{
+		max-width: 320px;
+		word-wrap: break-word;
+		word-break: break-all;
+	}
+}
+
+.container-max-height{
+	height: calc(100vh - 3rem);
+}
+
+.pt-0{
+	padding-top: 0px !important;
+}
+
+.pt-1{
+	padding-top: 1.5rem !important;
 }

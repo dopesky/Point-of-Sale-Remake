@@ -54,3 +54,5 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['auth/(:any)'] = "authentication/$1";
+$route['auth/(:any)/(:any)'] = "authentication/$1/$2";
+$route['auth/(:any)/(:any)/(:any)'] = "authentication/$1/$2/$3";
