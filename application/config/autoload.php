@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('database','session','common','time');
+$autoload['libraries'] = array('session','common','time');
 
 /*
 | -------------------------------------------------------------------
@@ -132,12 +132,4 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-
-//Autoload all models in the models folder
-$models = array();
-foreach(glob(APPPATH."models/*.php") as $model){
-	$model_path_array = explode('/',$model);
-	$model_name = explode('.', end($model_path_array));
-	$models[] = lcfirst($model_name[0]);
-}
-$autoload['model'] = $models;
+$autoload['model'] = array();

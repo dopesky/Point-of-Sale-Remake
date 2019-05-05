@@ -22,6 +22,9 @@
 								<div class="input-group-text"><i class="fas fa-unlock-alt"></i></div>
 							</div>
 							<input type="password" name="password" class="form-control" placeholder="Password">
+							<div class="input-group-append">
+								<div class="input-group-text"><a href="#" tabindex="-1" class="text-info" onclick="return viewPassword(this,'input[name=password]')"><i class="fas fa-eye"></i></a></div>
+							</div>
 						</div>
 						<span class="helper-text text-left" data-original='********'></span>
 					</div>

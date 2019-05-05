@@ -56,6 +56,13 @@ input:focus,button:focus,select:focus{
 	background-color: rgba(248,248,248,.85);
 }
 
+main{
+	padding: 1.5rem;
+	padding-top: 65px !important;
+	min-height: 100vh;
+;
+}
+
 .timeline-seperator{
 	display: block !important;
     text-align: center !important;
@@ -86,6 +93,10 @@ input:focus,button:focus,select:focus{
 
 .font-sm{
 	font-size: 12px !important;
+}
+
+.font-lg{
+	font-size: 17px !important;
 }
 
 #site-info{
@@ -119,4 +130,8 @@ input:focus,button:focus,select:focus{
 
 .pt-1{
 	padding-top: 1.5rem !important;
+}
+
+a,select{
+	cursor: pointer !important;
 }

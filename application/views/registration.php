@@ -1,4 +1,4 @@
-<form method="post" action="<?=base_url('auth/register/admin')?>" onsubmit="return signUpLogic(event,'#sign-up-button','Create','Creating . . .')" class="text-center mt-5 fade" autocomplete="off">
+<form method="post" action="<?=base_url('auth/register')?>" onsubmit="return signUpLogic(event,'#sign-up-button','Create','Creating . . .')" class="text-center mt-5 fade" autocomplete="off">
 	<fieldset>
 		<h3 class="header-text">Create Account <i class="fas fa-plus-square"></i></h3>
 		<div class="row mt-3">
