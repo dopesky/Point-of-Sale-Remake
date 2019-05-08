@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "14fb24cde8c745ef3da21d3f9b279ce3",
+    "content-hash": "188f3a3d2d488c04bd807844b2af6a9c",
     "packages": [
         {
             "name": "owasp/csrf-protector-php",
@@ -203,7 +203,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
