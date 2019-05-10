@@ -9,7 +9,7 @@ class Owner extends CI_Controller {
 		if(!$this->session->userdata('userdata') || $this->session->userdata('userdata')['role']!=='owner'){
 			redirect(site_url('auth/log_out'),'location');
 		}
-		csrfProtector::init();
+		//csrfProtector::init();
 		$this->load->library('jsons');
 	}
 

@@ -8,7 +8,7 @@ class Api_key extends CI_Controller {
 		parent::__construct();
 		$this->load->library('email');
 		$this->load->library('session');
-		csrfProtector::init();
+		//csrfProtector::init();
 	}
 
 	public function index(){
