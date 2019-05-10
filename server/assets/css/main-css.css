@@ -56,8 +56,9 @@ input:focus,button:focus,select:focus{
 .font-sm{
 	font-size: 12px !important;
 }
-button.close{
+button.close,button.close:focus{
 	outline: none !important;
+	box-shadow: none !important;
 }
 .alert{
 	padding-top: 0.5rem !important;
@@ -75,7 +76,7 @@ button.close{
 	position: absolute;
 	top: 5%;
 	right: 5%;
-	z-index: 99;
+	z-index: 1001;
 }
 @media only screen and (max-width: 320px) {
   	#site-info{

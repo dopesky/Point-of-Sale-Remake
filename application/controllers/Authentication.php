@@ -74,7 +74,22 @@ class Authentication extends CI_Controller {
 			echo json_encode(array('ok'=>true));
 			return true;
 		}else{
-			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
+			echo json_encode(array('ok'=>false,'code'=>$response->status,'errors'=>$response->errors));
+			return false;
+		}
+	}
+
+	public function send_reset_email() {
+		if(sizeof($_POST)<1) redirect(base_url(),'location');
+		$registration = new Registration(getenv('API_KEY'));
+		$email = $this->input->post('username');
+		$response = $registration->request_password_reset($email);
+		if($response->status == 202){
+			$this->session->set_flashdata('info',$response->response);
+			echo json_encode(array('ok'=>true));
+			return true;
+		}else{
+			echo json_encode(array('ok'=>false,'code'=>$response->status,'errors'=>$response->errors));
 			return false;
 		}
 	}
@@ -92,21 +107,6 @@ class Authentication extends CI_Controller {
 		}
 		echo (json_encode(array('ok'=>false,'errors'=>$response->errors)));
 		return false;
-	}
-
-	public function send_reset_email() {
-		if(sizeof($_POST)<1) redirect(base_url(),'location');
-		$registration = new Registration(getenv('API_KEY'));
-		$email = $this->input->post('username');
-		$response = $registration->request_password_reset($email);
-		if($response->status == 202){
-			$this->session->set_flashdata('info',$response->response);
-			echo json_encode(array('ok'=>true));
-			return true;
-		}else{
-			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
-			return false;
-		}
 	}
 
 	public function log_out($url = null){

@@ -21,7 +21,7 @@
 						</div><!-- /gn-scroller -->
 					</nav>
 				</li>
-				<li><a href="<?=base_url()?>" title="Home"><img src="<?=base_url('assets/img/logo.png')?>" width="60" height="50"></a></li>
+				<li><a href="<?=base_url()?>" title="Home"><img src="<?=base_url('assets/img/logo.png')?>" width="60" height="45"></a></li>
 				<li><a href="<?=base_url('auth/log_out')?>" class="my-icon-menu gn-icon-logout font-lg pl-3 pr-3" title="Sign Out"><span>Logout</span></a></li>
 			</ul>
 		</div>
