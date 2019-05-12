@@ -3,6 +3,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Jsons {
 
+	public function get_user_details($user_id, $ajax_call = true){
+		$REQUEST = new Json(getenv('API_KEY'));
+		$response = $REQUEST->get_user_details($user_id);
+		if($response->status === 202){
+			if($ajax_call) echo json_encode($response->response);
+			return $response->response;
+		}else{
+			if($ajax_call) echo json_encode(false);
+			return false;
+		}
+	}
+
 	public function get_valid_departments_json($ajax_call = true){
 		$REQUEST = new Json(getenv('API_KEY'));
 		$response = $REQUEST->get_valid_departments();

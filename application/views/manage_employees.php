@@ -1,8 +1,16 @@
+<?php 
+$user_id = $this->session->userdata('userdata')['user_id'];
+?>
+
 <div class="row" ng-app="main" ng-cloak ng-controller="manageEmployees">
 	<main class="w-100 text-center col-12">
 		<h2 class="header-text">Manage Employees <i class="fas fa-users-cog"></i></h2>
 		<div class="mt-4">
 			<table datatable="" class="table table-striped table-hover w-100 data-table header-text" dt-options="tableOptions" dt-columns="tableColumns" dt-instance="tableInstance"></table>
+		</div>
+		<div ng-show="showFooter" class="mt-3 text-center box-shadow-inline">
+			<a href="<?=site_url('owner/print_employee_details/'.$user_id)?>" ng-click="showPrintModal('#print-details')" target="print" class="btn btn-info mr-3"><i class="fas fa-print"></i> Print</a>
+			<a href="<?=site_url('owner/download_employee_details_spreadsheet/'.$this->session->userdata('userdata')['user_id'])?>" class="btn btn-success"><i class="fas fa-file-csv"></i> Excel</a>
 		</div>
 	</main>
 	<div class="modal fade text-dark" id="add-employee">
@@ -141,8 +149,22 @@
 			</div>
 		</div>
 	</div>
+	<div class="modal fade text-dark" id="print-details">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="text-muted"><i class="fas fa-print"></i> Print Employee Details</h4>
+					<button class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body p-1 h-80">
+					<iframe class="w-100 h-100" src="" name="print"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <script>
+	var user_id = "<?=$user_id?>"
 	var app = angular.module('main', ['datatables'])
 	app.controller('manageEmployees',['$scope','DTOptionsBuilder','DTDefaultOptions','DTColumnBuilder','saveEmployeeDetails', '$timeout', function($scope,DTOptionsBuilder,DTDefaultOptions,DTColumnBuilder,saveEmployeeDetails,$timeout){
 		$scope.inputFields = {
@@ -170,6 +192,7 @@
 			reemploy: false,
 			unemploy: false
 		}
+		$scope.showFooter = false
 		$scope.tableInstance = {};
 		$scope.renderTable = function(){
 			DTDefaultOptions.setDisplayLength(25).setDOM('<"row"<"col-sm-6 add-employee-button"><"col-sm-6 d-flex justify-content-sm-start justify-content-end"f>>rtp').setLanguage({
@@ -180,7 +203,7 @@
                 "search": "<div class='input-group'>_INPUT_<div class='input-group-append'><div class='input-group-text'><i class='fas fa-search'></i></div></div></div>",
                 "searchPlaceholder": "Search for Employee . . ."
             }).setOption('responsive',true)
-			$scope.tableOptions = DTOptionsBuilder.fromSource("<?=site_url('owner/get_employees/'.$this->session->userdata('userdata')['user_id'])?>")
+			$scope.tableOptions = DTOptionsBuilder.fromSource(`${base_url}owner/get_employees/${user_id}`)
 			$scope.tableColumns = [
 		        DTColumnBuilder.newColumn('first_name','Full Name').renderWith(function(data,type,full){
 		        	return capitalize(`${full.first_name} ${full.last_name}`)
@@ -197,6 +220,8 @@
 		        	return dateFormatter.fromSQL(data).toFormat('dd MMM, yyyy \u2022 t')
 		        }),
 		        DTColumnBuilder.newColumn(null,'Actions').notSortable().renderWith(function(data){
+		        	$scope.showFooter = true
+		        	$scope.$apply()
 		        	return "<a onclick='angular.element(this).scope().setModalFields(this)' data-row='"+JSON.stringify(data)+"' data-toggle='modal' href='#edit-employee' class='text-info table-link'><i class='fas fa-edit'></i> <span> View</span></a>"
 		        })
 		    ];
@@ -321,6 +346,9 @@
 	    	}
 	    	$($event.currentTarget).parents('form').find('.form-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
 	    	$scope.$apply()
+	    }
+	    $scope.showPrintModal = function(id){
+	    	$(id).modal('show')
 	    }
 	    $scope.renderTable()
 	}])

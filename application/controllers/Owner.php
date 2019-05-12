@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Owner extends CI_Controller {
 	private $template = "templates/main/template";
+	private $print_table_template = "templates/print/table-template";
 
 	public function __construct(){
 		parent::__construct();
@@ -100,5 +101,37 @@ class Owner extends CI_Controller {
 
 	public function get_employees($user_id){
 		return $this->jsons->get_employees_for_owner($user_id);
+	}
+
+	public function print_employee_details($user_id){
+		$data['content'] = 'templates/print/manage_employees';
+		$data['data'] = $this->jsons->get_employees_for_owner($user_id, false);
+		$data['user'] = $this->jsons->get_user_details($user_id,false);
+		$data['details'] = "Employee Details";
+		return $this->load->view($this->print_table_template,$data);
+	}
+
+	public function download_employee_details_spreadsheet($user_id){
+		$titles = array('Full Name', 'Department', 'Email', 'Status', 'Last Interaction');
+		$employee_details = $this->jsons->get_employees_for_owner($user_id, false);
+		$user_details = $this->jsons->get_user_details($user_id, false);
+		$data = array();
+		$this->load->library('spreadsheets',array('titles' => $titles));
+		foreach ($employee_details as $detail) {
+			$detail->status = null;
+			if($detail->suspended && !$detail->password) $detail->status = 'Awaiting Verification';
+			elseif ($detail->suspended && $detail->password) $detail->status = 'Account Suspended';
+			elseif ($detail->active) $detail->status = 'Active';
+			else $detail->status = 'Unemployed';
+			$data[] = array(
+				'full_name' => ucwords($detail->last_name." ".$detail->first_name),
+				'department' => ucwords($detail->department),
+				'email' => $detail->email,
+				'status' => $detail->status,
+				'last_access_time' => $this->spreadsheets->parse_html($this->time->format_date($detail->last_access_time,"d M, Y &#8226 h:iA"))
+			);
+		}
+		$this->spreadsheets->write_to_excel($data);
+		$this->spreadsheets->save(ucwords($user_details->company),'Employee Details');
 	}
 }

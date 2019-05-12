@@ -17,6 +17,10 @@ body.with-background{
 	color: whitesmoke;
 }
 
+body.print-background{
+	background: white !important;
+}
+
 input::-ms-reveal{
 	display: none;
 }
@@ -77,6 +81,14 @@ input:focus,button:focus,select:focus{
 	background-color: rgba(248,248,248,.85);
 }
 
+.box-shadow-inline{
+	box-shadow: 0.3rem 0.3rem 1rem 0.3rem rgba(0 , 0, 0, 0.85);
+	border-radius:0.25rem;
+	padding: 1em;
+	display: inline-block;
+	background-color: rgba(248 , 248, 248,.8);
+}
+
 main{
 	padding-top: 65px !important;
 	min-height: 100vh;
@@ -114,8 +126,16 @@ main{
 	font-size: 12px !important;
 }
 
+.font-xs{
+	font-size: 8px !important;
+}
+
 .font-lg{
 	font-size: 16px !important;
+}
+
+.font-xl{
+	font-size: 20px !important;
 }
 
 #site-info{
@@ -152,10 +172,6 @@ main{
 	padding-top: 0px !important;
 }
 
-.pt-1{
-	padding-top: 1.5rem !important;
-}
-
 a,select{
 	cursor: pointer !important;
 }
@@ -176,4 +192,45 @@ a,select{
 
 .data-table tbody{
 	background :rgba(248,248,248,0.85);
+}
+
+@media print{
+	button,#print-button{
+		visibility: hidden;
+	}
+	.text-muted{
+		color: #6c757d!important;
+	}
+	thead{
+		font-weight: bolder;
+		display:table-header-group;
+	}
+    tr,tfoot,thead,{
+    	page-break-inside: avoid;
+    }
+	.table .thead-light th {
+	    color: #495057!important;
+	    background-color: #e9ecef!important;
+	    border-color: #dee2e6!important;
+	}
+}
+
+@page{
+	margin: 1cm;
+}
+
+@page :first{
+	margin-top: 0cm;
+}
+
+.full-height{
+	height: 100vh;
+}
+
+.table-striped-even tbody tr:nth-of-type(even) td{
+    background-color: rgba(248, 248, 248, .6)!important;
+}
+
+.h-80{
+	height: 75vh;
 }
