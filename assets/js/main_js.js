@@ -77,7 +77,11 @@ function signUpLogic(form,button,html,spinner){
 	}).then(response=>{
 		if(!response.ok){
 			$(button).attr('disabled',false).removeClass('disabled').addClass('width-100').html(html)
-			$('#page-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			if(response.code === 503){
+				$('#page-errors>div.toast-body').removeClass('alert-danger').addClass('alert-warning').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			}else{
+				$('#page-errors>div.toast-body').addClass('alert-danger').removeClass('alert-warning').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			}
 			return
 		}
 		window.location.assign(`${base_url}`)
@@ -201,12 +205,20 @@ function hasContent($var){
 function reset_helper_texts(){
 	var helper_texts = $('.helper-text');
 	for(var i=0; i<helper_texts.length; i++){
-		$(helper_texts[i]).text($(helper_texts[i]).data('original')).css({color: 'rgba(0,0,0,0.54)'}).parent().find('input').css({borderColor: '#ced4da'})
+		$(helper_texts[i]).text($(helper_texts[i]).data('original')).css({color: 'rgba(0,0,0,0.54)'}).parent().find('input,select').css({borderColor: '#ced4da'})
 	}
 }
 
 function change_helper_texts(span,text,color){
-	$(span).text(text).css({color: color}).parent().find('input').css({borderColor: color})
+	$(span).text(text).css({color: color}).parent().find('input,select').css({borderColor: color})
+}
+
+function capitalize(word){
+	var array = word.split(' ')
+	array.forEach((element,index)=>{
+		array[index] = array[index].charAt(0).toUpperCase() + array[index].slice(1)
+	})
+	return array.join(' ')
 }
 
 function viewPassword(span,input){

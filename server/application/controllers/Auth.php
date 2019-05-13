@@ -88,9 +88,9 @@ class Auth extends CI_Controller {
 					echo json_encode(array('status'=>202,'response'=>"<br><br><span>Registration successful. Check your email for more information.</span>"));
 					return 202;
 				}else {
-					$this->common->set_headers(500);
-					echo json_encode(array('status'=>500,'errors'=>"<br><br><span>Email Verification Failed. Contact Admin!</span>"));
-					return 500;
+					$this->common->set_headers(503);
+					echo json_encode(array('status'=>503,'errors'=>"<br><br><span>Email Verification Failed. Please Click Forgot Password on the Login Page To Receive Your Verification Email!</span>"));
+					return 503;
 				} 
 				break;
 			case 'owner':
@@ -171,9 +171,9 @@ class Auth extends CI_Controller {
 			echo json_encode(array('status'=>202,'response'=>'<br><br><span>Password Reset Successful. Check your email for more information.</span>'));
 			return 202;
 		}else {
-			$this->common->set_headers(500);
-			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>Password Reset Failed. Contact Admin!</span>'));
-			return 500;
+			$this->common->set_headers(503);
+			echo json_encode(array('status'=>503,'errors'=>'<br><br><span>Password Reset Failed. Please Try Again!</span>'));
+			return 503;
 		}
 	}
 
