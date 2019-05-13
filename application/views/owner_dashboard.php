@@ -1,4 +1,15 @@
-      <section id="feature" class="feature sections">
+
+       
+     
+       
+        
+        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/responsive.css" />
+             
+
+<form >
+	<fieldset>	
+		<section id="feature" class="feature sections">
                 <div class="container">
                     <div class="row">
                         <div class="main_feature text-center">
@@ -54,3 +65,5 @@
                     </div>
                 </div>
             </section>
+	</fieldset>
+</form>
