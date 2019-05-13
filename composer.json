@@ -2,8 +2,9 @@
 	"require": {
 		"php": "^7.1.0",
 		"owasp/csrf-protector-php": "dev-master",
+		"vlucas/phpdotenv": "3.*",
 		"phpmailer/phpmailer": "~6.0",
-		"vlucas/phpdotenv": "3.*"
+		"phpoffice/phpspreadsheet":"~1"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

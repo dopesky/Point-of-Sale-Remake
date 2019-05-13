@@ -77,7 +77,11 @@ function signUpLogic(form,button,html,spinner){
 	}).then(response=>{
 		if(!response.ok){
 			$(button).attr('disabled',false).removeClass('disabled').addClass('width-100').html(html)
-			$('#page-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			if(response.code === 503){
+				$('#page-errors>div.toast-body').removeClass('alert-danger').addClass('alert-warning').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			}else{
+				$('#page-errors>div.toast-body').addClass('alert-danger').removeClass('alert-warning').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			}
 			return
 		}
 		window.location.assign(`${base_url}`)
@@ -136,6 +140,58 @@ function changePasswordLogic(form){
 	})
 }
 
+function registerOwnerLogic(form){
+	form.preventDefault()
+	reset_helper_texts()
+	var fname = $(form.currentTarget).find('input[name=fname]').val().trim(),
+	lname = $(form.currentTarget).find('input[name=lname]').val().trim(),
+	company = $(form.currentTarget).find('input[name=company]').val().trim(),
+	formData = [
+		{
+			data: fname,
+			helperText: $(form.currentTarget).find('input[name=fname]').parent().siblings('.helper-text')
+		},
+		{
+			data: lname,
+			helperText: $(form.currentTarget).find('input[name=lname]').parent().siblings('.helper-text')
+		},
+		{
+			data: company,
+			helperText: $(form.currentTarget).find('input[name=company]').parent().siblings('.helper-text')
+		}
+	]
+	for(data in formData){
+		if(!hasContent(formData[data].data)){
+			change_helper_texts(formData[data].helperText,'This is Required!','#dc3545')
+			return false
+		}
+		if(/[^a-z \'-]/i.test(formData[data].data)){
+			change_helper_texts(formData[data].helperText,'This Field Contains Invalid Characters!','#dc3545')
+			return false
+		}
+	}
+
+	$(form.currentTarget).find('button').attr('disabled',true).removeClass('width-100').addClass('disabled').html('<span class="spinner-border spinner-border-sm"></span> Finishing Up . . .')
+
+	$.ajax({
+		url: $(form.currentTarget).attr('action'),
+		data: {
+			fname,
+			lname,
+			company
+		},
+		dataType: 'json',
+		method: 'POST'
+	}).then(response=>{
+		if(!response.ok){
+			$('#finish-button').attr('disabled',false).removeClass('disabled').addClass('width-100').html('Login')
+			$('#page-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			return
+		}
+		window.location.reload(true)
+	})
+}
+
 function test_email(email){
 	var $find1 = email.indexOf('@');
    	var $find2 = email.lastIndexOf('.');
@@ -149,13 +205,35 @@ function hasContent($var){
 function reset_helper_texts(){
 	var helper_texts = $('.helper-text');
 	for(var i=0; i<helper_texts.length; i++){
-		$(helper_texts[i]).text($(helper_texts[i]).data('original')).css({color: 'rgba(0,0,0,0.54)'}).parent().find('input').css({borderColor: '#ced4da'})
+		$(helper_texts[i]).text($(helper_texts[i]).data('original')).css({color: 'rgba(0,0,0,0.54)'}).parent().find('input,select').css({borderColor: '#ced4da'})
 	}
 }
 
 function change_helper_texts(span,text,color){
-	$(span).text(text).css({color: color}).parent().find('input').css({borderColor: color})
+	$(span).text(text).css({color: color}).parent().find('input,select').css({borderColor: color})
 }
+
+function capitalize(word){
+	var array = word.split(' ')
+	array.forEach((element,index)=>{
+		array[index] = array[index].charAt(0).toUpperCase() + array[index].slice(1)
+	})
+	return array.join(' ')
+}
+
+function viewPassword(span,input){
+	$input = $(input).attr('type')
+	if($input.localeCompare('password') === 0){
+		$(input).attr('type','text')
+		$(span).find("i").removeClass('fa-eye').addClass('fa-eye-slash')
+	}else{
+		$(input).attr('type','password')
+		$(span).find("i").removeClass('fa-eye-slash').addClass('fa-eye')
+	}
+	$(input).focus()
+	return false
+}
+
 
 $(()=>{
 	var forms = $('form')

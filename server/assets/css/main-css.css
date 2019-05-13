@@ -1,0 +1,95 @@
+html,body{
+	padding: 0;
+	margin: 0;
+	min-height: 100% !important;
+	min-width: 320px !important;
+}
+body{
+	background-color: whitesmoke;
+	background: url(https://res.cloudinary.com/dkgtd3pil/image/upload/b_rgb:222020,o_50/v1555356641/other_data/spesa.jpg) no-repeat center top;
+	background-size: cover;
+	background-attachment: fixed !important;
+	color: whitesmoke;
+	min-width: 320px;
+}
+.header-text{
+	font-family: 'Roboto Slab', sans-serif;
+}
+.width-100{
+	width: 100px;
+}
+input:focus,button:focus,select:focus{
+	box-shadow: 0 0 0 0.03rem rgba(0,123,255) !important;
+}
+.alert{
+	padding-top: 0.5rem !important;
+	padding-bottom: 0.5rem !important; 
+	text-align: left !important;
+}
+.box-shadow{
+	box-shadow: 0.3rem 0.3rem 1rem 0.3rem rgba(0,0,0,0.85);
+	border-radius:0.25rem;
+	padding-top: 2.5rem !important;
+	background-color: rgba(248,248,248,.85);
+}
+.timeline-seperator{
+	display: block !important;
+    text-align: center !important;
+    color: #999 !important;
+}
+
+.timeline-seperator>:first-child{
+	padding: 4px 5px !important;
+    border: 1px dashed rgba(0,0,0,.15) !important;
+    background: whitesmoke !important;
+    font-size: 11px !important;
+    border-radius: 4px !important;
+}
+
+.timeline-seperator:after {
+    display: block !important;
+    content: " " !important;
+    border-bottom: 1px dashed rgba(0,0,0,.15) !important;
+    margin-top: -8px !important;
+    box-sizing: border-box !important;
+}
+.font-sm{
+	font-size: 12px !important;
+}
+button.close,button.close:focus{
+	outline: none !important;
+	box-shadow: none !important;
+}
+.alert{
+	padding-top: 0.5rem !important;
+	padding-bottom: 0.5rem !important; 
+	text-align: left !important;
+}
+
+.toast-max-width{
+	max-width: 100%;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+#site-info{
+	display: inline-block;
+	position: absolute;
+	top: 5%;
+	right: 5%;
+	z-index: 1001;
+}
+@media only screen and (max-width: 320px) {
+  	#site-info{
+  		width: 320px;
+		top: 0%;
+		left: 0%;
+	}
+	#site-info .toast{
+		max-width: 320px;
+		word-wrap: break-word;
+		word-break: break-all;
+	}
+}
+.pt-1{
+	padding-top: 1rem !important;
+}

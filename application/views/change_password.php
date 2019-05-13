@@ -1,4 +1,4 @@
-<form method="post" action="<?=base_url("auth/password_reset/$id")?>" onsubmit="return changePasswordLogic(event)" class="text-center mt-5 fade" autocomplete="off">
+<form method="post" action="<?=base_url("auth/password_reset/$token/$id")?>" onsubmit="return changePasswordLogic(event)" class="text-center mt-5 fade" autocomplete="off">
 	<fieldset>
 		<h3 class="header-text">Change Password <i class="fas fa-key"></i></h3>
 		<div class="row mt-3">
@@ -14,6 +14,9 @@
 								<div class="input-group-text"><i class="fas fa-unlock-alt"></i></div>
 							</div>
 							<input type="password" name="new_password" class="form-control" placeholder="New Password">
+							<div class="input-group-append">
+								<div class="input-group-text"><a href="#" tabindex="-1" class="text-info" onclick="return viewPassword(this,'input[name=new_password]')"><i class="fas fa-eye"></i></a></div>
+							</div>
 						</div>
 						<span class="helper-text text-left" data-original='***********'></span>
 					</div>
@@ -23,6 +26,9 @@
 								<div class="input-group-text"><i class="fas fa-unlock-alt"></i></div>
 							</div>
 							<input type="password" name="repeat_password" class="form-control" placeholder="Repeat Password">
+							<div class="input-group-append">
+								<div class="input-group-text"><a href="#" tabindex="-1" class="text-info" onclick="return viewPassword(this,'input[name=repeat_password]')"><i class="fas fa-eye"></i></a></div>
+							</div>
 						</div>
 						<span class="helper-text text-left" data-original='***********'></span>
 					</div>
