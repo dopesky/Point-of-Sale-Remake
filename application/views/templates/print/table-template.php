@@ -33,6 +33,9 @@
 			<span><?=ucwords("$user->company")?></span>
 			<span><?=ucwords($details)?></span>
 		</div>
+		<div class="w-100 text-center">
+			<img src="<?=($user->owner_photo) ? $user->owner_photo : base_url('assets/img/logo.png')?>" width="150" height="150" class="img-header">
+		</div>
 		<div class="header-text text-center">
 			<h3><?=ucwords($user->company."'s ".$details)?></h3>
 		</div>

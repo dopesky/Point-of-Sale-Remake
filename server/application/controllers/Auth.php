@@ -36,7 +36,7 @@ class Auth extends CI_Controller {
 		if($login_credentials){
 			if(password_verify($this->input->post('password'), $login_credentials->password) && $login_credentials->suspended == 0){
 				$this->users_model->update_user_details($login_credentials->user_id,array('token_expire'=>0,'last_access_time'=>$this->time->get_now()));
-				$role = (!$login_credentials->owner_id && !$login_credentials->employee_id) || $login_credentials->company ? 'owner':'employee';
+				$role = (!$login_credentials->id_owner && !$login_credentials->employee_id) || $login_credentials->company ? 'owner':'employee';
 				$fname = ($login_credentials->first_name) ? $login_credentials->first_name : $login_credentials->owner_fname;
 				$lname = ($login_credentials->last_name) ? $login_credentials->last_name : $login_credentials->owner_lname;
 				$photo = ($login_credentials->profile_photo) ? $login_credentials->profile_photo : $login_credentials->owner_photo;

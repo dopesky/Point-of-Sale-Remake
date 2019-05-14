@@ -86,25 +86,25 @@ class Owner extends CI_Controller {
 
 		$token = $this->common->get_crypto_safe_token(random_int(25, 30));
 
-		$user_id = $this->employees_model->get_user_by_employee_id($employee_id)->user_id;
-		$old_email = $this->users_model->get_user_by_id($user_id)->email;
+		$employee_details = $this->employees_model->get_user_by_employee_id($employee_id);
+		$old_email = $employee_details->email;
 
 		$data = array('first_name'=>$fname,'last_name'=>$lname,'email'=>$email,'department_id'=>$department_id,'token'=>$token,'old_email'=>$old_email);
 
-		if(!$user_id || !$old_email || !$owner_id){
+		if(!$employee_details || !$old_email || !$owner_id){
 			$this->common->set_headers(500);
 			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Contact Admin!</span>'));
 			return 500;
 		}
-		$response = $this->employees_model->update_employee_details_by_owner_and_employee_ids($employee_id,$user_id,$owner_id,$data);
+		$response = $this->employees_model->update_employee_details_by_owner_and_employee_ids($employee_id,$employee_details->user_id,$owner_id,$data);
 		if(!$response){
 			$this->common->set_headers(500);
 			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Contact Admin!</span>'));
 			return 500;
 		}
 		if($old_email !== $email){
-			$email_body = $this->email->get_email_body('email_update', array('token_url'=>getenv('SITE_DOMAIN').'auth/reset_password/'.$token."/".$user_id),$lname." ".$fname);
-			$email_response = $this->email->send_email($email, 'Update User Email', $email_body, 'update-notification', $lname);
+			$email_body = $this->email->get_email_body('email_update', array('token_url'=>getenv('SITE_DOMAIN').'auth/reset_password/'.$token."/".$employee_details->user_id), ucwords($lname." ".$fname));
+			$email_response = $this->email->send_email($email, 'Update User Email', $email_body, 'update-notification', ucwords($lname));
 			if ($email_response === true) {
 				$this->common->set_headers(202);
 				echo json_encode(array('status'=>202,'response'=>'<br><br><span>Employee Details Successfully Updated. Employee has Received an Email to Notify Them.</span>'));

@@ -231,6 +231,31 @@ a,select{
     background-color: rgba(248, 248, 248, .6)!important;
 }
 
+.tabs{
+	background: rgba(38, 64, 64, 0.85) !important;
+}
+
+.tabs li a {
+	color: whitesmoke !important;
+}
+
+.tabs .active{
+	background: rgba(38, 64, 64, 0.85) !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+
 .h-80{
 	height: 75vh;
+}
+
+.img-header{
+	width: 150px !important;
+	height: 150px !important;
+}
+
+@media only screen and (min-width: 576px) {
+  	.d-sm-initial{
+  		display: initial !important;
+  	}
 }

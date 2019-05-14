@@ -16,13 +16,14 @@
 								</li>
 								<li><a href="<?=site_url('owner')?>" title="Dashboard" class="my-icon gn-icon-home">Dashboard</a></li>
 								<li><a href="<?=site_url('owner/manage_employees')?>" title="Manage Employees" class="my-icon gn-icon-user-add">Manage Employees</a></li>
-								<li><a class="gn-icon gn-icon-cog" title="Settings">Settings</a></li>
+								<li><a class="gn-icon gn-icon-cog" href="<?=site_url('owner/owner_settings')?>" title="Settings">Settings</a></li>
 							</ul>
 						</div><!-- /gn-scroller -->
 					</nav>
 				</li>
 				<li><a href="<?=base_url()?>" title="Home"><img src="<?=base_url('assets/img/logo.png')?>" width="60" height="45"></a></li>
-				<li><a href="<?=base_url('auth/log_out')?>" class="my-icon-menu gn-icon-logout font-lg pl-3 pr-3" title="Sign Out"><span>Logout</span></a></li>
+				<li class="notifications-icon"><a href="<?=base_url('auth/log_out')?>" class="my-icon-menu gn-icon-logout font-lg pl-3 pr-3" title="Sign Out"><span>Logout</span></a></li>
+				<li><a class="my-icon-menu gn-icon-notification font-lg pl-3 pr-3" title="Notifications"><sup><sup class="badge badge-info font-xs">0</sup></sup></a></li>
 			</ul>
 		</div>
 		<script src="<?=base_url('assets/js/navbar-js/classie.js')?>"></script>

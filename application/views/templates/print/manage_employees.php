@@ -11,18 +11,12 @@
 			</tr>
 		</thead>
 		<tbody class="tbody">
-			<?php foreach($data as $info){
-				$status = null;
-				if($info->suspended && !$info->password) $status = 'Awaiting Verification';
-				elseif ($info->suspended && $info->password) $status = 'Account Suspended';
-				elseif ($info->active) $status = 'Active';
-				else $status = 'Unemployed';
-			?>
+			<?php foreach($data as $info){?>
 				<tr>
-					<td><?=ucwords("$info->last_name $info->first_name")?></td>
+					<td><?=ucwords("$info->full_name")?></td>
 					<td><?=ucwords("$info->department")?></td>
 					<td><?=$info->email?></td>
-					<td><?=$status?></td>
+					<td><?=$info->status?></td>
 					<td><?=$this->time->format_date($info->last_access_time,"d M, Y &#8226 h:iA")?></td>
 				</tr>
 			<?php }?>

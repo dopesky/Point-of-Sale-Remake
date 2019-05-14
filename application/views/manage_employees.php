@@ -134,12 +134,12 @@ $user_id = $this->session->userdata('userdata')['user_id'];
 									</div>
 								<?php }?>
 								<div class="form-group row">
-									<div class="col-12 col-sm-6 text-left">
-										<button ng-show="showButton.update" type="submit" class="btn btn-info update mt-3 mr-3"><i class="fas fa-edit"></i> Update</button>
+									<div class="col-12 col-sm-6">
+										<button ng-show="showButton.update" type="submit" class="btn btn-info update mt-3 btn-block"><i class="fas fa-edit"></i> Update</button>
 									</div>
-									<div class="col-12 col-sm-6 text-right">
-										<button ng-show="showButton.unemploy && showButton.all" ng-click="unemploy($event)" type="button" class="btn btn-danger mt-3"><i class="fas fa-user-times"></i> Unemploy</button>
-										<button ng-show="showButton.reemploy && showButton.all" ng-click="reemploy($event)" type="button" class="btn btn-success mt-3"><i class="fas fa-user-check"></i> Reemploy</button>
+									<div class="col-12 col-sm-6">
+										<button ng-show="showButton.unemploy && showButton.all" ng-click="unemploy($event)" type="button" class="btn btn-danger mt-3 btn-block"><i class="fas fa-user-times"></i> Unemploy</button>
+										<button ng-show="showButton.reemploy && showButton.all" ng-click="reemploy($event)" type="button" class="btn btn-success mt-3 btn-block"><i class="fas fa-user-check"></i> Reemploy</button>
 									</div>
 								</div>
 							</div>
@@ -205,16 +205,15 @@ $user_id = $this->session->userdata('userdata')['user_id'];
             }).setOption('responsive',true)
 			$scope.tableOptions = DTOptionsBuilder.fromSource(`${base_url}owner/get_employees/${user_id}`)
 			$scope.tableColumns = [
-		        DTColumnBuilder.newColumn('first_name','Full Name').renderWith(function(data,type,full){
-		        	return capitalize(`${full.first_name} ${full.last_name}`)
+		        DTColumnBuilder.newColumn('full_name','Full Name').renderWith(function(data,type,full){
+		        	return capitalize(`${full.full_name}`)
 		        }),
 		        DTColumnBuilder.newColumn('department','Department').renderWith(function(data){
 		        	return capitalize(data)
 		        }),
 		        DTColumnBuilder.newColumn('email','Email'),
-		        DTColumnBuilder.newColumn('active','Status').renderWith(function(data,type,full){
-		        	var status = (full.suspended.localeCompare('1') === 0 && !full.password) ? 'Awaiting Verification': (full.suspended.localeCompare('1') === 0 && full.password) ? 'Account Suspended' : (full.active.localeCompare('1') === 0) ? 'Active' : 'Unemployed'
-		        	return status
+		        DTColumnBuilder.newColumn('status','Status').renderWith(function(data,type,full){
+		        	return capitalize(data)
 		        }),
 		        DTColumnBuilder.newColumn('last_access_time','Last Interaction').renderWith(function(data){
 		        	return dateFormatter.fromSQL(data).toFormat('dd MMM, yyyy \u2022 t')
