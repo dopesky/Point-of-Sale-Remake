@@ -1,0 +1,1 @@
+ALTER TABLE `tbl_users` ADD `twofactor_auth` INT NOT NULL DEFAULT '1' AFTER `biometrics_id`, ADD `twofactor_secret` INT NULL DEFAULT NULL AFTER `twofactor_auth`;
