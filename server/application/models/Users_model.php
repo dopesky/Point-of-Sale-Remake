@@ -7,11 +7,11 @@ class Users_model extends CI_Model {
 	}
 
 	function get_user_by_email($email){
-		return $this->db->select('*, tbl_users.user_id as user_id, tbl_users.suspended as suspended, owner.owner_id as id_owner, owner.first_name as owner_fname, owner.last_name as owner_lname, owner.profile_photo as owner_photo')->where('email',$email)->join('owner','tbl_users.user_id = owner.user_id','left')->join('employees','tbl_users.user_id = employees.user_id','left')->get('tbl_users')->row();
+		return $this->db->where('email',$email)->get('user_details')->row();
 	}
 
 	function get_user_by_id($user_id){
-		return $this->db->select('*, tbl_users.user_id as user_id, tbl_users.suspended as suspended, owner.owner_id as id_owner, owner.first_name as owner_fname, owner.last_name as owner_lname, owner.profile_photo as owner_photo')->where('tbl_users.user_id',$user_id)->join('owner','tbl_users.user_id = owner.user_id','left')->join('employees','tbl_users.user_id = employees.user_id','left')->get('tbl_users')->row();
+		return $this->db->where('user_id',$user_id)->get('user_details')->row();
 	}
 
 	function add_user($data){

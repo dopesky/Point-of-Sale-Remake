@@ -38,7 +38,13 @@ class Jsons extends CI_Controller {
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
 			return 403;
 		}
-		$employees = $this->owners_model->get_owner_employees($user_id, $check_suspended);
+		$owner_id = $this->users_model->get_user_by_id($user_id)->id_owner;
+		if(!$owner_id){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>Invalid Owner User ID Provided. User Does Not Exist. Contact Admin!</span>'));
+			return 403;
+		}
+		$employees = $this->owners_model->get_owner_employees($owner_id, $check_suspended);
 		if($employees){
 			$this->common->set_headers(202);
 			echo json_encode(array('status'=>202,'response'=>$employees));

@@ -118,20 +118,22 @@ class Owner extends CI_Controller {
 		$data = array();
 		$this->load->library('spreadsheets',array('titles' => $titles));
 		foreach ($employee_details as $detail) {
-			$detail->status = null;
-			if($detail->suspended && !$detail->password) $detail->status = 'Awaiting Verification';
-			elseif ($detail->suspended && $detail->password) $detail->status = 'Account Suspended';
-			elseif ($detail->active) $detail->status = 'Active';
-			else $detail->status = 'Unemployed';
 			$data[] = array(
-				'full_name' => ucwords($detail->last_name." ".$detail->first_name),
+				'full_name' => ucwords($detail->full_name),
 				'department' => ucwords($detail->department),
 				'email' => $detail->email,
 				'status' => $detail->status,
-				'last_access_time' => $this->spreadsheets->parse_html($this->time->format_date($detail->last_access_time,"d M, Y &#8226 h:iA"))
+				'last_access_time' => $this->time->format_date($detail->last_access_time, "d M, Y • h:iA")
 			);
 		}
 		$this->spreadsheets->write_to_excel($data);
-		$this->spreadsheets->save(ucwords($user_details->company),'Employee Details');
+		$this->spreadsheets->save(ucwords($user_details->company),'Employee Details',$user_details->owner_photo);
+	}
+
+	public function owner_settings(){
+		$data['content'] = 'owner_settings';
+		$data['navbar'] = 'navbars/owner_navbar';
+		$data['user_details'] = $this->jsons->get_user_details($this->session->userdata('userdata')['user_id'], false);
+		$this->load->view($this->template,$data);
 	}
 }

@@ -21,11 +21,11 @@
 	font-weight: normal;
 	font-style: normal;
 	font-family: 'icomoon';
-	src:  url('../../fonts/navbar-fonts/more-icons/icomoon.eot?4cf3m8');
-	src:  url('../../fonts/navbar-fonts/more-icons/icomoon.eot?4cf3m8#iefix') format('embedded-opentype'),
-    	url('../../fonts/navbar-fonts/more-icons/icomoon.ttf?4cf3m8') format('truetype'),
-	    url('../../fonts/navbar-fonts/more-icons/icomoon.woff?4cf3m8') format('woff'),
-	    url('../../fonts/navbar-fonts/more-icons/icomoon.svg?4cf3m8#icomoon') format('svg');
+	src:  url('../../fonts/navbar-fonts/more-icons/icomoon.eot?n2j4ba');
+	src:  url('../../fonts/navbar-fonts/more-icons/icomoon.eot?n2j4ba#iefix') format('embedded-opentype'),
+    	url('../../fonts/navbar-fonts/more-icons/icomoon.ttf?n2j4ba') format('truetype'),
+	    url('../../fonts/navbar-fonts/more-icons/icomoon.woff?n2j4ba') format('woff'),
+	    url('../../fonts/navbar-fonts/more-icons/icomoon.svg?n2j4ba#icomoon') format('svg');
 }
 
 /* Icomoon.com */
@@ -94,7 +94,7 @@
 		user-select: none;
 }
 
-.gn-menu-main > li:last-child {
+.gn-menu-main > li:last-child,.gn-menu-main li.notifications-icon {
 		float: right;
 		border-right: none;
 		border-left: 1px solid grey;
@@ -204,7 +204,7 @@ input.gn-search {
 }
 
 input.gn-search:focus {
-		cursor: text
+		cursor: default;
 }
 
 .gn-menu-main a.gn-icon-search {
@@ -256,6 +256,10 @@ input.gn-search:focus {
 
 .gn-icon-home::before {
 	content: "\e902";
+}
+
+.gn-icon-notification::before{
+	content: "\e951";
 }
 
 .gn-icon-logout::before {
@@ -368,4 +372,8 @@ input.gn-search:focus {
 	.gn-menu-wrapper.gn-open-all .gn-scroller {
 			width: 130%
 	}
+}
+
+.gn-menu-main > li:last-child > a > sup >sup {
+	margin-left: -0.8rem;
 }

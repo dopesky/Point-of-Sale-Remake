@@ -11,7 +11,6 @@ html,
 body {
     background-color: #fff;
     font-size: 14px;
-    color: #797979;
     width: 100%;
     padding: 0;
     margin-left: 0;
@@ -565,13 +564,11 @@ input::-ms-input-placeholder {
     margin: 15px auto;
 }
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus{
-    color:#e74c3c;
     background: transparent;
 }
 .main_menu_bg .navbar {}
 
 .main_menu_bg .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus{
-    color: #e74c3c;
     padding-bottom: 22px;
     border-bottom: 1px solid #e74c3c;
     background: transparent;
