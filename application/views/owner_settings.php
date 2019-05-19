@@ -55,7 +55,9 @@
 							</div>
 						</form>	
 					</div>
-					<div class="tab-pane container fade" id="security-settings">...</div>
+					<div class="tab-pane container fade" id="security-settings">
+						
+					</div>
 					<div class="tab-pane container fade" id="other-settings">...</div>
 				</div>
 			</div>
@@ -63,3 +65,8 @@
 		</div>
 	</main>
 </div>
+
+<script>
+	var app = angular.module('main')
+	//app.controller('')
+</script>

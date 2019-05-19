@@ -243,3 +243,4 @@ $(()=>{
 	reset_helper_texts()
 	$('input')[0].focus()
 })
+angular.module('main', ['datatables'])

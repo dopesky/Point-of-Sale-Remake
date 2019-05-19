@@ -100,10 +100,15 @@ class Owner extends CI_Controller {
 	}
 
 	public function get_employees($user_id){
+		if($user_id !== $this->session->userdata('userdata')['user_id']){
+			echo json_encode(array());
+			return array();
+		}
 		return $this->jsons->get_employees_for_owner($user_id);
 	}
 
 	public function print_employee_details($user_id){
+		if($user_id !== $this->session->userdata('userdata')['user_id']) return;
 		$data['content'] = 'templates/print/manage_employees';
 		$data['data'] = $this->jsons->get_employees_for_owner($user_id, false);
 		$data['user'] = $this->jsons->get_user_details($user_id,false);
@@ -112,6 +117,7 @@ class Owner extends CI_Controller {
 	}
 
 	public function download_employee_details_spreadsheet($user_id){
+		if($user_id !== $this->session->userdata('userdata')['user_id']) return;
 		$titles = array('Full Name', 'Department', 'Email', 'Status', 'Last Interaction');
 		$employee_details = $this->jsons->get_employees_for_owner($user_id, false);
 		$user_details = $this->jsons->get_user_details($user_id, false);

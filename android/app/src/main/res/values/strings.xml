@@ -1,0 +1,26 @@
+<resources>
+	<string name="app_name">Point of Sale</string>
+	<string name="main_activity_header"> Login</string>
+	<string name="enter_your_email">Enter Your Email . . .</string>
+	<string name="enter_your_password">Enter Your Password . . .</string>
+	<string name="create_account_header">Create Account</string>
+	<string name="forgot_password_question">Forgot Password?</string>
+	<string name="title_activity_sign_up">Create Account</string>
+	<string name="prompt_email">Email</string>
+	<string name="prompt_password">Password</string>
+	<string name="action_sign_in">Sign in or register</string>
+	<string name="action_sign_in_short">Sign in</string>
+	<string name="welcome">"Welcome !"</string>
+	<string name="invalid_username">Not a valid username</string>
+	<string name="invalid_password">Password must be >5 characters</string>
+	<string name="login_failed">"Login failed"</string>
+	<string name="already_have_an_account">I Already have an Account!</string>
+	<string name="forgot_password">Forgot Password</string>
+	<string name="reset">Reset</string>
+	<string name="remembered_password">I Remembered My Password!</string>
+	<string name="create_account">Create</string>
+	<string name="signing_in">Signing In . . .</string>
+	<string name="API_KEY">oE7uXOM0R60Be0OdWZ6ncITdQaNZ5uR9EmlcUEtokBzKvEWy8ZvfzV3RpCwI</string>
+	<string name="custom_toast_text"> Unable to Instantiate toast.</string>
+	<string name="signing_up">Signing Up . . .</string>
+</resources>

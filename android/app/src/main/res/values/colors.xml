@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="colorPrimary">#008577</color>
+	<color name="colorPrimaryDark">#00574B</color>
+	<color name="colorAccent">#17a2b8</color>
+	<color name="smoke">#D0f8f8f8</color>
+	<color name="whitesmoke">#f8f8f8</color>
+	<color name="blacksmoke">#99000000</color>
+	<color name="transparent">#00000000</color>
+	<color name="colorWarning">#FFC107</color>
+	<color name="colorDanger">#dc3545</color>
+	<color name="colorSuccess">#28a745</color>
+</resources>
