@@ -41,6 +41,11 @@ class Auth extends CI_Controller {
 				$lname = ($login_credentials->last_name) ? $login_credentials->last_name : $login_credentials->owner_lname;
 				$photo = ($login_credentials->profile_photo) ? $login_credentials->profile_photo : $login_credentials->owner_photo;
 				$userdata = array('user_id'=>$login_credentials->user_id,'email'=>$login_credentials->email,'role'=>$role,'fname'=>$fname,'lname'=>$lname,'photo'=>$photo);
+				if($login_credentials->twofactor_auth){
+					$this->common->set_headers(200);
+					echo json_encode(array('status'=>200,'response'=>$userdata));
+					return 200;
+				}
 				$this->common->set_headers(202);
 				echo json_encode(array('status'=>202,'response'=>$userdata));
 				return 202;
@@ -177,7 +182,7 @@ class Auth extends CI_Controller {
 		}
 	}
 
-	public function check_token_validity($token,$id,$return_on_success = false){
+	public function check_token_validity($token, $id, $return_on_success = false){
 		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH','READ'))){
 			$this->common->set_headers(403);
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
@@ -197,7 +202,7 @@ class Auth extends CI_Controller {
 		$time_to_expire = $this->time->add_time($verification->token_expire, $verification->last_access_time);
 		if ($this->time->diff_date($this->time->get_now(), $time_to_expire)>0) {
 			$this->common->set_headers(409);
-			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Reset Token has Expired. Please Request for Another Token.</span>'));
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>The Provided Token has Expired. Please Request for Another Token.</span>'));
 			return 409;
 		}
 		if(!$return_on_success){
@@ -207,7 +212,7 @@ class Auth extends CI_Controller {
 		return 202;
 	}
 
-	public function password_reset($token,$id){
+	public function password_reset($token, $id){
 		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
 			$this->common->set_headers(403);
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
@@ -232,5 +237,100 @@ class Auth extends CI_Controller {
 			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>Password Reset failed. Try again!</span>'));
 			return 500;
 		}
+	}
+
+	public function send_email_otp($user_id){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		$user_details = $this->users_model->get_user_by_id($user_id);
+		if(!$user_details || ($user_details->suspended == 1 && $user_details->password)){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>'<br><br><span>User not Registered on the System!</span>'));
+			return 400;
+		}
+		$code = $this->common->get_crypto_safe_code(6);
+		$response = $this->users_model->update_user_details($user_id,array('token'=>$code,'token_expire'=>300));
+		if(!$response){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>OTP Sending failed. Please try again!</span>'));
+			return 500;
+		}
+		$email_body = $this->email->get_email_body('otp', array('code'=>$code)); 
+		$email_response = $this->email->send_email($user_details->email, '2-Step Authentication', $email_body, 'otp');
+		if(!$email_response){
+			$this->common->set_headers(503);
+			echo json_encode(array('status'=>503,'errors'=>'<br><br><span>Email OTP Failed. Please Try Again!</span>'));
+			return 503;
+		}
+		$this->common->set_headers(202);
+		echo json_encode(array('status'=>202,'response'=>'<br><br><span>One Time Code Sent to You. Check your email for more information.</span>'));
+		return 202;
+	}
+
+	public function verify_email_token($token, $id){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		$response = $this->check_token_validity($token, $id, true);
+		if($response !== 202) return $response;
+		$data = array('token_expire'=>0, 'last_access_time'=>$this->time->get_now());
+		$database_response=$this->users_model->update_user_details($id,$data);
+		$verification = $this->users_model->get_user_by_id($id);
+		if ($database_response && $verification) {
+			$this->common->set_headers(202);
+			echo json_encode(array('status'=>202,'response'=>''));
+			return 202;
+		}else {
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>2 Step Authentication Failed. Try again!</span>'));
+			return 500;
+		}
+	}
+
+	public function verify_google_auth($token, $user_id){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH','READ'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		$authenticator = new PHPGangsta_GoogleAuthenticator();
+		$user_details = $this->users_model->get_user_by_id($user_id);
+		if(!$user_details || ($user_details->suspended == 1 && $user_details->password)){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>'<br><br><span>User not Registered on the System!</span>'));
+			return 400;
+		}
+		if($user_details->twofactor_secret){
+			$checkResult = $authenticator->verifyCode($user_details->twofactor_secret, $token, 3);
+			if($checkResult){
+				$this->common->set_headers(202);
+				echo json_encode(array('status'=>202,'response'=>''));
+				return 202;
+			}
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>'<br><br><span>Invalid code supplied.</span>'));
+			return 400;
+		}
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		$secret = $authenticator->createSecret();
+		$response = $this->users_model->update_user_details($user_id, array('twofactor_secret'=>$secret));
+		if(!$response){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Please try again!</span>'));
+			return 500;
+		}
+		$qrCodeUrl = $authenticator->getQRCodeGoogleUrl('Point of Sale ('.$user_details->email.")", $secret);
+		$this->common->set_headers(409);
+		echo json_encode(array('status'=>409,'errors'=>array('url'=>$qrCodeUrl, 'secret'=>$secret)));
+		return 409;
 	}
 }

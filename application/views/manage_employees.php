@@ -165,7 +165,7 @@ $user_id = $this->session->userdata('userdata')['user_id'];
 </div>
 <script>
 	var user_id = "<?=$user_id?>"
-	var app = angular.module('main', ['datatables'])
+	var app = angular.module('main')
 	app.controller('manageEmployees',['$scope','DTOptionsBuilder','DTDefaultOptions','DTColumnBuilder','saveEmployeeDetails', '$timeout', function($scope,DTOptionsBuilder,DTDefaultOptions,DTColumnBuilder,saveEmployeeDetails,$timeout){
 		$scope.inputFields = {
 			fname: '',

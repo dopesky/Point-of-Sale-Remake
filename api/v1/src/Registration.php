@@ -52,5 +52,32 @@ class Registration{
 		curl_close($curl);
 		return $response;
 	}
+
+	public function send_2_step_otp($user_id, $return_headers = false){
+		$curl = curl_init(SERVER_URL."/auth/send_email_otp/$user_id");
+		set_options($curl,$this->API_KEY);
+		$result = curl_exec($curl);
+		$response = get_response($curl,$result,$return_headers);
+		curl_close($curl);
+		return $response;
+	}
+
+	public function verify_2_step_code($token, $user_id, $return_headers = false){
+		$curl = curl_init(SERVER_URL.'/auth/verify_email_token/'.$token."/".$user_id);
+		set_options($curl,$this->API_KEY);
+		$result = curl_exec($curl);
+		$response = get_response($curl,$result,$return_headers);
+		curl_close($curl);
+		return $response;
+	}
+
+	public function verify_google_auth_code($code, $user_id, $return_headers = false){
+		$curl = curl_init(SERVER_URL.'/auth/verify_google_auth/'.$code."/".$user_id);
+		set_options($curl,$this->API_KEY);
+		$result = curl_exec($curl);
+		$response = get_response($curl,$result,$return_headers);
+		curl_close($curl);
+		return $response;
+	}
 }
 ?>

@@ -10,12 +10,14 @@ class Authentication extends CI_Controller {
 	}
 
 	public function index(){
-		if(!isset($_SESSION['userdata']['homepage_url'])){
+		if(!isset($_SESSION['userdata']['homepage_url']) && !isset($_SESSION['tempdata']['homepage_url'])){
 			if($this->session->userdata('userdata')!==null) $this->log_out(base_url());
 			$data['content'] = "login_screen";
 			$this->load->view($this->template,$data);
-		}else{
+		}else if(isset($_SESSION['userdata']['homepage_url'])){
 			redirect($this->session->userdata('userdata')['homepage_url'],'location');
+		}else{
+			redirect($this->session->userdata('tempdata')['homepage_url'],'location');	
 		}
 	}
 
@@ -50,14 +52,68 @@ class Authentication extends CI_Controller {
 		}
 	}
 
+	public function two_factor_auth($user_id){
+		if($this->session->userdata('tempdata') === null) redirect(base_url(),'location');
+		$data['content'] = 'two_factor_auth';
+		$data['user_id'] = $user_id;
+		$this->load->view($this->template,$data);
+	}
+
+	public function send_email_otp(){
+		if(!isset($_SESSION['tempdata'])) redirect(base_url(),'location');
+		$otp = new Registration(getenv('API_KEY'));
+		$response = $otp->send_2_step_otp($this->session->userdata('tempdata')['user_id']);
+		if($response->status === 202){
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+			return true;
+		}else{
+			echo json_encode(array('ok'=>false, 'code'=>$response->status, 'errors'=>$response->errors));
+			return false;
+		}
+	}
+
+	public function verify_otp_token(){
+		if(sizeof($_POST)<1) redirect(base_url(),'location');
+		$check_validity = new Registration(getenv('API_KEY'));
+		$response = $check_validity->verify_2_step_code($_POST['code'],$this->session->userdata('tempdata')['user_id']);
+		if($response->status == 202){
+			$userdata = $this->session->userdata('tempdata');
+			$this->session->unset_userdata('tempdata');
+			$userdata['homepage_url'] = $userdata['role'] == 'owner' ? site_url('owner'):site_url('employee');
+			$this->session->set_userdata('userdata',$userdata);
+			echo json_encode(array('ok'=>true));
+			return true;
+		}else{
+			echo json_encode(array('ok'=>false, 'errors'=>$response->errors));
+			return false;
+		}
+	}
+
+	public function verify_google_auth_token(){
+		if(sizeof($_POST)<1) redirect(base_url(),'location');
+		$check_validity = new Registration(getenv('API_KEY'));
+		$response = $check_validity->verify_google_auth_code($_POST['code'],$this->session->userdata('tempdata')['user_id']);
+		if($response->status == 202){
+			$userdata = $this->session->userdata('tempdata');
+			$this->session->unset_userdata('tempdata');
+			$userdata['homepage_url'] = $userdata['role'] == 'owner' ? site_url('owner'):site_url('employee');
+			$this->session->set_userdata('userdata',$userdata);
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+			return true;
+		}else{
+			echo json_encode(array('ok'=>false, 'code'=> $response->status, 'errors'=>$response->errors));
+			return false;
+		}
+	}
+
 	public function login(){
 		if(sizeof($_POST)<1) redirect(base_url(),'location');
 		$login = new Login(getenv('API_KEY'));
 		$email = $this->input->post('username');
 		$password = $this->input->post('password');
 		$response = $login->login($email,$password);
-		if($response->status == 202){
-			$this->set_userdata($response->response);
+		if($response->status == 202 || $response->status === 200){
+			$this->set_userdata($response);
 			echo json_encode(array('ok'=>true));
 		}else{
 			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
@@ -116,8 +172,13 @@ class Authentication extends CI_Controller {
 	}
 
 	private function set_userdata($response){
-		$response = json_decode(json_encode($response),true);
-		$response['homepage_url'] = $response['role'] == 'owner' ? site_url('owner'):site_url('employee');
-		$this->session->set_userdata('userdata',$response);
+		$response->response = json_decode(json_encode($response->response),true);
+		if($response->status === 200){
+			$response->response['homepage_url'] = site_url('auth/two_factor_auth/'.$response->response['user_id']);
+			$this->session->set_userdata('tempdata',$response->response);
+		}else{
+			$response->response['homepage_url'] = $response->response['role'] == 'owner' ? site_url('owner'):site_url('employee');
+			$this->session->set_userdata('userdata',$response->response);
+		}
 	}
 }

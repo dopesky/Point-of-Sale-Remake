@@ -72,7 +72,7 @@ class MY_Email extends CI_Email{
 	*/
 	public function get_email_body($type,$pass=array(),$user='user',$body='basic_body'){
 		$views=array('intro'=>'templates/email_templates/introduction_email_message',
-			'password'=>'templates/email_templates/password_reset_message','email_update'=>'templates/email_templates/email_update_message');
+			'password'=>'templates/email_templates/password_reset_message','email_update'=>'templates/email_templates/email_update_message','otp'=>"templates/email_templates/otp_message");
 		$data['user']=$user;
 		$data['type']=$views[$type];
 		$data['data']=$pass;
