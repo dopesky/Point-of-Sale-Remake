@@ -16,6 +16,7 @@
 								</li>
 								<li><a href="<?=site_url('owner')?>" title="Dashboard" class="my-icon gn-icon-home">Dashboard</a></li>
 								<li><a href="<?=site_url('owner/manage_employees')?>" title="Manage Employees" class="my-icon gn-icon-user-add">Manage Employees</a></li>
+								<li><a href="<?=site_url('owner/manage_products')?>" title="Manage Employees" class="my-icon gn-icon-cart">Manage Products</a></li>
 								<li><a class="gn-icon gn-icon-cog" href="<?=site_url('owner/owner_settings')?>" title="Settings">Settings</a></li>
 							</ul>
 						</div><!-- /gn-scroller -->

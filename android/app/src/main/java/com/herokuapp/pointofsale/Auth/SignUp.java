@@ -39,7 +39,7 @@ public class SignUp extends AppCompatActivity {
 		}
 		this.isSigningUp = true;
 		Button button = (Button) view;
-		button.setAlpha((float)0.7);
+		button.setAlpha((float)0.6);
 		button.setText(getString(R.string.signing_up));
 		Registration registration = SignUp.registerUser(this, view);
 		registration.execute("register", "admin", email);
@@ -53,6 +53,7 @@ public class SignUp extends AppCompatActivity {
 				try {
 					HashMap map = (HashMap) response;
 					if ((double) map.get("status") == (double) 202) {
+						CustomToast.showToast(context, " Sign up Successful! Please Check Your Email!", "success");
 						context.isSigningUp = false;
 						context.launchMainActivity(view);
 					} else {

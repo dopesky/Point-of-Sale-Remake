@@ -14,6 +14,9 @@ class Owner extends CI_Controller {
 		$this->load->library('jsons');
 	}
 
+	/**
+	* Below Here is code to load views. It directly translates to the links in each respective NavigationBar
+	*/
 	public function index(){
 		if($this->session->userdata('userdata')['fname']){
 			$data['content'] = 'owner_dashboard';
@@ -32,6 +35,26 @@ class Owner extends CI_Controller {
 		$this->load->view($this->template,$data);
 	}
 
+	public function manage_products(){
+		$data['content'] = 'manage_products';
+		$data['navbar'] = 'navbars/owner_navbar';
+		$data['categories'] = $this->jsons->get_valid_categories_json(false);
+		$this->load->view($this->template,$data);
+	}
+
+	public function owner_settings(){
+		$data['content'] = 'owner_settings';
+		$data['navbar'] = 'navbars/owner_navbar';
+		$data['user_details'] = $this->jsons->get_user_details($this->session->userdata('userdata')['user_id'], false);
+		$this->load->view($this->template,$data);
+	}
+
+	/**
+	* Below Here lies the logic for every owner of a company in the system.
+	* This code connects to the server through the API.
+	*/
+
+	// Here Lies code to finish registration of owners by adding their names and company name
 	public function register_owner(){
 		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
 		$fname = $this->input->post('fname');
@@ -50,6 +73,15 @@ class Owner extends CI_Controller {
 		}else{
 			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
 		}
+	}
+
+	// The next Logic is implemented in the manage Employees view. As seen from function names, All CRUD operations are done
+	public function get_employees($user_id){
+		if($user_id !== $this->session->userdata('userdata')['user_id']){
+			echo json_encode(array());
+			return array();
+		}
+		return $this->jsons->get_employees_for_owner($user_id);
 	}
 
 	public function employ(){
@@ -99,14 +131,6 @@ class Owner extends CI_Controller {
 		}
 	}
 
-	public function get_employees($user_id){
-		if($user_id !== $this->session->userdata('userdata')['user_id']){
-			echo json_encode(array());
-			return array();
-		}
-		return $this->jsons->get_employees_for_owner($user_id);
-	}
-
 	public function print_employee_details($user_id){
 		if($user_id !== $this->session->userdata('userdata')['user_id']) return;
 		$data['content'] = 'templates/print/manage_employees';
@@ -136,10 +160,135 @@ class Owner extends CI_Controller {
 		$this->spreadsheets->save(ucwords($user_details->company),'Employee Details',$user_details->owner_photo);
 	}
 
-	public function owner_settings(){
-		$data['content'] = 'owner_settings';
-		$data['navbar'] = 'navbars/owner_navbar';
-		$data['user_details'] = $this->jsons->get_user_details($this->session->userdata('userdata')['user_id'], false);
-		$this->load->view($this->template,$data);
+	// The next Logic is implemented in the manage Products view. As seen from function names, All CRUD operations are done
+	public function get_products(){
+		return $this->jsons->get_products_for_owner($this->session->userdata('userdata')['user_id']);
+	}
+
+	public function add_product(){
+		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		$product = $this->input->post('item1');
+		$cost = $this->input->post('item2');
+		$category = $this->input->post('item3');
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$employ = new Owners(getenv('API_KEY'));
+		$response = $employ->register_product($user_id, $product, $category, $cost);
+		if($response->status === 202){
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+		}else{
+			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
+		}
+	}
+
+	public function update_product_details(){
+		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		$product = $this->input->post('item1');
+		$cost = $this->input->post('item2');
+		$category = $this->input->post('item3');
+		$product_id = $this->input->post('id');
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$update = new Owners(getenv('API_KEY'));
+		$response = $update->update_product_details($user_id, $product, $category, $cost, $product_id);
+		if($response->status === 202){
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+		}else{
+			echo json_encode(array('ok'=>false, 'errors'=>$response->errors));
+		}
+	}
+
+	public function activate_deactivate_product(){
+		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$product_id = $this->input->post('id');
+		$action = $this->input->post('action');
+		$update = new Owners(getenv('API_KEY'));
+		$response = $update->activate_deactivate_product($action, $user_id, $product_id);
+		if($response->status === 202){
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+		}else{
+			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
+		}
+	}
+
+	public function download_product_details_spreadsheet(){
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$titles = array('Product Name', 'Category', 'Cost Per Unit', 'Last Change');
+		$product_details = $this->jsons->get_products_for_owner($user_id, false);
+		$user_details = $this->jsons->get_user_details($user_id, false);
+		$data = array();
+		$this->load->library('spreadsheets',array('titles' => $titles));
+		foreach ($product_details as $detail) {
+			$data[] = array(
+				'product' => ucwords($detail->product),
+				'category_name' => ucwords($detail->category_name),
+				'cost' => $detail->cost_per_unit,
+				'status' => $detail->status,
+				'modified_date' => $this->time->format_date($detail->modified_date, "d M, Y • h:iA")
+			);
+		}
+		$this->spreadsheets->write_to_excel($data);
+		$this->spreadsheets->save(ucwords($user_details->company),'Product Details',$user_details->owner_photo);
+	}
+
+	// The next Logic is implemented in the settings view. The functions each perform a different functionality.
+	public function update_owner_details(){
+		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$fname = $this->input->post('fname');
+		$lname = $this->input->post('lname');
+		$company = $this->input->post('company');
+		$photo_details = isset($_FILES['file']) ? $_FILES['file'] : null;
+		$update = new Owners(getenv('API_KEY'));
+		$response = $update->update_owner_details($user_id, $fname, $lname, $company, $photo_details);
+		if($response->status === 202){
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+		}else{
+			echo json_encode(array('ok'=>false,'code'=>$response->status,'errors'=>$response->errors));
+		}
+	}
+
+	public function change_owner_email(){
+		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$email = $this->input->post('email');
+		$password = $this->input->post('password');
+		$reset = new Owners(getenv('API_KEY'));
+		$response = $reset->change_owner_email($user_id, $email, $password);
+		if($response->status === 202){
+			$userdata = $this->session->userdata('userdata');
+			$userdata['email'] = trim(strtolower($email));
+			$this->session->set_userdata('userdata',$userdata);
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+		}else{
+			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
+		}
+	}
+
+	public function change_owner_password(){
+		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$password = $this->input->post('password');
+		$new_pass = $this->input->post('newPass');
+		$repeat_pass = $this->input->post('repeatPass');
+		$reset = new Owners(getenv('API_KEY'));
+		$response = $reset->change_owner_password($user_id, $password, $new_pass, $repeat_pass);
+		if($response->status === 202){
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+		}else{
+			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
+		}
+	}
+
+	public function enable_disable_2FA(){
+		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$action = $this->input->post('action');
+		$reset = new Owners(getenv('API_KEY'));
+		$response = $reset->activate_deactivate_2FA($user_id, $action);
+		if($response->status === 202){
+			echo json_encode(array('ok'=>true,'response'=>$response->response));
+		}else{
+			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
+		}
 	}
 }

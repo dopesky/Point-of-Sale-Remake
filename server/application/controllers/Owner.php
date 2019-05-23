@@ -173,7 +173,312 @@ class Owner extends CI_Controller {
 				return 400;
 		}
 		$this->common->set_headers(500);
-		echo json_encode(array('status'=>500,'response'=>'<br><br><span>An Unnexpected Error Occurred. Try Again or Contact Admin!</span>'));
+		echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Try Again or Contact Admin!</span>'));
 		return 500;
+	}
+
+	public function add_product($owner_user_id){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		if(sizeof($_POST)<1){
+			$this->common->set_headers(412);
+			echo json_encode(array('status'=>412,'errors'=>'<br><br><span>Ensure All Required Fields are Filled!</span>'));
+			return 412;
+		}
+		if($this->form_validator->run_rules('add_product') == false){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>validation_errors('<br><br><span>','</span>')));
+			return 400;
+		}
+		$owner_details = $this->users_model->get_user_by_id($owner_user_id);
+		if(!$owner_details || !$owner_details->id_owner || ($owner_details->suspended == 1 && $owner_details->password) || $owner_details->owner_active == 0){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>"<br><br><span>Invalid Data Sent to Server!</span>"));
+			return 400;
+		}
+		$name = $this->input->post('product');
+		$category_id = $this->input->post('category');
+		$cost = $this->input->post('cost');
+		$owner_id = $owner_details->id_owner;
+		$data = array('product'=>$name,'category_id'=>$category_id,'cost_per_unit'=>$cost,'owner_id'=>$owner_id);
+		$add_successful = $this->products_model->add_product($data);
+		if(!$add_successful){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Contact Admin!</span>'));
+			return 500;
+		}
+		$this->common->set_headers(202);
+		echo json_encode(array('status'=>202,'response'=>'<br><br><span>Successfully Added New Product!</span>'));
+		return 202;
+	}
+
+	public function update_product_details($owner_user_id){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		if(sizeof($_POST)<1){
+			$this->common->set_headers(412);
+			echo json_encode(array('status'=>412,'errors'=>'<br><br><span>Ensure All Required Fields are Filled!</span>'));
+			return 412;
+		}
+		if($this->form_validator->run_rules('update_product') == false){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>validation_errors('<br><br><span>','</span>')));
+			return 400;
+		}
+
+		$owner_id = $this->users_model->get_user_by_id($owner_user_id);
+
+		$product_id = $this->input->post('product_id');
+		$name = $this->input->post('product');
+		$category_id = $this->input->post('category');
+		$cost = $this->input->post('cost');
+
+		$data = array('product'=>$name,'category_id'=>$category_id,'cost_per_unit'=>$cost);
+
+		if(!$owner_id){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Contact Admin!</span>'));
+			return 500;
+		}
+		$response = $this->products_model->update_products_by_product_and_user_ids($product_id, $owner_user_id, $data);
+		if(!$response){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Contact Admin!</span>'));
+			return 500;
+		}
+		$this->common->set_headers(202);
+		echo json_encode(array('status'=>202,'response'=>'<br><br><span>Employee Details Successfully Updated!</span>'));
+		return 202;
+	}
+
+	public function remove_readd_product($action){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		if(sizeof($_POST)<1){
+			$this->common->set_headers(412);
+			echo json_encode(array('status'=>412,'errors'=>'<br><br><span>Ensure All Required Fields are Filled!</span>'));
+			return 412;
+		}
+		if($this->form_validator->run_rules('remove_readd_product') == false){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>validation_errors('<br><br><span>','</span>')));
+			return 400;
+		}
+		$user_id = $this->input->post('user_id');
+		$product_id = $this->input->post('product_id');
+		$owner_id = $this->users_model->get_user_by_id($user_id);
+		$product_details = $this->products_model->get_product_by_product_id($product_id, ($owner_id->show_inactive == 0), ($owner_id->show_deleted == 0));
+		if(!$owner_id || !$product_details){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Contact Admin!</span>'));
+			return 500;
+		}
+		if($product_details->suspended == 1 || $owner_id->suspended == 1 || $owner_id->id_owner !== $product_details->owner_id){
+			$this->common->set_headers(409);
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+			return 409;
+		}
+		switch ($action) {
+			case 'deactivate':
+				$response = $this->products_model->deactivate_product($product_details->product_id, $user_id);
+				if($response){
+					$this->common->set_headers(202);
+					echo json_encode(array('status'=>202,'response'=>'<br><br><span>Product Deactivated Successfully!</span>'));
+					return 202;
+				}
+				break;
+			case 'reactivate':
+				$response = $this->products_model->reactivate_product($product_details->product_id, $user_id);
+				if($response){
+					$this->common->set_headers(202);
+					echo json_encode(array('status'=>202,'response'=>'<br><br><span>Product Reactivated Successfully!</span>'));
+					return 202;
+				}
+				break;
+			default:
+				$this->common->set_headers(400);
+				echo json_encode(array('status'=>400,'errors'=>'<br><br><span>No Valid Action Provided To Be Done on The Data!</span>'));
+				return 400;
+		}
+		$this->common->set_headers(500);
+		echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Try Again or Contact Admin!</span>'));
+		return 500;
+	}
+
+	public function update_owner_details(){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		if(sizeof($_POST)<1){
+			$this->common->set_headers(412);
+			echo json_encode(array('status'=>412,'errors'=>'<br><br><span>Ensure All Required Fields are Filled!</span>'));
+			return 412;
+		}
+		if($this->form_validator->run_rules('update_owner') == false){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>validation_errors('<br><br><span>','</span>')));
+			return 400;
+		}
+		$user_id = $this->input->post('user_id');
+		$fname = $this->input->post('first_name');
+		$lname = $this->input->post('last_name');
+		$company = $this->input->post('company');
+		$user_details = $this->users_model->get_user_by_id($user_id);
+		if(!$user_details || !$user_details->id_owner || ($user_details->suspended == 1 && $user_details->password)){
+			$this->common->set_headers(409);
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+			return 409;	
+		}
+		$data = array('first_name'=>$fname,'last_name'=>$lname,'company'=>$company);
+		$response = $this->owners_model->update_owner_by_user_id($user_id, $data);
+		if(!$response){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Try Again or Contact Admin!</span>'));
+			return 500;
+		}
+		$this->common->set_headers(202);
+		echo json_encode(array('status'=>202,'response'=>'<br><br><span>Details Updated Successfully!</span>'));
+		return 202;
+	}
+
+	public function change_owner_email(){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		if(sizeof($_POST)<1){
+			$this->common->set_headers(412);
+			echo json_encode(array('status'=>412,'errors'=>'<br><br><span>Ensure All Required Fields are Filled!</span>'));
+			return 412;
+		}
+		if($this->form_validator->run_rules('change_email') == false){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>validation_errors('<br><br><span>','</span>')));
+			return 400;
+		}
+		$email = $this->input->post('email');
+		$password = $this->input->post('password');
+		$user_id = $this->input->post('user_id');
+		$user_details = $this->users_model->get_user_by_id($user_id);
+		if(!$user_details || !$user_details->id_owner || ($user_details->suspended == 1 && $user_details->password)){
+			$this->common->set_headers(409);
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+			return 409;	
+		}
+		if(!password_verify($password, $user_details->password)){
+			$this->common->set_headers(409);
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Wrong/Invalid Password!</span>'));
+			return 409;
+		}
+		if(strtolower($user_details->email) === $email){
+			$this->common->set_headers(409);
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Please Provide a Different Email From the One Used to Register!</span>'));
+			return 409;	
+		}
+		$update = $this->users_model->update_user_details($user_id, array('email'=>$email,'token_expire'=>0));
+		if(!$update){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Try Again or Contact Admin!</span>'));
+			return 500;
+		}
+		$this->common->set_headers(202);
+		echo json_encode(array('status'=>202,'response'=>'<br><br><span>Email Updated Successfully!</span>'));
+		return 202;
+	}
+
+	public function change_owner_password($user_id){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		if(sizeof($_POST)<1){
+			$this->common->set_headers(412);
+			echo json_encode(array('status'=>412,'errors'=>'<br><br><span>Ensure All Required Fields are Filled!</span>'));
+			return 412;
+		}
+		if($this->form_validator->run_rules('change_password') == false){
+			$this->common->set_headers(400);
+			echo json_encode(array('status'=>400,'errors'=>validation_errors('<br><br><span>','</span>')));
+			return 400;
+		}
+		$password = $this->input->post('password');
+		$new_password = $this->input->post('new_password');
+		$user_details = $this->users_model->get_user_by_id($user_id);
+		if(!$user_details || !$user_details->id_owner || ($user_details->suspended == 1 && $user_details->password)){
+			$this->common->set_headers(409);
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+			return 409;	
+		}
+		if(!password_verify($password, $user_details->password)){
+			$this->common->set_headers(409);
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Wrong/Invalid Password!</span>'));
+			return 409;	
+		}
+		$update = $this->users_model->update_user_details($user_id, array('password'=>password_hash($new_password, PASSWORD_DEFAULT),'token_expire'=>0));
+		if(!$update){
+			$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Try Again or Contact Admin!</span>'));
+			return 500;
+		}
+		$this->common->set_headers(202);
+		echo json_encode(array('status'=>202,'response'=>'<br><br><span>Password Updated Successfully!</span>'));
+		return 202;
+	}
+
+	public function activate_deactivate_2FA($user_id, $action){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		$user_details = $this->users_model->get_user_by_id($user_id);
+		if(!$user_details || !$user_details->id_owner || ($user_details->suspended == 1 && $user_details->password)){
+			$this->common->set_headers(409);
+			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+			return 409;	
+		}
+		switch ($action) {
+			case 'activate':
+				$authenticator = new PHPGangsta_GoogleAuthenticator();
+				$token = ($user_details->twofactor_secret) ? $user_details->twofactor_secret : $authenticator->createSecret();
+				$data = ($token !== $user_details->twofactor_secret) ? array('twofactor_secret'=>$token,'twofactor_auth'=>1,'token_expire'=>0) : array('twofactor_auth'=>1,'token_expire'=>0);
+				$response = $this->users_model->update_user_details($user_id, $data);
+				if(!$response){
+					$this->common->set_headers(500);
+					echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Try Again or Contact Admin!</span>'));
+					return 500;
+				}
+				$qrCodeUrl = $authenticator->getQRCodeGoogleUrl('Point of Sale ('.$user_details->email.")", $token);
+				$this->common->set_headers(202);
+				echo json_encode(array('status'=>202,'response'=>array('url'=>$qrCodeUrl, 'secret'=>$token)));
+				return 202;
+			case 'deactivate':
+				$response = $this->users_model->update_user_details($user_id, array('twofactor_auth'=>0,'token_expire'=>0));
+				if(!$response){
+					$this->common->set_headers(500);
+					echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Try Again or Contact Admin!</span>'));
+					return 500;
+				}
+				$this->common->set_headers(202);
+				echo json_encode(array('status'=>202,'response'=>"<br><br><span>Two Factor Authentication Deactivated!</span>"));
+				return 202;
+			default:
+				$this->common->set_headers(409);
+				echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+				return 409;
+		}
 	}
 }

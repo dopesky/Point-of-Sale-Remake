@@ -1,8 +1,8 @@
 package com.herokuapp.pointofsale.Auth;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,12 +10,11 @@ import android.widget.EditText;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.Resources.Common;
 import com.herokuapp.pointofsale.Resources.CustomToast;
+import com.herokuapp.pointofsale.api.Authentication.Login;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
-
-import com.herokuapp.pointofsale.api.Authentication.*;
 
 public class MainActivity extends AppCompatActivity {
 	private boolean isLoggingIn = false;
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 		this.isLoggingIn = true;
 		Button button = (Button) view;
-		button.setAlpha((float)0.7);
+		button.setAlpha((float)0.6);
 		button.setText(R.string.signing_in);
 		Login login = MainActivity.loginUser(this, view);
 		login.execute(email, password);
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 			protected void onPostExecute(Object response){
 				try {
 					HashMap map = (HashMap) response;
-					if ((double) map.get("status") == (double) 202) {
+					if ((double) map.get("status") == (double) 202 || (double) map.get("status") == (double) 200) {
 						CustomToast.showToast(context, " Login Successful!", "success");
 					} else {
 						CustomToast.showToast(context, " " + Common.parseHtml(Objects.requireNonNull(map.get("errors"))), "danger");

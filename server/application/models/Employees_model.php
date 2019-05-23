@@ -31,23 +31,23 @@ class Employees_model extends CI_Model {
 		return $this->db->trans_status();
 	}
 
-	function get_user_by_employee_id($employee_id){
-		$this->db->where('employee_id',$employee_id);
+	function get_user_by_employee_id($employee_id, $check_active = false, $check_suspended = false){
+		$this->db->where('user_details.employee_id',$employee_id);
+		if($check_active){
+			$this->db->where('user_details.active',1);
+		}
+		if($check_suspended){
+			$this->db->where('user_details.employee_suspended',0);
+			$this->db->where('user_details.suspended',0);
+		}
 		return $this->db->get('user_details')->row();
 	}
 
 	function unemploy_employee($employee_id,$owner_id){
-		return $this->db->where(array('employee_id'=>$employee_id,'owner_id'=>$owner_id))->update('employees',array('active'=>0));
+		return $this->db->where(array('employee_id'=>$employee_id,'owner_id'=>$owner_id))->update('employees',array('suspended'=>1));
 	}
 
 	function reemploy_employee($employee_id,$owner_id){
-		return $this->db->where(array('employee_id'=>$employee_id,'owner_id'=>$owner_id))->update('employees',array('active'=>1));
-	}
-
-	function check_employment_status($employee_user_id){
-		$this->db->where('tbl_users.user_id',$employee_user_id);
-		$this->db->where('active',1);
-		$this->db->where('suspended',0);
-		return $this->db->get('user_details')->num_rows() > 0;
+		return $this->db->where(array('employee_id'=>$employee_id,'owner_id'=>$owner_id))->update('employees',array('suspended'=>0));
 	}
 }

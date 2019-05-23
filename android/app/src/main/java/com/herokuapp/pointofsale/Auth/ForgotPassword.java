@@ -39,8 +39,8 @@ public class ForgotPassword extends AppCompatActivity {
 		}
 		this.isResetting = true;
 		Button button = (Button) view;
-		button.setAlpha((float)0.7);
-		button.setText(getString(R.string.signing_up));
+		button.setAlpha((float)0.6);
+		button.setText(getString(R.string.resetting));
 		Registration registration = ForgotPassword.resetUserPassword(this, view);
 		registration.execute("reset", email);
 	}
@@ -63,6 +63,7 @@ public class ForgotPassword extends AppCompatActivity {
 				try {
 					HashMap map = (HashMap) response;
 					if ((double) map.get("status") == (double) 202) {
+						CustomToast.showToast(context, " Reset Successful! Please Check Your Email!", "success");
 						context.isResetting = false;
 						context.launchMainActivity(view);
 					} else {

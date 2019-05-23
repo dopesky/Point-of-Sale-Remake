@@ -37,6 +37,18 @@ class Form_validator extends CI_Model {
           return $this->run_update_employee_rules();
         case 'unemploy_reemploy_employee':
           return $this->run_unemploy_reemploy_employee_rules();
+        case 'change_email':
+          return $this->run_change_email_rules();
+        case 'change_password':
+          return $this->run_change_password_rules();
+        case 'update_owner':
+          return $this->run_update_owner_rules();
+        case 'add_product':
+          return $this->run_add_product_rules();
+        case 'update_product':
+          return $this->run_update_product_rules();
+        case 'remove_readd_product':
+          return $this->run_reactivate_deactivate_product_rules();
       }
   	}
 
@@ -76,6 +88,14 @@ class Form_validator extends CI_Model {
       return $this->form_validation->run($this);
     }
 
+    private function run_update_owner_rules(){
+      $this->form_validation->set_rules('first_name','First Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
+      $this->form_validation->set_rules('last_name','Last Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
+      $this->form_validation->set_rules('company','Company',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]|callback_is_company_unique[user_id]",array('regex_match'=>'{field} Contains Invalid Characters.','is_company_unique'=>"{field} Has Already Been Used to Register an Owner!"));
+      $this->form_validation->set_rules('user_id','User ID',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>'{field} Contains Invalid Characters.'));
+      return $this->form_validation->run($this);
+    }
+
     private function run_add_employee_rules(){
       $this->form_validation->set_rules('first_name','First Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
       $this->form_validation->set_rules('last_name','Last Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
@@ -87,7 +107,7 @@ class Form_validator extends CI_Model {
     private function run_update_employee_rules(){
       $this->form_validation->set_rules('first_name','First Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
       $this->form_validation->set_rules('last_name','Last Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
-      $this->form_validation->set_rules('email','Email',"trim|strtolower|required|callback_check_email|callback_is_employee_email_unique[employee_id]",array('check_email'=>"{field} is of Invalid Format!",'is_employee_email_unique'=>'{field} Has Already Been Registered!'));
+      $this->form_validation->set_rules('email','Email',"trim|strtolower|required|callback_check_email|callback_is_email_unique[employee_id]",array('check_email'=>"{field} is of Invalid Format!",'is_email_unique'=>'{field} Has Already Been Registered!'));
       $this->form_validation->set_rules('department_id','Department',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>"{field} Contains Invalid Characters."));
       $this->form_validation->set_rules('employee_id','Employee ID',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>"{field} Contains Invalid Characters."));
       return $this->form_validation->run($this);
@@ -99,10 +119,55 @@ class Form_validator extends CI_Model {
         return $this->form_validation->run($this);
     }
 
-    public function is_employee_email_unique($str,$field){
+    private function run_change_email_rules(){
+      $this->form_validation->set_rules('email','Email','trim|strtolower|required|callback_check_email|callback_is_email_unique[user_id]',array('check_email'=>"{field} is of Invalid Format!",'is_email_unique'=>'{field} Has Already Been Registered!'));
+      $this->form_validation->set_rules('password','Password','trim|required|min_length[8]');
+      $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      return $this->form_validation->run($this);
+    }
+
+    private function run_change_password_rules(){
+      $this->form_validation->set_rules('password','Password','trim|required|min_length[8]');
+      return $this->run_password_reset_rules();
+    }
+
+    public function run_add_product_rules(){
+      $this->form_validation->set_rules('product','Product Name',"trim|strtolower|required|regex_match[/^[a-z0-9 \'-]+$/i]|is_unique[products.product]",array('regex_match'=>"{field} Contains Invalid Characters.",'is_unique'=>"{field} Has Already Been Used."));
+      $this->form_validation->set_rules('category','Category',"trim|required|regex_match[/^[0-9]+$/i]",array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('cost','Cost Per Unit',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>"{field} Contains Invalid Characters."));
+       return $this->form_validation->run($this);
+    }
+
+    public function run_update_product_rules(){
+      $this->form_validation->set_rules('product','Product Name',"trim|strtolower|required|regex_match[/^[a-z0-9 \'-]+$/i]|callback_is_product_unique[product_id]",array('regex_match'=>"{field} Contains Invalid Characters.",'is_product_unique'=>"{field} Has Already Been Used."));
+      $this->form_validation->set_rules('category','Category',"trim|required|regex_match[/^[0-9]+$/i]",array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('cost','Cost Per Unit',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('product_id',"Product ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       return $this->form_validation->run($this);
+    }
+
+    public function run_reactivate_deactivate_product_rules(){
+       $this->form_validation->set_rules('product_id',"Product ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       return $this->form_validation->run($this);
+    }
+
+    public function is_email_unique($str,$field){
       $id = $this->input->post($field);
       if($id === null) return false;
-      return ($this->db->limit(1)->join('employees','employees.user_id = tbl_users.user_id')->get_where('tbl_users', array('tbl_users.email' => $str, "employees.".$field." !=" => $id))->num_rows() === 0);
+      return ($this->db->limit(1)->get_where('user_details', array('email' => $str, $field." != " => $id))->num_rows() === 0);
+    }
+
+    public function is_company_unique($str,$field){
+      $id = $this->input->post($field);
+      if($id === null) return false;
+      return ($this->db->limit(1)->get_where('user_details', array('company' => $str, $field." != " => $id))->num_rows() === 0);
+    }
+
+    public function is_product_unique($str,$field){
+      $id = $this->input->post($field);
+      if($id === null) return false;
+      return ($this->db->limit(1)->get_where('product_details', array('product' => $str, $field." != " => $id))->num_rows() === 0);
     }
 
     //This function checks email to validate that it is a valid email by format not by existence. It is a callback function.

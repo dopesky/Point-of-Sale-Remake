@@ -23,4 +23,5 @@
 	<string name="API_KEY">oE7uXOM0R60Be0OdWZ6ncITdQaNZ5uR9EmlcUEtokBzKvEWy8ZvfzV3RpCwI</string>
 	<string name="custom_toast_text"> Unable to Instantiate toast.</string>
 	<string name="signing_up">Signing Up . . .</string>
+	<string name="resetting">Resetting . . .</string>
 </resources>
