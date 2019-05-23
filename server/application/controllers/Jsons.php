@@ -106,7 +106,7 @@ class Jsons extends CI_Controller {
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>Invalid Owner User ID Provided. User Does Not Exist. Contact Admin!</span>'));
 			return 403;
 		}
-		$products = $this->owners_model->get_owner_products($owner_id, ($owner_details->show_inactive == 0), ($owner_details->show_deleted == 0));
+		$products = $this->owners_model->get_owner_products($user_id, ($owner_details->show_inactive == 0), ($owner_details->show_deleted == 0));
 		if($products){
 			$this->common->set_headers(202);
 			echo json_encode(array('status'=>202,'response'=>$products));
