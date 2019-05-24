@@ -34,7 +34,7 @@ class Auth extends CI_Controller {
 		}
 		$login_credentials = $this->users_model->get_user_by_email($this->input->post('email'));
 		if($login_credentials){
-			if(password_verify($this->input->post('password'), $login_credentials->password) && $login_credentials->suspended == 0){
+			if(password_verify($this->input->post('password'), $login_credentials->password) && !strpos(strtolower($login_credentials->status), 'account suspended') && !strpos(strtolower($login_credentials->status), 'awaiting verification')){
 				$this->users_model->update_user_details($login_credentials->user_id,array('token_expire'=>0,'last_access_time'=>$this->time->get_now()));
 				$role = (!$login_credentials->id_owner && !$login_credentials->employee_id) || $login_credentials->company ? 'owner':'employee';
 				$fname = ($login_credentials->first_name) ? $login_credentials->first_name : $login_credentials->owner_fname;

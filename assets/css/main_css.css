@@ -70,8 +70,14 @@ input::-ms-reveal{
 	width: 100px;
 }
 
-input:focus,button:focus,select:focus{
+input:focus, button:focus, select:focus, .custom-file-input:focus, .custom-switch input{
 	box-shadow: 0 0 0 0.03rem rgba(0,123,255) !important;
+	outline: none !important;
+}
+
+.custom-file-label{
+	white-space: nowrap;
+	overflow-x: hidden;
 }
 
 .box-shadow{
@@ -176,7 +182,7 @@ main{
 	padding-top: 0px !important;
 }
 
-a,select,.link{
+a,select,.link,input[type=file],.custom-switch label{
 	cursor: pointer !important;
 }
 

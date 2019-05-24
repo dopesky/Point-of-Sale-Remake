@@ -41,7 +41,7 @@
 					<div class="font-sm mb-3"><i class="fas fa-info-circle"></i> We have realized that you never copied the QR Code from us to your phone. Here is the QR Code and its image. Open Google Authenticator and add us to enable Google 2FA.</div>
 					<div class="row">
 						<div class="col-12">
-							<div class="d-flex flex-wrap justify-content-center">
+							<div class="d-flex flex-wrap justify-content-center mb-3">
 								<img ng-src="{{qrCodeUrl}}">
 							</div>
 							<div class="d-flex flex-wrap justify-content-center">
