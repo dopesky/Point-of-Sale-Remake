@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.Resources.Common;
@@ -18,10 +21,13 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 	private boolean isLoggingIn = false;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 	}
 
 	public void launchSignUp(View view) {
@@ -42,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 		String password = ((EditText)findViewById(R.id.password_edit_text)).getText().toString();
 		String errors = this.validateInput(email,password);
 		if(!errors.isEmpty()){
+			final  Animation shakeAnimation = AnimationUtils.loadAnimation(this,R.anim.shake);
+       view.startAnimation(shakeAnimation);
 			CustomToast.showToast(MainActivity.this, " " + errors, "danger");
 			return;
 		}
@@ -54,13 +62,18 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private String validateInput(String email, String password){
+
 		if(email.isEmpty() || password.isEmpty()){
+
 			return "Ensure You Fill All Fields";
+
 		}
 		if(!Common.checkEmail(email)){
+
 			return "Email is of Invalid Format";
 		}
 		if(password.length() < 8){
+
 			return "Password is too Short";
 		}
 		return "";

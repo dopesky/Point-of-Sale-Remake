@@ -8,6 +8,10 @@
 		<item name="colorAccent">@color/colorAccent</item>
 		<item name="android:windowAnimationStyle">@style/SlideTransitionAnimation</item>
 	</style>
+	<style name="HiddenTitleTheme" parent="AppTheme">
+		<item name="windowNoTitle">true</item>
+		<item name="windowActionBar">false</item>
+	</style>
 	<style name="SlideTransitionAnimation" parent="@android:style/Animation.Activity">
 		<item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
 		<item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
