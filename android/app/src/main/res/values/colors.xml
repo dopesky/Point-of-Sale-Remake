@@ -10,4 +10,6 @@
 	<color name="colorWarning">#FFC107</color>
 	<color name="colorDanger">#dc3545</color>
 	<color name="colorSuccess">#28a745</color>
+	<color name= "lightdanger">#a4c639</color>
+	
 </resources>

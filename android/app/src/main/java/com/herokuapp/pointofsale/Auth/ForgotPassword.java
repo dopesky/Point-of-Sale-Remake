@@ -3,6 +3,8 @@ package com.herokuapp.pointofsale.Auth;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -34,6 +36,8 @@ public class ForgotPassword extends AppCompatActivity {
 		String email = ((EditText)findViewById(R.id.email_edit_text)).getText().toString().trim();
 		String errors = this.validateInput(email);
 		if(!errors.isEmpty()){
+			final Animation shakeAnimation = AnimationUtils.loadAnimation(this,R.anim.shake);
+			view.startAnimation(shakeAnimation);
 			CustomToast.showToast(this, " " + errors, "danger");
 			return;
 		}
