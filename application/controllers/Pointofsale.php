@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class PointOfSale extends CI_Controller {
+class Pointofsale extends CI_Controller {
 	private $template = "templates/main/template";
 	private $print_table_template = "templates/print/table-template";
 	private $navbars = array('','','','','navbars/owner_navbar');
