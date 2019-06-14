@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.Owner.OwnerDashboard;
@@ -22,8 +25,12 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 	private boolean isLoggingIn = false;
+<<<<<<< HEAD
 	private boolean showUIElements;
 	private SharedPreferences sessionData;
+=======
+
+>>>>>>> ee043b3c4c1a221f37f937c5359a6379166b1341
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 		showUIElements = true;
 		setContentView(R.layout.activity_main);
 
+<<<<<<< HEAD
 		sessionData = getSharedPreferences(Common.USERDATA, Context.MODE_PRIVATE);
 		if(!sessionData.getAll().isEmpty()){
 			if(sessionData.contains("message")){
@@ -79,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
 			editSessionData.remove("message");
 			editSessionData.apply();
 		}
+=======
+>>>>>>> ee043b3c4c1a221f37f937c5359a6379166b1341
 	}
 
 	public void launchSignUp(View view) {
@@ -103,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
 		String password = ((EditText)findViewById(R.id.password_edit_text)).getText().toString();
 		String errors = this.validateInput(email,password);
 		if(!errors.isEmpty()){
+			final  Animation shakeAnimation = AnimationUtils.loadAnimation(this,R.anim.shake);
+       view.startAnimation(shakeAnimation);
 			CustomToast.showToast(MainActivity.this, " " + errors, "danger");
 			return;
 		}
@@ -115,13 +127,18 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private String validateInput(String email, String password){
+
 		if(email.isEmpty() || password.isEmpty()){
+
 			return "Ensure You Fill All Fields";
+
 		}
 		if(!Common.checkEmail(email)){
+
 			return "Email is of Invalid Format";
 		}
 		if(password.length() < 8){
+
 			return "Password is too Short";
 		}
 		return "";

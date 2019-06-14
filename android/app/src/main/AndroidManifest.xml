@@ -10,11 +10,19 @@
 		android:label="@string/app_name"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
+<<<<<<< HEAD
 		android:theme="@style/AppTheme">
 		<activity android:name=".Owner.OwnerDashboard"></activity>
 		<activity
 			android:name=".Auth.ForgotPassword"
 			android:parentActivityName=".Auth.MainActivity" />
+=======
+
+		android:theme="@style/HiddenTitleTheme"
+		>
+		<activity android:name=".Auth.ForgotPassword"
+			android:parentActivityName=".Auth.MainActivity"></activity>
+>>>>>>> ee043b3c4c1a221f37f937c5359a6379166b1341
 		<activity
 			android:name=".Auth.SignUp"
 			android:parentActivityName=".Auth.MainActivity" />
