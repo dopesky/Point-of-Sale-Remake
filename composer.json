@@ -1,6 +1,7 @@
 {
 	"require": {
 		"php": "^7.1.0",
+		"ext-intl": "*",
 		"owasp/csrf-protector-php": "dev-master",
 		"vlucas/phpdotenv": "3.*",
 		"phpmailer/phpmailer": "~6",
