@@ -1,12 +1,16 @@
 package com.herokuapp.pointofsale.Auth;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.internal.LinkedTreeMap;
+import com.herokuapp.pointofsale.Owner.OwnerDashboard;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.Resources.Common;
 import com.herokuapp.pointofsale.Resources.CustomToast;
@@ -18,22 +22,79 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 	private boolean isLoggingIn = false;
+	private boolean showUIElements;
+	private SharedPreferences sessionData;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		showUIElements = true;
 		setContentView(R.layout.activity_main);
+
+		sessionData = getSharedPreferences(Common.USERDATA, Context.MODE_PRIVATE);
+		if(!sessionData.getAll().isEmpty()){
+			if(sessionData.contains("message")){
+				SharedPreferences.Editor editSessionData = sessionData.edit();
+				editSessionData.remove("message");
+				editSessionData.apply();
+			}
+			this.launchLoggedInActivity();
+		}
+	}
+
+	@Override
+	protected void onPause(){
+		super.onPause();
+		showUIElements = false;
+	}
+
+	@Override
+	protected void onStop(){
+		super.onStop();
+		showUIElements = false;
+	}
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+		showUIElements = true;
+		this.showUIElements();
+	}
+
+	@Override
+	protected void onRestart(){
+		super.onRestart();
+		showUIElements = true;
+		this.showUIElements();
+	}
+
+	private void showUIElements(){
+		SharedPreferences.Editor editSessionData = this.sessionData.edit();
+		if(this.sessionData.contains("message") && this.sessionData.getInt("message", 0) == 202){
+			editSessionData.remove("message");
+			editSessionData.apply();
+			this.launchLoggedInActivity();
+		}else if(this.sessionData.contains("message")){
+			CustomToast.showToast(this, " " + this.sessionData.getString("message", "Hello User"), "danger");
+			editSessionData.remove("message");
+			editSessionData.apply();
+		}
 	}
 
 	public void launchSignUp(View view) {
-		if(this.isLoggingIn) return;
 		Intent intent = new Intent(this, SignUp.class);
 		startActivity(intent);
 	}
 
 	public void launchForgotPassword(View view) {
-		if(this.isLoggingIn) return;
 		Intent intent = new Intent(this, ForgotPassword.class);
 		startActivity(intent);
+	}
+
+	public void launchLoggedInActivity(){
+		Intent intent = new Intent(this, OwnerDashboard.class);
+		this.startActivity(intent);
+		this.finish();
 	}
 
 	public void loginLogic(View view) {
@@ -71,17 +132,42 @@ public class MainActivity extends AppCompatActivity {
 		return new Login(context.getString(R.string.API_KEY)){
 			@Override
 			protected void onPostExecute(Object response){
+				String message = null;
 				try {
 					HashMap map = (HashMap) response;
 					if ((double) map.get("status") == (double) 202 || (double) map.get("status") == (double) 200) {
-						CustomToast.showToast(context, " Login Successful!", "success");
+						LinkedTreeMap data = (LinkedTreeMap) map.get("response");
+						SharedPreferences.Editor editSessionData = context.sessionData.edit();
+						if (data != null) {
+							for (Object temp : data.keySet()) {
+								editSessionData.putString(temp.toString(), Objects.requireNonNull(data.get(temp)).toString());
+							}
+						}
+						if(context.showUIElements) {
+							editSessionData.apply();
+							context.launchLoggedInActivity();
+						}else{
+							editSessionData.putInt("message",202);
+							editSessionData.apply();
+						}
 					} else {
-						CustomToast.showToast(context, " " + Common.parseHtml(Objects.requireNonNull(map.get("errors"))), "danger");
+						message = Common.parseHtml(Objects.requireNonNull(map.get("errors")));
 					}
-				} catch (ClassCastException cce) {
-					IOException ioe = (IOException) response;
-					CustomToast.showToast(context, " " + ioe.getMessage(), "danger");
+				}catch (ClassCastException cce1) {
+					try{
+						IOException ioe = (IOException) response;
+						message = ioe.getMessage();
+					}catch (Exception cce2) {
+						message = "An Unnexpected Error Occurred. Contact Admin!";
+					}
 				}finally {
+					if(context.showUIElements && message != null){
+						CustomToast.showToast(context, " " + message, "danger");
+					}else if(message != null){
+						SharedPreferences.Editor editSessionData = context.sessionData.edit();
+						editSessionData.putString("message", message);
+						editSessionData.apply();
+					}
 					button.setAlpha((float) 1.0);
 					button.setText(R.string.main_activity_header);
 					context.isLoggingIn = false;

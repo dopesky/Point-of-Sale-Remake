@@ -9,11 +9,18 @@ import android.widget.EditText;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.Resources.Common;
 import com.herokuapp.pointofsale.Resources.CustomToast;
-import com.herokuapp.pointofsale.api.Authentication.Registration;
+import com.herokuapp.pointofsale.api.Common.Annotations;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
+
+import okhttp3.internal.annotations.EverythingIsNonNull;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.herokuapp.pointofsale.api.Common.Common.*;
 
 public class SignUp extends AppCompatActivity {
 	private boolean isSigningUp = false;
@@ -25,7 +32,6 @@ public class SignUp extends AppCompatActivity {
 	}
 
 	public void launchMainActivity(View view) {
-		if(this.isSigningUp) return;
 		finish();
 	}
 
@@ -41,34 +47,44 @@ public class SignUp extends AppCompatActivity {
 		Button button = (Button) view;
 		button.setAlpha((float)0.6);
 		button.setText(getString(R.string.signing_up));
-		Registration registration = SignUp.registerUser(this, view);
-		registration.execute("register", "admin", email);
-	}
 
-	private static Registration registerUser(SignUp context, View view) {
-		Button button = (Button) view;
-		return new Registration(context.getString(R.string.API_KEY)){
+		Annotations service = getRetrofitInstance().create(Annotations.class);
+		Call<HashMap> request = service.registerUser("admin", email);
+
+		request.enqueue(new Callback<HashMap>() {
+			@EverythingIsNonNull
 			@Override
-			protected void onPostExecute(Object response){
-				try {
-					HashMap map = (HashMap) response;
-					if ((double) map.get("status") == (double) 202) {
-						CustomToast.showToast(context, " Sign up Successful! Please Check Your Email!", "success");
-						context.isSigningUp = false;
-						context.launchMainActivity(view);
-					} else {
-						CustomToast.showToast(context, " " + Common.parseHtml(Objects.requireNonNull(map.get("errors"))), "danger");
-					}
-				} catch (ClassCastException cce) {
-					IOException ioe = (IOException) response;
-					CustomToast.showToast(context, " " + ioe.getMessage(), "danger");
-				}finally {
-					button.setAlpha((float) 1.0);
-					button.setText(R.string.create_account);
-					context.isSigningUp = false;
+			public void onResponse(Call<HashMap> call, Response<HashMap> response) {
+				HashMap map = (response.isSuccessful()) ? response.body() : getErrorObject(response);
+				assert map != null;
+
+				if ( Double.parseDouble(Objects.requireNonNull(map.get("status")).toString()) == (double)202 ) {
+					CustomToast.showToast(SignUp.this, " Sign up Successful! Please Check Your Email!", "success");
+					SignUp.this.isSigningUp = false;
+					SignUp.this.launchMainActivity(view);
+				} else {
+					CustomToast.showToast(SignUp.this, " " + Common.parseHtml(Objects.requireNonNull(map.get("errors")).toString()), "danger");
 				}
+
+				button.setAlpha((float) 1.0);
+				button.setText(R.string.create_account);
+				SignUp.this.isSigningUp = false;
 			}
-		};
+
+			@EverythingIsNonNull
+			@Override
+			public void onFailure(Call<HashMap> call, Throwable t) {
+				if(t instanceof IOException){
+					CustomToast.showToast(SignUp.this, " " + t.getMessage(), "danger");
+				}else{
+					CustomToast.showToast(SignUp.this, " An Unnexpected Error Occurred. Contact Admin!", "danger");
+				}
+
+				button.setAlpha((float) 1.0);
+				button.setText(R.string.create_account);
+				SignUp.this.isSigningUp = false;
+			}
+		});
 	}
 
 	private String validateInput(String email){

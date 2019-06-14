@@ -49,6 +49,14 @@ class Form_validator extends CI_Model {
           return $this->run_update_product_rules();
         case 'remove_readd_product':
           return $this->run_reactivate_deactivate_product_rules();
+        case 'edit_purchase':
+          return $this->run_edit_purchase_rules();
+        case 'remove_readd_purchase':
+          return $this->run_remove_readd_purchase_rules();
+        case 'edit_sale':
+          return $this->run_edit_sale_rules();
+        case 'remove_readd_sale':
+          return $this->run_remove_readd_sale_rules();
       }
   	}
 
@@ -131,25 +139,82 @@ class Form_validator extends CI_Model {
       return $this->run_password_reset_rules();
     }
 
-    public function run_add_product_rules(){
-      $this->form_validation->set_rules('product','Product Name',"trim|strtolower|required|regex_match[/^[a-z0-9 \'-]+$/i]|is_unique[products.product]",array('regex_match'=>"{field} Contains Invalid Characters.",'is_unique'=>"{field} Has Already Been Used."));
+    private function run_add_product_rules(){
+      $this->form_validation->set_rules('product','Product Name',"trim|strtolower|required|regex_match[/^[a-z0-9 \'-]+$/i]|callback_is_product_unique[user_id]",array('regex_match'=>"{field} Contains Invalid Characters.",'is_product_unique'=>"{field} Has Already Been Used."));
       $this->form_validation->set_rules('category','Category',"trim|required|regex_match[/^[0-9]+$/i]",array('regex_match'=>"{field} Contains Invalid Characters."));
       $this->form_validation->set_rules('cost','Cost Per Unit',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
        return $this->form_validation->run($this);
     }
 
-    public function run_update_product_rules(){
-      $this->form_validation->set_rules('product','Product Name',"trim|strtolower|required|regex_match[/^[a-z0-9 \'-]+$/i]|callback_is_product_unique[product_id]",array('regex_match'=>"{field} Contains Invalid Characters.",'is_product_unique'=>"{field} Has Already Been Used."));
+    private function run_update_product_rules(){
+      $this->form_validation->set_rules('product','Product Name',"trim|strtolower|required|regex_match[/^[a-z0-9 \'-]+$/i]|callback_is_product_unique_update[product_id/user_id]",array('regex_match'=>"{field} Contains Invalid Characters.",'is_product_unique_update'=>"{field} Has Already Been Used."));
       $this->form_validation->set_rules('category','Category',"trim|required|regex_match[/^[0-9]+$/i]",array('regex_match'=>"{field} Contains Invalid Characters."));
       $this->form_validation->set_rules('cost','Cost Per Unit',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>"{field} Contains Invalid Characters."));
       $this->form_validation->set_rules('product_id',"Product ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
        return $this->form_validation->run($this);
     }
 
-    public function run_reactivate_deactivate_product_rules(){
+    private function run_reactivate_deactivate_product_rules(){
        $this->form_validation->set_rules('product_id',"Product ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
        $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
        return $this->form_validation->run($this);
+    }
+
+    public function run_add_purchase_rules($data){
+      $this->form_validation->set_data($data);
+      $this->form_validation->set_rules('product_id',"Product ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('quantity',"Quantity",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('total_cost',"Total Cost",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('discount',"Discount",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('method_id',"Payment Method",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       return $this->form_validation->run($this);
+    }
+
+     private function run_edit_purchase_rules(){
+      $this->form_validation->set_rules('purchase_id',"Purchase ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('product_id',"Product ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       $this->form_validation->set_rules('quantity',"Quantity",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       $this->form_validation->set_rules('total_cost',"Total Cost",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+        $this->form_validation->set_rules('discount',"Discount",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+        $this->form_validation->set_rules('method_id',"Payment Method",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       return $this->form_validation->run($this);
+    }
+
+    private function run_remove_readd_purchase_rules(){
+      $this->form_validation->set_rules('purchase_id',"Purchase ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      return $this->form_validation->run($this);
+    }
+
+    public function run_add_sale_rules($data){
+      $this->form_validation->set_data($data);
+      $this->form_validation->set_rules('product_id',"Product ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('quantity',"Quantity",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('discount',"Discount",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('method_id',"Payment Method",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       return $this->form_validation->run($this);
+    }
+
+     private function run_edit_sale_rules(){
+      $this->form_validation->set_rules('sale_id',"Sale ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('product_id',"Product ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       $this->form_validation->set_rules('quantity',"Quantity",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       $this->form_validation->set_rules('cost_per_item',"Total Cost",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+        $this->form_validation->set_rules('discount',"Discount",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+        $this->form_validation->set_rules('method_id',"Payment Method",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+       return $this->form_validation->run($this);
+    }
+
+    private function run_remove_readd_sale_rules(){
+      $this->form_validation->set_rules('sale_id',"Sale ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      return $this->form_validation->run($this);
     }
 
     public function is_email_unique($str,$field){
@@ -167,7 +232,18 @@ class Form_validator extends CI_Model {
     public function is_product_unique($str,$field){
       $id = $this->input->post($field);
       if($id === null) return false;
-      return ($this->db->limit(1)->get_where('product_details', array('product' => $str, $field." != " => $id))->num_rows() === 0);
+      return ($this->db->limit(1)->get_where('product_details', array('product' => $str, $field => $id))->num_rows() === 0);
+    }
+
+    public function is_product_unique_update($str,$field){
+      if(!strpos($field, '/') || sizeof(explode('/', $field)) !== 2) return false;
+      $split = explode('/', $field);
+      $field1 = $split[0];
+      $field2 = $split[1];
+      $id = $this->input->post($field1);
+      $user_id = $this->input->post($field2);
+      if($id === null) return false;
+      return ($this->db->limit(1)->get_where('product_details', array('product' => $str, $field2 => $user_id, $field1." != " => $id))->num_rows() === 0);
     }
 
     //This function checks email to validate that it is a valid email by format not by existence. It is a callback function.

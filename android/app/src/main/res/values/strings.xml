@@ -24,4 +24,5 @@
 	<string name="custom_toast_text"> Unable to Instantiate toast.</string>
 	<string name="signing_up">Signing Up . . .</string>
 	<string name="resetting">Resetting . . .</string>
+	<string name="employee_image_description">Image of the Employee</string>
 </resources>

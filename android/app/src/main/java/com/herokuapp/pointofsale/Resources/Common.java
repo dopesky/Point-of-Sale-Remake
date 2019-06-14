@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Common {
+	public static final String USERDATA = "userdata" ;
+
 	public static boolean checkEmail(String email){
 		int findAt = email.indexOf("@");
 		int findDot = email.lastIndexOf(".");
@@ -24,5 +26,14 @@ public class Common {
 		}
 		trimmed = builder.substring(0, builder.length()-"<br>".length());
 		return HtmlCompat.fromHtml(trimmed, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
+	}
+
+	public static String capitalize(String lowercase){
+		StringBuilder builder = new StringBuilder();
+		String[] split = lowercase.toLowerCase().split(" ");
+		for(String temp:split){
+			builder.append(String.valueOf(temp.charAt(0)).toUpperCase()).append(temp.substring(1)).append(" ");
+		}
+		return builder.substring(0, builder.length() - 1);
 	}
 }

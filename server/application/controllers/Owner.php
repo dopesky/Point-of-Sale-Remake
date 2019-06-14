@@ -7,6 +7,11 @@ class Owner extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
+		if(!isset($_SERVER['HTTP_APIKEY'])){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>No API Key Provided. Please provide API Key!</span>'));
+			exit;
+		}
 		$this->load->library('email');
 		$this->api_key = $this->apikeys_model->get_api_key($_SERVER['HTTP_APIKEY']);
 		if(!$this->api_key){
@@ -177,7 +182,7 @@ class Owner extends CI_Controller {
 		return 500;
 	}
 
-	public function add_product($owner_user_id){
+	public function add_product(){
 		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
 			$this->common->set_headers(403);
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
@@ -193,6 +198,7 @@ class Owner extends CI_Controller {
 			echo json_encode(array('status'=>400,'errors'=>validation_errors('<br><br><span>','</span>')));
 			return 400;
 		}
+		$owner_user_id = $this->input->post('user_id');
 		$owner_details = $this->users_model->get_user_by_id($owner_user_id);
 		if(!$owner_details || !$owner_details->id_owner || ($owner_details->suspended == 1 && $owner_details->password) || $owner_details->owner_active == 0){
 			$this->common->set_headers(400);
@@ -215,7 +221,7 @@ class Owner extends CI_Controller {
 		return 202;
 	}
 
-	public function update_product_details($owner_user_id){
+	public function update_product_details(){
 		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
 			$this->common->set_headers(403);
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
@@ -231,6 +237,8 @@ class Owner extends CI_Controller {
 			echo json_encode(array('status'=>400,'errors'=>validation_errors('<br><br><span>','</span>')));
 			return 400;
 		}
+
+		$owner_user_id = $this->input->post('user_id');
 
 		$owner_id = $this->users_model->get_user_by_id($owner_user_id);
 
@@ -253,7 +261,7 @@ class Owner extends CI_Controller {
 			return 500;
 		}
 		$this->common->set_headers(202);
-		echo json_encode(array('status'=>202,'response'=>'<br><br><span>Employee Details Successfully Updated!</span>'));
+		echo json_encode(array('status'=>202,'response'=>'<br><br><span>Product Details Successfully Updated!</span>'));
 		return 202;
 	}
 

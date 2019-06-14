@@ -102,8 +102,8 @@ class Owners{
 	}
 
 	public function register_product($user_id, $product, $category, $cost, $return_headers = false){
-		$data = http_build_query(array('product'=>$product,'category'=>$category,'cost'=>$cost));
-		$curl = curl_init(SERVER_URL."/owner/add_product/$user_id");
+		$data = http_build_query(array('product'=>$product,'category'=>$category,'cost'=>$cost,'user_id'=>$user_id));
+		$curl = curl_init(SERVER_URL."/owner/add_product");
 		curl_setopt($curl, CURLOPT_POST, 1);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 		set_options($curl,$this->API_KEY,'application/x-www-form-urlencoded');
@@ -114,8 +114,8 @@ class Owners{
 	}
 
 	public function update_product_details($user_id, $product, $category, $cost, $product_id, $return_headers = false){
-		$data = http_build_query(array('product'=>$product,'category'=>$category,'cost'=>$cost,'product_id'=>$product_id));
-		$curl = curl_init(SERVER_URL."/owner/update_product_details/$user_id");
+		$data = http_build_query(array('product'=>$product,'category'=>$category,'cost'=>$cost,'product_id'=>$product_id,'user_id'=>$user_id));
+		$curl = curl_init(SERVER_URL."/owner/update_product_details");
 		curl_setopt($curl, CURLOPT_POST, 1);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 		set_options($curl,$this->API_KEY,'application/x-www-form-urlencoded');

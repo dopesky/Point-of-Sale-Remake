@@ -216,7 +216,7 @@ function change_helper_texts(span,text,color){
 function capitalize(word){
 	var array = word.split(' ')
 	array.forEach((element,index)=>{
-		array[index] = array[index].charAt(0).toUpperCase() + array[index].slice(1)
+		array[index] = array[index].charAt(0).toUpperCase() + array[index].slice(1).toLowerCase()
 	})
 	return array.join(' ')
 }
@@ -234,6 +234,31 @@ function viewPassword(span,input){
 	return false
 }
 
+function getLocationDetails(){
+	return $.ajax('http://ip-api.com/json')
+}
+
+function formatNumberCurrency(number, currencyFormat){
+	try{
+		return new Intl.NumberFormat(navigator.language, { style: 'currency', currency: currencyFormat}).format(number)
+	}catch(ex){
+		return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'}).format(number)
+	}
+}
+
+function randomizeColor(){
+	var randoms = $('.bg-random')
+	for (var i = 0; i < randoms.length; i++) {
+		$(randoms[i]).css({backgroundColor: randomColorArray[Math.floor(Math.random() * 10)]})
+	}
+}
+
+function bounce(target){
+	anime({targets: target,scale: {value: 0.7,duration: 50}}).finished.then(()=>{
+		anime({targets: target,scale: {value: 1, duration: 700}})
+	})
+}
+
 
 $(()=>{
 	var forms = $('form')
@@ -241,6 +266,172 @@ $(()=>{
 		if($(forms[i]).hasClass('fade')) $(forms[i]).hide().removeClass('fade').fadeIn(850)
 	}
 	reset_helper_texts()
-	$('input')[0].focus()
+	randomizeColor()
+	$('.bg-random-persistent').css({backgroundColor: bgRandom})
+	let inputs = $('input').not('.gn-search').not('[readonly]')
+	if(inputs.length > 0){
+		inputs[0].focus()
+	}
+	$('.modal').on('shown.bs.modal', event => {
+		let modal = $(event.currentTarget).find('input').not('[readonly]')
+		if(modal.length > 0){
+			modal[0].focus()
+		}
+	})
 })
-angular.module('main', ['datatables'])
+angular.module('main', ['datatables']).directive('viewProducts', ['productData', '$timeout', (productData, $timeout) => {
+	return {
+		restrict: 'E',
+		scope: {
+			productsURL: '@url',
+			transactionType: '@type'
+		},
+		link: function (scope, element, attrs) {
+			scope.allProducts = []
+			scope.products = []
+			scope.fetchingProducts = true
+			scope.noProducts = true
+			scope.searchProducts = ''
+			scope.isSale = (scope.transactionType.localeCompare('sale') === 0)
+			scope.isPurchase = (scope.transactionType.localeCompare('purchase') === 0)
+			scope.formatCurrency = scope.$parent.formatCurrency
+
+           	scope.fetchProducts = async function(){
+           		let products = await productData.fetchValidProducts(scope.productsURL)
+           		scope.allProducts = products
+           		scope.noProducts = (scope.allProducts.length < 1)
+           		scope.fetchingProducts = false
+           		scope.$apply()
+           	}
+	        $timeout(() =>{
+				scope.fetchProducts()
+			}, 1000)
+           	scope.roundOff = function($var, $dp){
+           		try{
+           			return parseFloat($var).toFixed($dp)
+           		}catch(err){
+           			return parseFloat(0).toFixed($dp)
+           		}
+           	}
+           	scope.preAddToCart = function(product){
+           		scope.$parent.inputFields.item1 = product
+           		scope.$parent.inputFields.item2 = ''
+           		scope.$parent.inputFields.item3 = ''
+           		scope.$parent.inputFields.item4 = ''
+           		scope.$parent.updateCart = false
+           	}
+           	scope.addSalesToCart = function(product){
+           		let found = false
+           		for (var i = 0; i < scope.$parent.cartItems.length; i++) {
+           			if(scope.$parent.cartItems[i].item1.product_id.localeCompare(product.product_id) === 0){
+           				scope.$parent.cartItems[i].item2 = String(parseInt(scope.$parent.cartItems[i].item2) + 1)
+           				scope.$parent.cartItems[i].item3 = String(parseInt(scope.$parent.cartItems[i].item2) * parseInt(product.cost_per_unit))
+           				bounce('#cart-items')
+           				found = true
+           				break;
+           			}
+           		}
+           		if(!found){
+           			let cost = product.cost_per_unit
+	           		scope.$parent.cartItems.push({item1: product, item2: '1', item3: cost, item4: '0'})
+           		}
+           		scope.$parent.inputFields.item1 = {}
+           		scope.$parent.inputFields.item2 = ''
+           		scope.$parent.inputFields.item3 = ''
+           		scope.$parent.inputFields.item4 = ''
+           		bounce('#cart-items')
+           		return
+           	}
+           	scope.$watchGroup(['allProducts', 'searchProducts'], () => {
+           		scope.products = scope.allProducts.filter((item) => {
+       				item.product = capitalize(item.product)
+           			item.category_name = capitalize(item.category_name)
+           			return !scope.searchProducts || scope.searchProducts.length < 1 || 
+           			item.product.toLowerCase().indexOf(scope.searchProducts.toLowerCase()) !== -1 || 
+           			scope.searchProducts.toLowerCase().indexOf(item.product.toLowerCase()) !== -1 || 
+           			item.category_name.toLowerCase().indexOf(scope.searchProducts.toLowerCase()) !== -1 || 
+           			scope.searchProducts.toLowerCase().indexOf(item.category_name.toLowerCase()) !== -1
+           		})
+           		scope.noProducts = (scope.products.length < 1 && !scope.fetchingProducts)
+           		$timeout(()=>{
+           			randomizeColor()
+           		})
+           	})
+           	scope.$watch('$parent.formatCurrency',() => {
+				scope.formatCurrency = scope.$parent.formatCurrency
+			})
+			scope.$watch('$parent.reloadProducts',(newValue) => {
+				if(newValue){
+					$timeout(() =>{
+						scope.fetchProducts()
+					}, 1000)
+					scope.$parent.reloadProducts = false
+				}
+			})
+        },
+		template: viewProductsTemplate
+	}
+}]).directive('viewCart', [() => {
+	return {
+		restrict: 'E',
+		scope: {
+			transactionType: '@type'
+		},
+		link: function (scope, element, attrs) {
+			scope.tableInstance = {}
+
+			scope.products = scope.$parent.cartItems
+			scope.formatCurrency = scope.$parent.formatCurrency
+			scope.inputFields = scope.$parent.inputFields
+			scope.checkoutFields = scope.$parent.checkoutFields
+			scope.isSale = (scope.transactionType.localeCompare('sale') === 0)
+			scope.isPurchase = (scope.transactionType.localeCompare('purchase') === 0)
+
+			scope.preAddToCart = function(product){
+           		scope.inputFields.item1 = product.item1
+           		scope.inputFields.item2 = product.item2
+           		scope.inputFields.item3 = product.item3
+           		scope.inputFields.item4 = product.item4
+           		scope.$parent.updateCart = true
+			}
+			scope.removeFromCart = function($index){
+				scope.products.splice($index,1)
+				bounce('#cart-items')
+			}
+			scope.getTotalCostAfterDiscount = function(){
+				if(scope.products.length<1) return formatNumberCurrency('0', scope.$parent.currencyCode)
+				return formatNumberCurrency(scope.products.map((element)=>element.item3).reduce((total,current)=> total = parseInt(total) + parseInt(current) ), scope.$parent.currencyCode)
+			}
+			scope.getTotalDiscount = function(){
+				if(scope.products.length<1) return formatNumberCurrency('0', scope.$parent.currencyCode)
+				return formatNumberCurrency(scope.products.map((element)=>element.item4).reduce((total,current)=> total = parseInt(total) + parseInt(current) ), scope.$parent.currencyCode)
+			}
+			scope.getTotalCostBeforeDiscount = function(){
+				if(scope.products.length<1) return formatNumberCurrency('0', scope.$parent.currencyCode)
+				return formatNumberCurrency(scope.products.map((element)=> parseInt(element.item4) + parseInt(element.item3) ).reduce((total,current)=> total = parseInt(total) + parseInt(current) ), scope.$parent.currencyCode)
+			}
+			scope.checkout = function(){
+				let totalCost = scope.products.length < 1 ? '0' :  scope.products.map((element)=>element.item3).reduce((total,current)=> total = parseInt(total) + parseInt(current) );
+				scope.checkoutFields.item1 = String(totalCost);
+				if(!scope.isSale && scope.isPurchase)
+					scope.checkoutFields.item2 = String(totalCost);
+			}
+			scope.$watch('$parent.cartItems + $parent.formatCurrency + $parent.inputFields + $parent.checkoutFields',() => {
+				scope.products = scope.$parent.cartItems
+				scope.formatCurrency = scope.$parent.formatCurrency
+				scope.inputFields = scope.$parent.inputFields
+				scope.checkoutFields = scope.$parent.checkoutFields
+			})
+        },
+		template: viewCartTemplate
+	}
+}]).factory('productData', () => {
+	return {
+		fetchValidProducts: function (url){
+			return $.ajax({
+				url: url,
+				dataType: 'json' 
+			})
+		}
+	}
+})

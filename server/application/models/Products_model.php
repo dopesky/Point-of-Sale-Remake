@@ -38,4 +38,17 @@ class Products_model extends CI_Model {
 		$this->db->where(array('product_id'=>$product_id,'user_id'=>$user_id));
 		return $this->db->update('product_details',array('active'=>1));
 	}
+
+	public function get_product_with_inventory_details($product_id, $check_active, $check_suspended){
+      $this->db->where('product_id', $product_id);
+      if($check_active){
+        $this->db->where('active', 1);
+      }
+      if($check_suspended){
+        $this->db->where('suspended', 0);
+      }
+      $this->db->where('owner_suspended', 0);
+      $this->db->where('owner_active', 1);
+      return $this->db->get('inventory_summary')->row();
+    }
 }

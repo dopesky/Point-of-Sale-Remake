@@ -27,4 +27,13 @@ class Common {
 
 	    return $token;
 	}
+
+	public function get_random_color_array(){
+		return array('#2196f3','#009688','#f44336','#4caf50','#e91e63','#9c27b0','#3f51b5','#ff9800','#795548','#ffc107');
+	}
+
+	public function get_random_color(){
+		$colors = $this->get_random_color_array();
+		return $colors[random_int(0, 9)];
+	}
 }

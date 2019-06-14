@@ -7,6 +7,11 @@ class Auth extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
+		if(!isset($_SERVER['HTTP_APIKEY'])){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>No API Key Provided. Please provide API Key!</span>'));
+			exit;
+		}
 		$this->load->library('email');
 		$this->api_key = $this->apikeys_model->get_api_key($_SERVER['HTTP_APIKEY']);
 		if(!$this->api_key){
@@ -40,7 +45,7 @@ class Auth extends CI_Controller {
 				$fname = ($login_credentials->first_name) ? $login_credentials->first_name : $login_credentials->owner_fname;
 				$lname = ($login_credentials->last_name) ? $login_credentials->last_name : $login_credentials->owner_lname;
 				$photo = ($login_credentials->profile_photo) ? $login_credentials->profile_photo : $login_credentials->owner_photo;
-				$userdata = array('user_id'=>$login_credentials->user_id,'email'=>$login_credentials->email,'role'=>$role,'fname'=>$fname,'lname'=>$lname,'photo'=>$photo);
+				$userdata = array('user_id' => $login_credentials->user_id, 'email' => $login_credentials->email, 'role' => $role, 'fname' => $fname, 'lname' => $lname, 'photo' => $photo, 'level' => $login_credentials->level);
 				if($login_credentials->twofactor_auth){
 					$this->common->set_headers(200);
 					echo json_encode(array('status'=>200,'response'=>$userdata));

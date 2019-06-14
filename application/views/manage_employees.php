@@ -2,7 +2,7 @@
 $user_id = $this->session->userdata('userdata')['user_id'];
 ?>
 
-<div class="row" ng-app="main" ng-cloak ng-controller="manageEmployees">
+<div class="row mb-3" ng-app="main" ng-cloak ng-controller="manageEmployees">
 	<main class="w-100 text-center col-12">
 		<h2 class="header-text">Manage Employees <i class="fas fa-users-cog"></i></h2>
 		<div class="mt-4">
@@ -61,7 +61,7 @@ $user_id = $this->session->userdata('userdata')['user_id'];
 										    <select class="form-control" ng-model="inputFields.department" name="department">
 										    	<option value="0" disabled>Department</option>
 										    	<?php foreach($departments as $department){?>
-										    		<option value="<?=$department->department_id?>"><?=ucfirst($department->department)?></option>
+										    		<option value="<?=$department->department_id?>"><?=ucwords($department->department)?></option>
 										    	<?php }?>
 										    </select>
 									    </div>
@@ -126,7 +126,7 @@ $user_id = $this->session->userdata('userdata')['user_id'];
 										    <select class="form-control" ng-model="updateFields.department" name="department">
 										    	<option value="0" disabled>Department</option>
 										    	<?php foreach($departments as $department){?>
-										    		<option value="<?=$department->department_id?>"><?=ucfirst($department->department)?></option>
+										    		<option value="<?=$department->department_id?>"><?=ucwords($department->department)?></option>
 										    	<?php }?>
 										    </select>
 									    </div>

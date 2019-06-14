@@ -7,7 +7,7 @@ import com.herokuapp.pointofsale.api.Common.Common;
 import java.io.IOException;
 import java.util.HashMap;
 
-public abstract class Login extends AsyncTask<String, Void, Object> {
+public class Login extends AsyncTask<String, Void, Object> {
 	private final String apiKey;
 
 	protected Login(String apiKey){

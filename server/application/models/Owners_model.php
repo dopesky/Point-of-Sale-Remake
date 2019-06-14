@@ -16,6 +16,17 @@ class Owners_model extends CI_Model {
 		return $this->db->get('owner')->row();
 	}
 
+	function get_owner_by_id($owner_id, $check_active, $check_suspended){
+		$this->db->where('id_owner', $owner_id);
+		if($check_active){
+			$this->db->where('owner_active', 1);
+		}
+		if($check_suspended){
+			$this->db->where('suspended', 0);
+		}
+		return $this->db->get('user_details')->row();
+	}
+
 	function get_owner_employees($owner_id, $check_active = false, $check_employee_suspended = false){
 		$this->db->select('user_details.*');
 		$this->db->where('user_details.owner_id',$owner_id);

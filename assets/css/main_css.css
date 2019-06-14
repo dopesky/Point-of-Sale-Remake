@@ -70,6 +70,10 @@ input::-ms-reveal{
 	width: 100px;
 }
 
+.height-100{
+	height: 100px;
+}
+
 input:focus, button:focus, select:focus, .custom-file-input:focus, .custom-switch input{
 	box-shadow: 0 0 0 0.03rem rgba(0,123,255) !important;
 	outline: none !important;
@@ -268,4 +272,36 @@ a,select,.link,input[type=file],.custom-switch label{
   	.d-sm-initial{
   		display: initial !important;
   	}
+}
+@media only screen and (min-width: 768px) {
+  	.d-md-initial{
+  		display: initial !important;
+  	}
+}
+.card-deck {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)) !important;
+    grid-gap: .5rem !important;
+    justify-items: center;
+}
+.card{
+	max-width: 270px !important;
+	min-width: 270px !important;
+}
+.limit-tab-content{
+	height: calc(100vh - 11rem) !important;
+	overflow-y: auto;
+}
+.input-max-width{
+	max-width: 300px;
+}
+.flex-seperated *{
+	flex-grow: 1;
+}
+.flex-box-inline-seperator {
+	border-bottom: 1px dashed rgba(0,0,0,.2) !important;
+	margin: 1rem;
+}
+.data-table-input input[aria-controls=DataTables_Table_1]{
+	min-width: 190px;
 }

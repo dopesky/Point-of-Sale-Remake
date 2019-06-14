@@ -7,7 +7,7 @@ class Owner extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
-		if(!$this->session->userdata('userdata') || $this->session->userdata('userdata')['role']!=='owner'){
+		if(!$this->session->userdata('userdata') || (int)$this->session->userdata('userdata')['level'] < 4){
 			redirect(site_url('auth/log_out'),'location');
 		}
 		//csrfProtector::init();
@@ -39,6 +39,7 @@ class Owner extends CI_Controller {
 		$data['content'] = 'manage_products';
 		$data['navbar'] = 'navbars/owner_navbar';
 		$data['categories'] = $this->jsons->get_valid_categories_json(false);
+		$data['user_details'] = $this->jsons->get_user_details($this->session->userdata('userdata')['user_id'], false); 
 		$this->load->view($this->template,$data);
 	}
 
@@ -210,9 +211,21 @@ class Owner extends CI_Controller {
 		}
 	}
 
-	public function download_product_details_spreadsheet(){
+	public function print_product_details($locale = null){
+		$data['locale'] = !$locale ? "en_US" : $locale;
 		$user_id = $this->session->userdata('userdata')['user_id'];
-		$titles = array('Product Name', 'Category', 'Cost Per Unit', 'Last Change');
+		$data['content'] = 'templates/print/manage_products';
+		$data['data'] = $this->jsons->get_products_for_owner($user_id, false);
+		$data['user'] = $this->jsons->get_user_details($user_id,false);
+		$data['details'] = "Product Details";
+		return $this->load->view($this->print_table_template,$data);
+	}
+
+	public function download_product_details_spreadsheet($locale = null){
+		$locale = !$locale ? "en_US" : $locale;
+		$user_id = $this->session->userdata('userdata')['user_id'];
+		$titles = array('Product Name', 'Category', 'Cost', 'Status', 'Last Change');
+		$numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 		$product_details = $this->jsons->get_products_for_owner($user_id, false);
 		$user_details = $this->jsons->get_user_details($user_id, false);
 		$data = array();
@@ -221,7 +234,7 @@ class Owner extends CI_Controller {
 			$data[] = array(
 				'product' => ucwords($detail->product),
 				'category_name' => ucwords($detail->category_name),
-				'cost' => $detail->cost_per_unit,
+				'cost' => $numberFormatter->formatCurrency($detail->cost_per_unit, $user_details->currency_code),
 				'status' => $detail->status,
 				'modified_date' => $this->time->format_date($detail->modified_date, "d M, Y • h:iA")
 			);
@@ -241,6 +254,10 @@ class Owner extends CI_Controller {
 		$update = new Owners(getenv('API_KEY'));
 		$response = $update->update_owner_details($user_id, $fname, $lname, $company, $photo_details);
 		if($response->status === 202){
+			$userdata = $this->session->userdata('userdata');
+			$userdata['fname'] = $fname;
+			$userdata['lname'] = $lname;
+			$this->session->set_userdata('userdata', $userdata);
 			echo json_encode(array('ok'=>true,'response'=>$response->response));
 		}else{
 			echo json_encode(array('ok'=>false,'code'=>$response->status,'errors'=>$response->errors));

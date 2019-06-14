@@ -21,11 +21,11 @@
 	font-weight: normal;
 	font-style: normal;
 	font-family: 'icomoon';
-	src:  url('../../fonts/navbar-fonts/more-icons/icomoon.eot?n2j4ba');
-	src:  url('../../fonts/navbar-fonts/more-icons/icomoon.eot?n2j4ba#iefix') format('embedded-opentype'),
-    	url('../../fonts/navbar-fonts/more-icons/icomoon.ttf?n2j4ba') format('truetype'),
-	    url('../../fonts/navbar-fonts/more-icons/icomoon.woff?n2j4ba') format('woff'),
-	    url('../../fonts/navbar-fonts/more-icons/icomoon.svg?n2j4ba#icomoon') format('svg');
+	src: url('../../fonts/navbar-fonts/more-icons/icomoon.eot?af7ed6');
+  	src: url('../../fonts/navbar-fonts/more-icons/icomoon.eot?af7ed6#iefix') format('embedded-opentype'),
+    	url('../../fonts/navbar-fonts/more-icons/icomoon.ttf?af7ed6') format('truetype'),
+    	url('../../fonts/navbar-fonts/more-icons/icomoon.woff?af7ed6') format('woff'),
+    	url('../../fonts/navbar-fonts/more-icons/icomoon.svg?af7ed6#icomoon') format('svg');
 }
 
 /* Icomoon.com */
@@ -269,9 +269,36 @@ input.gn-search:focus {
 .gn-icon-user-add:before {
   content: "\e973";
 }
+
 .gn-icon-cart:before{
 	content: "\e93a";
 }
+
+.gn-icon-shopping-basket:before{
+	content: "\e900";
+}
+
+.gn-icon-credit-card:before{
+	content: "\e93f";
+}
+
+.gn-icon-purchases:before{
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	content: "\f291";
+}
+
+.gn-icon-sales:before{
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	content: "\f218";
+}
+.gn-icon-manage-sales:before{
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	content: "\f275";
+}
+
 .gn-icon-help::before {
 	content: "\e000";
 }
