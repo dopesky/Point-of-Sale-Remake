@@ -235,8 +235,8 @@ function viewPassword(span,input){
 }
 
 function getLocationDetails(selector = '.set-country-name-here'){
-	return $.ajax('http://ip-api.com/json').then(data => {
-		$(selector).val(data.country.toLowerCase())
+	return $.ajax('https://ipapi.co/json').then(data => {
+		$(selector).val(data.country_name.toLowerCase())
 		$(selector).trigger('change')
 	})
 }
