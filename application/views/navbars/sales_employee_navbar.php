@@ -13,9 +13,7 @@
 							<input placeholder="Search" type="search" class="gn-search">
 							<a class="gn-icon gn-icon-search"><span>Search</span></a>
 						</li>
-						<li><a href="<?=site_url('owner')?>" title="Dashboard" class="my-icon gn-icon-home">Dashboard</a></li>
-						<li><a href="<?=site_url('owner/manage_employees')?>" title="Manage Employees" class="my-icon gn-icon-user-add">Manage Employees</a></li>
-						<li><a href="<?=site_url('owner/manage_products')?>" title="Manage Products" class="my-icon gn-icon-cart">Manage Products</a></li>
+						<li><a href="<?=site_url('employee')?>" title="Dashboard" class="my-icon gn-icon-home">Dashboard</a></li>
 						<li><a href="<?=site_url('pointofsale/purchases')?>" title="Make Purchases" class="my-icon gn-icon-purchases">Purchases</a></li>
 						<li><a href="<?=site_url('pointofsale/sales')?>" title="Make Sales" class="my-icon gn-icon-sales">Sales</a></li>
 						<li><a class="gn-icon gn-icon-cog" href="<?=site_url('settings')?>" title="Settings">Settings</a></li>

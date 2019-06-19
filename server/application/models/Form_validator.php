@@ -17,7 +17,7 @@ class Form_validator extends CI_Model {
     * @var $form - The rules to run / the submitted form
     * @var $required - specify if the form fields are required
     */
-  	public function run_rules($form,$required=false){
+  	public function run_rules($form){
       switch ($form) {
         case 'login':
           return $this->run_login_rules();
@@ -57,6 +57,10 @@ class Form_validator extends CI_Model {
           return $this->run_edit_sale_rules();
         case 'remove_readd_sale':
           return $this->run_remove_readd_sale_rules();
+        case 'change_country':
+          return $this->run_change_country_rules();
+        case 'update_employee_self':
+          return $this->run_update_employee_self_rules();
       }
   	}
 
@@ -100,6 +104,13 @@ class Form_validator extends CI_Model {
       $this->form_validation->set_rules('first_name','First Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
       $this->form_validation->set_rules('last_name','Last Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
       $this->form_validation->set_rules('company','Company',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]|callback_is_company_unique[user_id]",array('regex_match'=>'{field} Contains Invalid Characters.','is_company_unique'=>"{field} Has Already Been Used to Register an Owner!"));
+      $this->form_validation->set_rules('user_id','User ID',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>'{field} Contains Invalid Characters.'));
+      return $this->form_validation->run($this);
+    }
+
+    private function run_update_employee_self_rules(){
+       $this->form_validation->set_rules('first_name','First Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
+      $this->form_validation->set_rules('last_name','Last Name',"trim|strtolower|required|regex_match[/^[a-z \'-]+$/i]",array('regex_match'=>'{field} Contains Invalid Characters.'));
       $this->form_validation->set_rules('user_id','User ID',"trim|required|regex_match[/^[0-9]+$/]",array('regex_match'=>'{field} Contains Invalid Characters.'));
       return $this->form_validation->run($this);
     }
@@ -213,6 +224,12 @@ class Form_validator extends CI_Model {
 
     private function run_remove_readd_sale_rules(){
       $this->form_validation->set_rules('sale_id',"Sale ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
+      return $this->form_validation->run($this);
+    }
+
+    private function run_change_country_rules(){
+      $this->form_validation->set_rules('country',"Country Name",'trim|strtolower|required|regex_match[/^[a-z ()-]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
       $this->form_validation->set_rules('user_id',"User ID",'trim|required|regex_match[/^[0-9]+$/]',array('regex_match'=>"{field} Contains Invalid Characters."));
       return $this->form_validation->run($this);
     }

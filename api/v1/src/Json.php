@@ -106,5 +106,14 @@ class Json{
 		curl_close($curl);
 		return $response;
 	}
+
+	public function get_valid_countries($return_headers = false){
+		$curl = curl_init(SERVER_URL."/jsons/get_valid_countries");
+		set_options($curl,$this->API_KEY);
+		$result = curl_exec($curl);
+		$response = get_response($curl,$result,$return_headers);
+		curl_close($curl);
+		return $response;
+	}
 }
 ?>

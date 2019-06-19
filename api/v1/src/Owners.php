@@ -56,51 +56,6 @@ class Owners{
 		return $response;
 	}
 
-	public function update_owner_details($user_id, $fname, $lname, $company, $photo_details, $return_headers = false){
-		$data = http_build_query(array('first_name'=>$fname,'last_name'=>$lname,'company'=>$company,'user_id'=>$user_id,'profile_photo'=>$photo_details));
-		$curl = curl_init(SERVER_URL.'/owner/update_owner_details');
-		curl_setopt($curl, CURLOPT_POST, 1);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-		set_options($curl,$this->API_KEY,'application/x-www-form-urlencoded');
-		$result = curl_exec($curl);
-		$response = get_response($curl,$result,$return_headers);
-		curl_close($curl);
-		return $response;
-	}
-
-	public function change_owner_email($user_id, $email, $password, $return_headers = false){
-		$data = http_build_query(array('user_id'=>$user_id,'email'=>$email,'password'=>$password));
-		$curl = curl_init(SERVER_URL.'/owner/change_owner_email');
-		curl_setopt($curl, CURLOPT_POST, 1);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-		set_options($curl,$this->API_KEY,'application/x-www-form-urlencoded');
-		$result = curl_exec($curl);
-		$response = get_response($curl,$result,$return_headers);
-		curl_close($curl);
-		return $response;
-	}
-
-	public function change_owner_password($user_id, $password, $new_pass, $repeat_pass, $return_headers = false){
-		$data = http_build_query(array('new_password'=>$new_pass,'password'=>$password,'repeat_password'=>$repeat_pass));
-		$curl = curl_init(SERVER_URL.'/owner/change_owner_password/'.$user_id);
-		curl_setopt($curl, CURLOPT_POST, 1);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-		set_options($curl,$this->API_KEY,'application/x-www-form-urlencoded');
-		$result = curl_exec($curl);
-		$response = get_response($curl,$result,$return_headers);
-		curl_close($curl);
-		return $response;
-	}
-
-	public function activate_deactivate_2FA($user_id, $action, $return_headers = false){
-		$curl = curl_init(SERVER_URL."/owner/activate_deactivate_2FA/$user_id/$action");
-		set_options($curl,$this->API_KEY);
-		$result = curl_exec($curl);
-		$response = get_response($curl,$result,$return_headers);
-		curl_close($curl);
-		return $response;
-	}
-
 	public function register_product($user_id, $product, $category, $cost, $return_headers = false){
 		$data = http_build_query(array('product'=>$product,'category'=>$category,'cost'=>$cost,'user_id'=>$user_id));
 		$curl = curl_init(SERVER_URL."/owner/add_product");

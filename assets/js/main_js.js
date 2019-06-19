@@ -234,8 +234,11 @@ function viewPassword(span,input){
 	return false
 }
 
-function getLocationDetails(){
-	return $.ajax('http://ip-api.com/json')
+function getLocationDetails(selector = '.set-country-name-here'){
+	return $.ajax('http://ip-api.com/json').then(data => {
+		$(selector).val(data.country.toLowerCase())
+		$(selector).trigger('change')
+	})
 }
 
 function formatNumberCurrency(number, currencyFormat){
@@ -278,6 +281,7 @@ $(()=>{
 			modal[0].focus()
 		}
 	})
+	getLocationDetails()
 })
 angular.module('main', ['datatables']).directive('viewProducts', ['productData', '$timeout', (productData, $timeout) => {
 	return {

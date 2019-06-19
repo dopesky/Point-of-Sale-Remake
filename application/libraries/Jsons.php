@@ -140,4 +140,16 @@ class Jsons {
 			return array();
 		}
 	}
+
+	public function get_valid_countries($ajax_call = true){
+		$REQUEST = new Json(getenv('API_KEY'));
+		$response = $REQUEST->get_valid_countries();
+		if($response->status === 202){
+			if($ajax_call) echo json_encode($response->response);
+			return $response->response;
+		}else{
+			if($ajax_call) echo json_encode(array());
+			return array();
+		}
+	}
 }

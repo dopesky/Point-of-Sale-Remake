@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Pointofsale extends CI_Controller {
 	private $template = "templates/main/template";
 	private $print_table_template = "templates/print/table-template";
-	private $navbars = array('','','','','navbars/owner_navbar');
+	private $navbars = array('','navbars/sales_employee_navbar','','','navbars/owner_navbar');
 
 	public function __construct(){
 		parent::__construct();
@@ -93,7 +93,7 @@ class Pointofsale extends CI_Controller {
 	}
 
 	public function disable_enable_purchase(){
-		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		if(sizeof($_POST)<1) redirect($this->session->userdata('userdata')['homepage_url'],'location');
 		$user_id = $this->session->userdata('userdata')['user_id'];
 		$purchase_id = $this->input->post('id');
 		$action = $this->input->post('action');
@@ -193,7 +193,7 @@ class Pointofsale extends CI_Controller {
 	}
 
 	public function disable_enable_sale(){
-		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
+		if(sizeof($_POST)<1) redirect($this->session->userdata('userdata')['homepage_url'],'location');
 		$user_id = $this->session->userdata('userdata')['user_id'];
 		$sale_id = $this->input->post('id');
 		$action = $this->input->post('action');

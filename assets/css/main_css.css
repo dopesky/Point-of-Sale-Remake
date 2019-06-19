@@ -305,3 +305,6 @@ a,select,.link,input[type=file],.custom-switch label{
 .data-table-input input[aria-controls=DataTables_Table_1]{
 	min-width: 190px;
 }
+.limit-tab-content-lower{
+	min-height: calc(100vh - 13rem) !important;
+}

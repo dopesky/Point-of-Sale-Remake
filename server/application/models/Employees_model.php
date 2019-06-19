@@ -50,4 +50,11 @@ class Employees_model extends CI_Model {
 	function reemploy_employee($employee_id,$owner_id){
 		return $this->db->where(array('employee_id'=>$employee_id,'owner_id'=>$owner_id))->update('employees',array('suspended'=>0));
 	}
+
+	function update_employee_by_user_id($user_id, $data){
+		$this->db->where("user_id", $user_id);
+		$this->db->where("employee_suspended", 0);
+		$this->db->where("suspended", 0);
+		return $this->db->update("user_details",$data);
+	}
 }

@@ -26,7 +26,7 @@ class Pos extends CI_Controller {
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
 			return 403;
 		}
-		if(sizeof($_POST) < 1 || sizeof($_POST['data']) < 1){
+		if(sizeof($_POST) < 1 || sizeof($_POST['data']) < 1 || !is_array($_POST['data'])){
 			$this->common->set_headers(412);
 			echo json_encode(array('status'=>412,'errors'=>'<br><br><span>Ensure All Required Fields are Filled!</span>'));
 			return 412;
@@ -62,6 +62,14 @@ class Pos extends CI_Controller {
 				$this->common->set_headers(409);
 				echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
 				return 409;
+			}
+			if($user_details->owner_id){
+				$owner_details = $this->owners_model->get_owner_by_id($user_details->owner_id, true, true);
+				if(!$owner_details){
+					$this->common->set_headers(409);
+					echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+					return 409;
+				}
 			}
 			$product_details = $this->products_model->get_product_by_product_id($product_id, true, true);
 			if(!$product_details || !strpos(strtolower($product_details->status), "active") || ($product_details->owner_id !== $user_details->owner_id && $product_details->owner_id !== $user_details->id_owner)){
@@ -128,6 +136,14 @@ class Pos extends CI_Controller {
 			$this->common->set_headers(409);
 			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
 			return 409;
+		}
+		if($user_details->owner_id){
+			$owner_details = $this->owners_model->get_owner_by_id($user_details->owner_id, true, true);
+			if(!$owner_details){
+				$this->common->set_headers(409);
+				echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+				return 409;
+			}
 		}
 		$original_purchase = $this->purchases_model->get_purchase_by_id($purchase_id, ($user_details->show_inactive == 0), true);
 		if(!$original_purchase){
@@ -208,6 +224,14 @@ class Pos extends CI_Controller {
 			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
 			return 409;
 		}
+		if($user_details->owner_id){
+			$owner_details = $this->owners_model->get_owner_by_id($user_details->owner_id, true, true);
+			if(!$owner_details){
+				$this->common->set_headers(409);
+				echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+				return 409;
+			}
+		}
 		$purchase_details = $this->purchases_model->get_purchase_by_id($purchase_id, ($user_details->show_inactive == 0), true);
 		if(!$purchase_details || $purchase_details->suspended == 1){
 			$this->common->set_headers(409);
@@ -267,7 +291,7 @@ class Pos extends CI_Controller {
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
 			return 403;
 		}
-		if(sizeof($_POST) < 1 || sizeof($_POST['data']) < 1){
+		if(sizeof($_POST) < 1 || sizeof($_POST['data']) < 1 || !is_array($_POST['data'])){
 			$this->common->set_headers(412);
 			echo json_encode(array('status'=>412,'errors'=>'<br><br><span>Ensure All Required Fields are Filled!</span>'));
 			return 412;
@@ -306,6 +330,14 @@ class Pos extends CI_Controller {
 				$this->common->set_headers(409);
 				echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
 				return 409;
+			}
+			if($user_details->owner_id){
+				$owner_details = $this->owners_model->get_owner_by_id($user_details->owner_id, true, true);
+				if(!$owner_details){
+					$this->common->set_headers(409);
+					echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+					return 409;
+				}
 			}
 			$product_details = $this->products_model->get_product_by_product_id($product_id, true, true);
 			if(!$product_details || !strpos(strtolower($product_details->status), "active") || ($product_details->owner_id !== $user_details->owner_id && $product_details->owner_id !== $user_details->id_owner)){
@@ -377,6 +409,14 @@ class Pos extends CI_Controller {
 			$this->common->set_headers(409);
 			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
 			return 409;
+		}
+		if($user_details->owner_id){
+			$owner_details = $this->owners_model->get_owner_by_id($user_details->owner_id, true, true);
+			if(!$owner_details){
+				$this->common->set_headers(409);
+				echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+				return 409;
+			}
 		}
 		$original_sale = $this->sales_model->get_sale_by_id($sale_id, ($user_details->show_inactive == 0), true);
 		if(!$original_sale){
@@ -456,6 +496,14 @@ class Pos extends CI_Controller {
 			$this->common->set_headers(409);
 			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
 			return 409;
+		}
+		if($user_details->owner_id){
+			$owner_details = $this->owners_model->get_owner_by_id($user_details->owner_id, true, true);
+			if(!$owner_details){
+				$this->common->set_headers(409);
+				echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
+				return 409;
+			}
 		}
 		$sale_details = $this->sales_model->get_sale_by_id($sale_id, ($user_details->show_inactive == 0), true);
 		if(!$sale_details || $sale_details->suspended == 1){

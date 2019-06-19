@@ -43,13 +43,6 @@ class Owner extends CI_Controller {
 		$this->load->view($this->template,$data);
 	}
 
-	public function owner_settings(){
-		$data['content'] = 'owner_settings';
-		$data['navbar'] = 'navbars/owner_navbar';
-		$data['user_details'] = $this->jsons->get_user_details($this->session->userdata('userdata')['user_id'], false);
-		$this->load->view($this->template,$data);
-	}
-
 	/**
 	* Below Here lies the logic for every owner of a company in the system.
 	* This code connects to the server through the API.
@@ -241,71 +234,5 @@ class Owner extends CI_Controller {
 		}
 		$this->spreadsheets->write_to_excel($data);
 		$this->spreadsheets->save(ucwords($user_details->company),'Product Details',$user_details->owner_photo);
-	}
-
-	// The next Logic is implemented in the settings view. The functions each perform a different functionality.
-	public function update_owner_details(){
-		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
-		$user_id = $this->session->userdata('userdata')['user_id'];
-		$fname = $this->input->post('fname');
-		$lname = $this->input->post('lname');
-		$company = $this->input->post('company');
-		$photo_details = isset($_FILES['file']) ? $_FILES['file'] : null;
-		$update = new Owners(getenv('API_KEY'));
-		$response = $update->update_owner_details($user_id, $fname, $lname, $company, $photo_details);
-		if($response->status === 202){
-			$userdata = $this->session->userdata('userdata');
-			$userdata['fname'] = $fname;
-			$userdata['lname'] = $lname;
-			$this->session->set_userdata('userdata', $userdata);
-			echo json_encode(array('ok'=>true,'response'=>$response->response));
-		}else{
-			echo json_encode(array('ok'=>false,'code'=>$response->status,'errors'=>$response->errors));
-		}
-	}
-
-	public function change_owner_email(){
-		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
-		$user_id = $this->session->userdata('userdata')['user_id'];
-		$email = $this->input->post('email');
-		$password = $this->input->post('password');
-		$reset = new Owners(getenv('API_KEY'));
-		$response = $reset->change_owner_email($user_id, $email, $password);
-		if($response->status === 202){
-			$userdata = $this->session->userdata('userdata');
-			$userdata['email'] = trim(strtolower($email));
-			$this->session->set_userdata('userdata',$userdata);
-			echo json_encode(array('ok'=>true,'response'=>$response->response));
-		}else{
-			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
-		}
-	}
-
-	public function change_owner_password(){
-		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
-		$user_id = $this->session->userdata('userdata')['user_id'];
-		$password = $this->input->post('password');
-		$new_pass = $this->input->post('newPass');
-		$repeat_pass = $this->input->post('repeatPass');
-		$reset = new Owners(getenv('API_KEY'));
-		$response = $reset->change_owner_password($user_id, $password, $new_pass, $repeat_pass);
-		if($response->status === 202){
-			echo json_encode(array('ok'=>true,'response'=>$response->response));
-		}else{
-			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
-		}
-	}
-
-	public function enable_disable_2FA(){
-		if(sizeof($_POST)<1) redirect(site_url('owner'),'location');
-		$user_id = $this->session->userdata('userdata')['user_id'];
-		$action = $this->input->post('action');
-		$reset = new Owners(getenv('API_KEY'));
-		$response = $reset->activate_deactivate_2FA($user_id, $action);
-		if($response->status === 202){
-			echo json_encode(array('ok'=>true,'response'=>$response->response));
-		}else{
-			echo json_encode(array('ok'=>false,'errors'=>$response->errors));
-		}
 	}
 }

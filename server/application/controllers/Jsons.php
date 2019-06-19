@@ -253,4 +253,21 @@ class Jsons extends CI_Controller {
 		echo json_encode(array('status'=>500,'errors'=>'<br><br><span> Either You Have No Valid Products or An Unnexpected Error Occurred. Contact Admin If You Previously Added Products!</span>'));
 		return 500;
 	}
+
+	public function get_valid_countries(){
+		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('READ','BOTH'))){
+			$this->common->set_headers(403);
+			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
+			return 403;
+		}
+		$countries = $this->countries_model->get_countries(true);
+		if($countries){
+			$this->common->set_headers(202);
+			echo json_encode(array('status'=>202,'response'=>$countries));
+			return 202;
+		}
+		$this->common->set_headers(500);
+		echo json_encode(array('status'=>500,'errors'=>'<br><br><span>Unfortunately, No Countries Exist on Site or An Unnexpected Error Occurred. Contact Admin!</span>'));
+		return 500;
+	}
 }
