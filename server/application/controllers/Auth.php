@@ -88,7 +88,7 @@ class Auth extends CI_Controller {
 				$country = $this->input->post('country');
 				$data = array('email'=>$email, 'token'=>$token);
 				if($country){
-					$country_data = $this->countries_model->get_country_by_name($country);
+					$country_data = $this->countries_model->get_country_by_name($country, true);
 					if($country_data){
 						$data['country_id'] = $country_data->country_id;
 					}
