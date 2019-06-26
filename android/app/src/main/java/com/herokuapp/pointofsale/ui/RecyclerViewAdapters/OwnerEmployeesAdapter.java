@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.Resources;
+package com.herokuapp.pointofsale.ui.Resources;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
-import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,9 +51,9 @@ public class OwnerEmployeesAdapter extends
 			time = format.format(date);
 		} catch (ParseException e) {System.out.println(e.getMessage());}
 		if(current.get("profile_photo") == null){
-			Picasso.get().load("https://res.cloudinary.com/dopesky/image/upload/v1558329489/point_of_sale/site_data/blank-profile-picture-973460_960_720_gcn9y2.png").into(viewHolder.photo);
+			Glide.with(inflater.getContext()).load("https://res.cloudinary.com/dopesky/image/upload/v1558329489/point_of_sale/site_data/blank-profile-picture-973460_960_720_gcn9y2.png").placeholder(R.drawable.image_pre_loader).into(viewHolder.photo);
 		}else{
-			Picasso.get().load(current.get("profile_photo")).into(viewHolder.photo);
+			Glide.with(inflater.getContext()).load(current.get("profile_photo")).placeholder(R.drawable.image_pre_loader).into(viewHolder.photo);
 		}
 		viewHolder.name.setText(name);
 		viewHolder.dept.setText(dept);

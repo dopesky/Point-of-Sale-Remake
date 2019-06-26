@@ -73,6 +73,7 @@ class Form_validator extends CI_Model {
 
     private function run_sign_up_rules(){
       $this->form_validation->set_rules('email','Email','trim|strtolower|required|callback_check_email|is_unique[tbl_users.email]',array('check_email'=>"{field} is of Invalid Format!",'is_unique'=> '{field} has already been registered!'));
+       $this->form_validation->set_rules('country','Country','trim|strtolower|regex_match[/^[a-z ()-]+$/]',array('regex_match'=> '{field} has Illegal Characters!'));
       return $this->form_validation->run($this);
     }
 

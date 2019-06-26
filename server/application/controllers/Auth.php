@@ -85,7 +85,15 @@ class Auth extends CI_Controller {
 				}
 				$token=$this->common->get_crypto_safe_token(random_int(25, 30));
 				$email = $this->input->post('email');
-				$sign_up_response=$this->users_model->add_user(array('email'=>$email, 'token'=>$token));
+				$country = $this->input->post('country');
+				$data = array('email'=>$email, 'token'=>$token);
+				if($country){
+					$country_data = $this->countries_model->get_country_by_name($country);
+					if($country_data){
+						$data['country_id'] = $country_data->country_id;
+					}
+				}
+				$sign_up_response=$this->users_model->add_user($data);
 				if (!$sign_up_response) {
 					$this->common->set_headers(500);
 					echo json_encode(array('status'=>500,'errors'=>'<br><br><span>Sign up failed. Please try again!</span>'));

@@ -25,12 +25,8 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 	private boolean isLoggingIn = false;
-<<<<<<< HEAD
 	private boolean showUIElements;
 	private SharedPreferences sessionData;
-=======
-
->>>>>>> ee043b3c4c1a221f37f937c5359a6379166b1341
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 		showUIElements = true;
 		setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
 		sessionData = getSharedPreferences(Common.USERDATA, Context.MODE_PRIVATE);
 		if(!sessionData.getAll().isEmpty()){
 			if(sessionData.contains("message")){
@@ -87,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
 			editSessionData.remove("message");
 			editSessionData.apply();
 		}
-=======
->>>>>>> ee043b3c4c1a221f37f937c5359a6379166b1341
 	}
 
 	public void launchSignUp(View view) {
