@@ -81,7 +81,7 @@ class Owner extends CI_Controller {
 			return 400;
 		}
 
-		$owner_id = $this->users_model->get_user_by_id($owner_user_id)->id_owner;
+		$owner_id = $this->users_model->get_user_by_id($owner_user_id);
 
 		$employee_id = $this->input->post('employee_id');
 		$fname = $this->input->post('first_name');
@@ -92,15 +92,17 @@ class Owner extends CI_Controller {
 		$token = $this->common->get_crypto_safe_token(random_int(25, 30));
 
 		$employee_details = $this->employees_model->get_user_by_employee_id($employee_id);
-		$old_email = $employee_details->email;
+		
+		$department = $this->departments_model->get_department_by_id($department_id);
 
-		$data = array('first_name'=>$fname,'last_name'=>$lname,'email'=>$email,'department_id'=>$department_id,'token'=>$token,'old_email'=>$old_email);
-
-		if(!$employee_details || !$old_email || !$owner_id){
+		if(!$employee_details || ($employee_details->suspended == 1 && $employee_details->password) || !$owner_id || !$department || !$owner_id->id_owner || $owner_id->suspended == 1 || $owner_id->owner_active == 0){
 			$this->common->set_headers(500);
 			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Contact Admin!</span>'));
 			return 500;
 		}
+		$owner_id = $owner_id->id_owner;
+		$old_email = $employee_details->email;
+		$data = array('first_name'=>$fname,'last_name'=>$lname,'email'=>$email,'department_id'=>$department_id,'token'=>$token,'old_email'=>$old_email);
 		$response = $this->employees_model->update_employee_details_by_owner_and_employee_ids($employee_id,$employee_details->user_id,$owner_id,$data);
 		if(!$response){
 			$this->common->set_headers(500);
@@ -150,7 +152,7 @@ class Owner extends CI_Controller {
 			echo json_encode(array('status'=>500,'errors'=>'<br><br><span>An Unnexpected Error Occurred. Contact Admin!</span>'));
 			return 500;
 		}
-		if(($employee_id->suspended && $employee_id->password) || $owner_id->suspended || $owner_id->id_owner !== $employee_id->owner_id){
+		if(($employee_id->suspended && $employee_id->password) || $owner_id->id_owner !== $employee_id->owner_id || $owner_id->suspended == 1 || $owner_id->owner_active == 0){
 			$this->common->set_headers(409);
 			echo json_encode(array('status'=>409,'errors'=>'<br><br><span>Data Provided to Server Cannot Be Used to Execute the Desired Functionality!</span>'));
 			return 409;

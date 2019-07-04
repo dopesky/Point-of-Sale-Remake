@@ -35,9 +35,9 @@ class Employees_model extends CI_Model {
 		$this->db->where('user_details.employee_id',$employee_id);
 		if($check_active){
 			$this->db->where('user_details.active',1);
+			$this->db->where('user_details.employee_suspended',0);
 		}
 		if($check_suspended){
-			$this->db->where('user_details.employee_suspended',0);
 			$this->db->where('user_details.suspended',0);
 		}
 		return $this->db->get('user_details')->row();
