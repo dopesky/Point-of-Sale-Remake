@@ -22,7 +22,7 @@ class Pos extends CI_Controller {
 
 	public function add_purchase(){
 		$this->common->set_headers(500);
-			echo json_encode(array('status'=>500,'errors'=>$_POST['data']));
+			echo json_encode(array('status'=>500,'errors'=>$_POST['data'][0]['product_id']));
 			return 500;
 		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
 			$this->common->set_headers(403);
