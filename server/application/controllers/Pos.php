@@ -21,6 +21,9 @@ class Pos extends CI_Controller {
 	}
 
 	public function add_purchase(){
+		$this->common->set_headers(500);
+			echo json_encode(array('status'=>500,'errors'=>$_POST));
+			return 500;
 		if(!$this->common->check_api_key_power($this->api_key->apikey_power,array('BOTH'))){
 			$this->common->set_headers(403);
 			echo json_encode(array('status'=>403,'errors'=>'<br><br><span>You do not Have Authorisation to Perform This Action. Contact Admin!</span>'));
