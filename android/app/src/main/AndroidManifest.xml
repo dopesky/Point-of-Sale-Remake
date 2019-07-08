@@ -3,30 +3,55 @@
 	package="com.herokuapp.pointofsale">
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 	<application
-		android:allowBackup="true"
+		android:allowBackup="false"
 		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
-<<<<<<< HEAD
 		android:theme="@style/AppTheme">
-		<activity android:name=".Owner.OwnerDashboard"></activity>
+		<activity android:name=".ui.pos.PosDialog"
+			android:theme="@style/AppTheme.Dialog"></activity>
 		<activity
-			android:name=".Auth.ForgotPassword"
-			android:parentActivityName=".Auth.MainActivity" />
-=======
-
-		android:theme="@style/HiddenTitleTheme"
-		>
-		<activity android:name=".Auth.ForgotPassword"
-			android:parentActivityName=".Auth.MainActivity"></activity>
->>>>>>> ee043b3c4c1a221f37f937c5359a6379166b1341
+			android:name=".ui.pos.Purchases"
+			android:theme="@style/AppTheme.NoActionBar" />
 		<activity
-			android:name=".Auth.SignUp"
-			android:parentActivityName=".Auth.MainActivity" />
-		<activity android:name=".Auth.MainActivity">
+			android:name=".ui.owner.AddProduct"
+			android:parentActivityName=".ui.owner.ManageProducts"
+			android:theme="@style/AppTheme.NoActionBar" />
+		<activity
+			android:name=".ui.owner.EditProductDetails"
+			android:parentActivityName=".ui.owner.ManageProducts"
+			android:theme="@style/AppTheme.NoActionBar" />
+		<activity
+			android:name=".ui.owner.ManageProducts"
+			android:parentActivityName=".ui.owner.OwnerDashboard"
+			android:theme="@style/AppTheme.NoActionBar" />
+		<activity
+			android:name=".ui.owner.AddEmployee"
+			android:parentActivityName=".ui.owner.ManageEmployees"
+			android:theme="@style/AppTheme.NoActionBar" />
+		<activity
+			android:name=".ui.owner.EditEmployeeDetails"
+			android:parentActivityName=".ui.owner.ManageEmployees"
+			android:theme="@style/AppTheme.NoActionBar" />
+		<activity
+			android:name=".ui.owner.ManageEmployees"
+			android:parentActivityName=".ui.owner.OwnerDashboard"
+			android:theme="@style/AppTheme.NoActionBar" />
+		<activity android:name=".ui.auth.TwoFactor" />
+		<activity
+			android:name=".ui.owner.OwnerDashboard"
+			android:theme="@style/AppTheme.NoActionBar" />
+		<activity
+			android:name=".ui.auth.ForgotPassword"
+			android:parentActivityName=".ui.auth.MainActivity" />
+		<activity
+			android:name=".ui.auth.SignUp"
+			android:parentActivityName=".ui.auth.MainActivity" />
+		<activity android:name=".ui.auth.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 

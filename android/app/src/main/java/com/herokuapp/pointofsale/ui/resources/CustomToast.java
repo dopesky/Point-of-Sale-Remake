@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.Resources;
+package com.herokuapp.pointofsale.ui.resources;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.herokuapp.pointofsale.R;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class CustomToast {
@@ -23,10 +24,10 @@ public class CustomToast {
 	};
 	public static void showToast(Context context, String message, String type){
 		View toastView = LayoutInflater.from(context).inflate(R.layout.custom_toast_view, null);
-		toastView.setBackground(context.getDrawable(toastReference.get(type)[0]));
-		TextView tv = (TextView)toastView.findViewById(R.id.customToastText);
+		toastView.setBackground(context.getDrawable(Objects.requireNonNull(toastReference.get(type))[0]));
+		TextView tv = toastView.findViewById(R.id.customToastText);
 		tv.setText(message);
-		tv.setCompoundDrawablesRelativeWithIntrinsicBounds(toastReference.get(type)[1],0,0,0);
+		tv.setCompoundDrawablesRelativeWithIntrinsicBounds(Objects.requireNonNull(toastReference.get(type))[1],0,0,0);
 
 		// Initiate the Toast instance.
 		Toast toast = new Toast(context.getApplicationContext());

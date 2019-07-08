@@ -4,11 +4,9 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background = "@drawable/ic_background"
-	tools:context=".Owner.OwnerDashboard">
-
-	<android.support.v7.widget.RecyclerView
-		android:id="@+id/recyclerview"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+	android:background = "@drawable/_background"
+	tools:context=".ui.owner.OwnerDashboard">
+	<include
+		android:id="@+id/toolbar"
+		layout="@layout/toolbar"/>
 </android.support.design.widget.CoordinatorLayout>

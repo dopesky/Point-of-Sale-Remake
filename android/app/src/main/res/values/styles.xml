@@ -1,21 +1,28 @@
 <resources>
 
 	<!-- Base application theme. -->
-	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	<style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
 		<!-- Customize your theme here. -->
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 		<item name="colorAccent">@color/colorAccent</item>
 		<item name="android:windowAnimationStyle">@style/SlideTransitionAnimation</item>
 	</style>
-	<style name="HiddenTitleTheme" parent="AppTheme">
-		<item name="windowNoTitle">true</item>
+	<style name="AppTheme.NoActionBar">
 		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
 	</style>
+	<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+	<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light"/>
 	<style name="SlideTransitionAnimation" parent="@android:style/Animation.Activity">
 		<item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
 		<item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
 		<item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
 		<item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+	</style>
+	<style name="AppTheme.Dialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+		<item name="windowNoTitle">true</item>
+		<item name="android:windowFullscreen">false</item>
+		<item name="windowActionBar">false</item>
 	</style>
 </resources>

@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	app:elevation="@dimen/margin_3rem"
+	app:liftOnScroll="true"
+	android:layout_width="match_parent"
+	android:layout_height="?attr/actionBarSize"
+	android:background="@color/colorPrimary"
+	android:clipToPadding="false"
+	android:padding="@dimen/margin_0"
+	android:theme="@style/AppTheme.AppBarOverlay"
+	android:elevation="3dp"
+	android:outlineProvider="bounds">
+	<FrameLayout
+		android:id="@+id/toolbar_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="@dimen/margin_0">
 
-</android.support.constraint.ConstraintLayout>
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/actual_toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_scrollFlags="scroll|enterAlways"/>
+
+		<com.ferfalk.simplesearchview.SimpleSearchView
+			android:id="@+id/search_view"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:voiceSearch="true"
+			app:type="card"
+			app:layout_scrollFlags="scroll|enterAlways"
+			android:background="@color/colorPrimary" />
+	</FrameLayout>
+</android.support.design.widget.AppBarLayout>

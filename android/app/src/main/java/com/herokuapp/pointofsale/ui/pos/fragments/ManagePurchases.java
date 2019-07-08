@@ -10,10 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.herokuapp.pointofsale.R;
+import com.herokuapp.pointofsale.models.pos.Purchases;
 
 public class ManagePurchases extends Fragment {
 
-	private ManagePurchasesViewModel mViewModel;
+	private Purchases purchasesVM;
 
 	public static ManagePurchases newInstance() {
 		return new ManagePurchases();
@@ -28,7 +29,7 @@ public class ManagePurchases extends Fragment {
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		mViewModel = ViewModelProviders.of(this).get(ManagePurchasesViewModel.class);
+		purchasesVM = ViewModelProviders.of(this).get(Purchases.class);
 		// TODO: Use the ViewModel
 	}
 

@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:fillViewport="true"
-	tools:context=".Auth.MainActivity">
-	<android.support.constraint.ConstraintLayout
+	xmlns:tools="http://schemas.android.com/tools">
+	<data>
+		<import type="com.herokuapp.pointofsale.models.authentication.Auth.DataBinder" />
+		<variable name="authVm" type="DataBinder" />
+	</data>
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:fillViewport="true"
+		tools:context=".ui.auth.MainActivity">
+		<android.support.constraint.ConstraintLayout
 			android:layout_height="wrap_content"
 			android:layout_width="match_parent"
 			android:background="@drawable/_background">
@@ -42,46 +47,61 @@
 					android:background="@drawable/box_shadow_default"
 					android:orientation="vertical"
 					android:layout_margin="@dimen/margin_3rem">
-					<EditText
+					<android.support.design.widget.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="@dimen/margin_1rem"
+						android:layout_marginBottom="@dimen/margin_1rem"
 						android:id="@+id/email_edit_text"
+						app:helperText="e.g dopesky@gmail.com">
+						<android.support.design.widget.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:inputType="textEmailAddress"
+							android:hint="@string/enter_your_email"
+							android:singleLine="true"
+							android:layout_alignParentTop="true"
+							android:text="@={authVm.emailInput}"
+							android:drawableStart="@drawable/ic_person_black_24dp"
+							android:layout_alignParentEnd="true"/>
+					</android.support.design.widget.TextInputLayout>
+					<android.support.design.widget.TextInputLayout
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/margin_3rem"
-						android:layout_marginBottom="@dimen/margin_3rem"
-						android:hint="@string/enter_your_email"
-						android:drawableStart="@drawable/ic_person_black_24dp"
-						android:inputType="textEmailAddress" />
-
-					<EditText
+						android:layout_marginTop="@dimen/margin_1rem"
+						android:layout_marginBottom="@dimen/margin_1rem"
 						android:id="@+id/password_edit_text"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/margin_3rem"
-						android:layout_marginBottom="@dimen/margin_3rem"
-						android:drawableStart="@drawable/ic_lock_black_24dp"
-						android:hint="@string/enter_your_password"
-						android:inputType="textPassword" />
-
+						app:passwordToggleEnabled="true"
+						app:helperText="e.g *********">
+						<android.support.design.widget.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:inputType="textPassword"
+							android:hint="@string/enter_your_password"
+							android:singleLine="true"
+							android:layout_alignParentTop="true"
+							android:text="@={authVm.passwordInput}"
+							android:drawableStart="@drawable/ic_lock_black_24dp"
+							android:layout_alignParentEnd="true"/>
+					</android.support.design.widget.TextInputLayout>
 					<android.support.constraint.ConstraintLayout
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/margin_3rem">
-
-						<Button
-							android:layout_width="101dp"
-							android:layout_height="49dp"
-							android:layout_marginTop="8dp"
-							android:layout_marginRight="16dp"
-							android:background="@color/colorSuccess"
-							android:onClick="loginLogic"
-							android:paddingLeft="@dimen/margin_3rem"
-							android:paddingRight="@dimen/margin_3rem"
+						android:layout_marginTop="@dimen/margin_1rem"
+						android:clipToPadding="false">
+						<android.support.design.button.MaterialButton
+							android:id="@+id/login_button"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
 							android:text="@string/main_activity_header"
+							android:background="@color/colorAccent"
 							android:textColor="@color/whitesmoke"
+							android:onClick="loginLogic"
+							style="@style/Widget.MaterialComponents.Button"
+							app:rippleColor="@color/smoke"
 							app:layout_constraintBottom_toBottomOf="parent"
 							app:layout_constraintRight_toRightOf="parent"
-							app:layout_constraintTop_toTopOf="parent"
-							app:layout_constraintVertical_bias="0.0" />
+							app:layout_constraintTop_toTopOf="parent"/>
 					</android.support.constraint.ConstraintLayout>
 				</LinearLayout>
 				<android.support.constraint.ConstraintLayout
@@ -89,25 +109,27 @@
 					android:layout_height="wrap_content"
 					android:layout_margin="@dimen/margin_3rem"
 					android:layout_marginTop="@dimen/margin_0">
-					<Button
+					<android.support.design.button.MaterialButton
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="@string/create_account_header"
-						android:background="@color/transparent"
+						style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 						android:textColor="@color/whitesmoke"
-						android:textAppearance="@style/TextAppearance.AppCompat.Body2"
 						android:textStyle="bold"
+						android:textSize="@dimen/text_size_normal"
 						android:onClick="launchSignUp"
+						app:rippleColor="@color/smoke"
 						app:layout_constraintTop_toTopOf="parent"
 						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintLeft_toLeftOf="parent" />
-					<Button
+					<android.support.design.button.MaterialButton
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="@string/forgot_password_question"
-						android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+						style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+						android:textSize="@dimen/text_size_normal"
 						android:textStyle="bold"
-						android:background="@color/transparent"
+						app:rippleColor="@color/smoke"
 						android:textColor="@color/whitesmoke"
 						android:onClick="launchForgotPassword"
 						app:layout_constraintTop_toTopOf="parent"
@@ -116,4 +138,5 @@
 				</android.support.constraint.ConstraintLayout>
 			</LinearLayout>
 		</android.support.constraint.ConstraintLayout>
-</ScrollView>
+	</ScrollView>
+</layout>

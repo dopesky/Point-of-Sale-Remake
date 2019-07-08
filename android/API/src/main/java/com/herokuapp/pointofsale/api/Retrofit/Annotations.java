@@ -1,14 +1,26 @@
-package com.herokuapp.pointofsale.api.Common;
+package com.herokuapp.pointofsale.api.Retrofit;
 
+import android.support.v4.util.Pair;
+
+import com.google.gson.internal.LinkedTreeMap;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface Annotations {
+	@GET("jsons/get_user_details/{user_id}")
+	Call<HashMap> getUserDetails(@Path("user_id") String user_id);
+
 	@FormUrlEncoded
 	@POST("auth/register/{type}")
 	Call<HashMap> registerUser(@Path("type") String userType, @Field("email") String email, @Field("country") String country);
@@ -20,4 +32,56 @@ public interface Annotations {
 	@FormUrlEncoded
 	@POST("auth/request_reset")
 	Call<HashMap> requestPasswordReset(@Field("email") String email);
+
+	@GET("auth/verify_google_auth/{token}/{user_id}")
+	Call<HashMap> verifyGoogleAuth(@Path("token") String token, @Path("user_id") String user_id);
+
+	@GET("auth/send_email_otp/{user_id}")
+	Call<HashMap> sendOTPEmail(@Path("user_id") String user_id);
+
+	@GET("auth/verify_email_token/{token}/{user_id}")
+	Call<HashMap> verifyEmailCode(@Path("token") String token, @Path("user_id") String user_id);
+
+	@GET("jsons/get_valid_departments")
+	Call<HashMap> getDepartments();
+
+	@GET("jsons/get_valid_categories")
+	Call<HashMap> getCategories();
+
+	@GET("jsons/get_employees_by_owner_user_id/{user_id}")
+	Call<HashMap> getOwnerEmployees(@Path("user_id") String user_id);
+
+	@FormUrlEncoded
+	@POST("owner/add_employee/{user_id}")
+	Call<HashMap> addEmployee(@Path("user_id") String user_id, @Field("first_name") String first_name, @Field("last_name") String last_name, @Field("email") String email, @Field("department_id") String department_id);
+
+	@FormUrlEncoded
+	@POST("owner/update_employee_details/{user_id}")
+	Call<HashMap> updateEmployeeDetails(@Path("user_id") String user_id, @Field("employee_id") String employee_id, @Field("first_name") String first_name, @Field("last_name") String last_name, @Field("email") String email, @Field("department_id") String department_id);
+
+	@FormUrlEncoded
+	@POST("owner/unemploy_reemploy_employee/{action}")
+	Call<HashMap> unemployReemployEmployee(@Path("action") String action, @Field("user_id") String user_id, @Field("employee_id") String employee_id);
+
+	@GET("jsons/get_products_by_owner_user_id/{user_id}")
+	Call<HashMap> getOwnerProducts(@Path("user_id") String user_id);
+
+	@FormUrlEncoded
+	@POST("owner/add_product")
+	Call<HashMap> addProduct(@Field("user_id") String user_id, @Field("product") String product, @Field("category") String category, @Field("cost") String cost);
+
+	@FormUrlEncoded
+	@POST("owner/update_product_details")
+	Call<HashMap> updateProductDetails(@Field("user_id") String user_id, @Field("product_id") String product_id, @Field("product") String product, @Field("category") String category, @Field("cost") String cost);
+
+	@FormUrlEncoded
+	@POST("owner/remove_readd_product/{action}")
+	Call<HashMap> disableEnableProduct(@Path("action") String action, @Field("user_id") String user_id, @Field("product_id") String product_id);
+
+	@GET("jsons/get_inventory_for_purchases/{owner_id}")
+	Call<HashMap> getProductsForPurchase(@Path("owner_id") String owner_id);
+
+	@FormUrlEncoded
+	@POST("pos/add_purchase")
+	Call<HashMap> addPurchase(@FieldMap Map<String, String> data, @Field("user_id") String user_id);
 }

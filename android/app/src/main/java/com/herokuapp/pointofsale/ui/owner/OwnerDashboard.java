@@ -1,54 +1,60 @@
-package com.herokuapp.pointofsale.Owner;
+package com.herokuapp.pointofsale.ui.owner;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatCallback;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.herokuapp.pointofsale.R;
-import com.herokuapp.pointofsale.Resources.OwnerEmployeesAdapter;
-import com.herokuapp.pointofsale.Resources.Common;
-import com.herokuapp.pointofsale.Resources.CustomToast;
-import com.herokuapp.pointofsale.api.Owner.Owner;
+import com.herokuapp.pointofsale.models.owner.Owner;
+import com.herokuapp.pointofsale.ui.RecyclerViewAdapters.OwnerEmployeesAdapter;
+import com.herokuapp.pointofsale.ui.auth.MainActivity;
+import com.herokuapp.pointofsale.ui.resources.Common;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import com.google.gson.internal.LinkedTreeMap;
+import java.util.Objects;;
+
+import com.herokuapp.pointofsale.ui.resources.NavigationBars;
+import com.mikepenz.iconics.context.IconicsContextWrapper;
+import com.mikepenz.iconics.context.IconicsLayoutInflater;
+import com.mikepenz.iconics.context.IconicsLayoutInflater2;
 
 public class OwnerDashboard extends AppCompatActivity {
-	private RecyclerView showEmployees;
-	private OwnerEmployeesAdapter adapter;
+	private Owner ownerVM;
+	private Observer<SharedPreferences> getUserdataObserver = sharedPreferences -> {
+		if(sharedPreferences == null || !sharedPreferences.getString("level", "-1").trim().equals("4")){
+			Common.launchLauncherActivity(this);
+		}
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		LayoutInflaterCompat.setFactory2(getLayoutInflater(), new IconicsLayoutInflater2(getDelegate()));
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_owner_dashboard);
-		getSharedPreferences(Common.USERDATA, MODE_PRIVATE).edit().clear().apply();
-		showEmployees = (RecyclerView) findViewById(R.id.recyclerview);
-		Owner employees = OwnerDashboard.getEmployees(this);
-		employees.execute("fetch employees", "1");
-	}
 
-	private static Owner getEmployees(OwnerDashboard context){
-		return new Owner(context.getString(R.string.API_KEY)){
-			@Override
-			protected void onPostExecute(Object response){
-				try {
-					HashMap map = (HashMap) response;
-					if ((double) map.get("status") == (double) 202 || (double) map.get("status") == (double) 200) {
-						ArrayList<LinkedTreeMap<String,String>> data = (ArrayList<LinkedTreeMap<String,String>>)map.get("response");
-						context.adapter = new OwnerEmployeesAdapter(context, data);
-						context.showEmployees.setAdapter(context.adapter);
-						context.showEmployees.setLayoutManager(new LinearLayoutManager(context));
-					} else {
-						CustomToast.showToast(context, " " + Common.parseHtml(Objects.requireNonNull(map.get("errors"))), "danger");
-					}
-				} catch (ClassCastException cce) {
-					//IOException ioe = (IOException) response;
-					CustomToast.showToast(context, " " + cce.getMessage(), "danger");
-				}
-			}
-		};
+		ownerVM = ViewModelProviders.of(this).get(Owner.class);
+		ownerVM.getUserData().observe(this, getUserdataObserver);
 
+		AppBarLayout toolbar = findViewById(R.id.toolbar);
+		Common.setCustomActionBar(this, toolbar.findViewById(R.id.actual_toolbar));
+		NavigationBars.getNavBar(this, toolbar.findViewById(R.id.actual_toolbar), Objects.requireNonNull(ownerVM.getUserData().getValue()).getString("level", "-1"));
 	}
 }

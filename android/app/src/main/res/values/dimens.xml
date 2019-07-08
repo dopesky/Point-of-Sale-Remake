@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<dimen name="margin_5rem">25dp</dimen>
+	<dimen name="margin_4rem">20dp</dimen>
 	<dimen name="margin_3rem">15dp</dimen>
 	<dimen name="margin_2rem">10dp</dimen>
 	<dimen name="margin_1rem">5dp</dimen>
@@ -9,4 +11,9 @@
 	<dimen name="activity_vertical_margin">16dp</dimen>
 	<dimen name="toastRadius">20dp</dimen>
 	<dimen name="text_size_normal">12sp</dimen>
+	<dimen name="image_height_default">250dp</dimen>
+	<dimen name="progress_bar_min_dimension">80dp</dimen>
+	<dimen name="circle_image_size">50dp</dimen>
+	<dimen name="cardview_icon_size">45dp</dimen>
+	<dimen name="header_size">130dp</dimen>
 </resources>

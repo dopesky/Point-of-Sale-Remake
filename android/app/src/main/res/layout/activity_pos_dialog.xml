@@ -1,9 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
 	tools:context=".ui.pos.PosDialog">
-
-</android.support.constraint.ConstraintLayout>
+	<data>
+		<import type="com.herokuapp.pointofsale.ui.resources.PosDataBinder.DataBinder" />
+		<import type="android.view.View" />
+		<variable name="dataBinder" type="DataBinder" />
+	</data>
+	<android.support.constraint.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/margin_3rem">
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			android:orientation="vertical">
+			<android.support.constraint.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+				<TextView
+					android:id="@+id/product_name"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@{dataBinder.productName}"
+					android:layout_marginStart="@dimen/margin_3rem"
+					style="?android:attr/textAppearanceMedium"
+					android:textStyle="bold"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintLeft_toLeftOf="parent"/>
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="@string/product_name"
+					style="?android:attr/textAppearanceSmall"
+					android:layout_marginStart="@dimen/margin_3rem"
+					app:layout_constraintTop_toBottomOf="@id/product_name"
+					app:layout_constraintLeft_toLeftOf="parent"/>
+			</android.support.constraint.ConstraintLayout>
+			<android.support.constraint.ConstraintLayout
+				android:layout_width="match_parent"
+				android:visibility="gone"
+				android:layout_height="wrap_content">
+				<TextView
+					android:id="@+id/product_cost"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@{dataBinder.cost}"
+					android:layout_marginStart="@dimen/margin_3rem"
+					style="?android:attr/textAppearanceMedium"
+					android:textStyle="bold"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintLeft_toLeftOf="parent"/>
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="0"
+					android:text="@string/total_amount_after_discount"
+					style="?android:attr/textAppearanceSmall"
+					android:layout_marginStart="@dimen/margin_3rem"
+					app:layout_constraintTop_toBottomOf="@id/product_cost"
+					app:layout_constraintLeft_toLeftOf="parent"/>
+			</android.support.constraint.ConstraintLayout>
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/product_amount"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:helperText="e.g 13">
+				<android.support.design.widget.TextInputEditText
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:inputType="number"
+					android:text="@={dataBinder.quantity}"
+					android:hint="@string/product_amount"
+					android:singleLine="true"
+					android:layout_alignParentTop="true"
+					android:layout_alignParentEnd="true"/>
+			</android.support.design.widget.TextInputLayout>
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/product_total_cost"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:helperText="e.g 1350">
+				<android.support.design.widget.TextInputEditText
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:inputType="number"
+					android:hint="@string/total_amount_after_discount"
+					android:singleLine="true"
+					android:text="@={dataBinder.cost}"
+					android:layout_alignParentTop="true"
+					android:layout_alignParentEnd="true"/>
+			</android.support.design.widget.TextInputLayout>
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/product_discount"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:helperText="e.g 50">
+				<android.support.design.widget.TextInputEditText
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:inputType="number"
+					android:text="@={dataBinder.discount}"
+					android:hint="@string/product_discount"
+					android:singleLine="true"
+					android:layout_alignParentTop="true"
+					android:layout_alignParentEnd="true"/>
+			</android.support.design.widget.TextInputLayout>
+			<android.support.constraint.ConstraintLayout
+				android:visibility='@{dataBinder.update.equals("1") ? View.VISIBLE : View.GONE}'
+				android:layout_width="match_parent"
+				android:layout_margin="@dimen/margin_1rem"
+				android:layout_height="wrap_content">
+				<android.support.design.button.MaterialButton
+					android:id="@+id/remove_item"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					style="@style/Widget.MaterialComponents.Button"
+					android:backgroundTint="@color/colorDanger"
+					android:text="@string/remove"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintRight_toRightOf="parent" />
+				<android.support.design.button.MaterialButton
+					android:id="@+id/change_item"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/margin_1rem"
+					style="@style/Widget.MaterialComponents.Button.TextButton"
+					android:text="@string/change"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/remove_item" />
+			</android.support.constraint.ConstraintLayout>
+			<android.support.constraint.ConstraintLayout
+				android:visibility='@{dataBinder.update.equals("0") ? View.VISIBLE : View.GONE}'
+				android:layout_width="match_parent"
+				android:layout_margin="@dimen/margin_1rem"
+				android:layout_height="wrap_content">
+				<android.support.design.button.MaterialButton
+					android:id="@+id/add_item"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					style="@style/Widget.MaterialComponents.Button"
+					android:backgroundTint="@color/colorSuccess"
+					android:text="@string/add_to_cart"
+					android:onClick="finishAddActivity"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintRight_toRightOf="parent" />
+			</android.support.constraint.ConstraintLayout>
+		</LinearLayout>
+	</android.support.constraint.ConstraintLayout>
+</layout>

@@ -1,9 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
 	tools:context=".ui.owner.ManageProducts">
+	<android.support.design.widget.CoordinatorLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background = "@drawable/_background">
+		<include
+			android:id="@+id/toolbar"
+			layout="@layout/toolbar"/>
 
-</android.support.constraint.ConstraintLayout>
+		<android.support.v4.widget.SwipeRefreshLayout
+			android:id="@+id/swipeToRefresh"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/recyclerview"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="@dimen/margin_1rem"
+				android:layout_marginBottom="@dimen/margin_1rem"/>
+		</android.support.v4.widget.SwipeRefreshLayout>
+		<android.support.constraint.ConstraintLayout
+			android:id="@+id/progress_bar"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_margin="@dimen/margin_3rem">
+			<ProgressBar
+				android:minHeight="@dimen/progress_bar_min_dimension"
+				android:minWidth="@dimen/progress_bar_min_dimension"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:indeterminateTint="@color/colorAccent"
+				android:layout_marginTop="@dimen/progress_bar_min_dimension"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
+			<TextView
+				android:visibility="gone"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/progress_bar_min_dimension"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				style="@style/TextAppearance.MaterialComponents.Headline5"
+				android:textColor="@color/whitesmoke"
+				android:text="@string/nothing_to_show"/>
+		</android.support.constraint.ConstraintLayout>
+
+		<android.support.design.widget.FloatingActionButton
+			android:layout_width="wrap_content"
+			android:transitionName="@string/default_transition_name"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/margin_2rem"
+			android:src="@drawable/ic_add_black_24dp"
+			android:onClick="launchAddProduct"
+			android:elevation="@dimen/margin_4rem"
+			app:layout_anchor="@id/swipeToRefresh"
+			app:layout_anchorGravity="end|bottom" />
+	</android.support.design.widget.CoordinatorLayout>
+</layout>
