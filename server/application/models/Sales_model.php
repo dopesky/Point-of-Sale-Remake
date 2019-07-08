@@ -71,6 +71,7 @@ class Sales_model extends CI_Model {
       $this->db->where('owner_suspended', 0);
       $this->db->where('owner_active', 1);
       $this->db->where('inventory_level > ', 0);
+      $this->db->order_by('product');
       return $this->db->get('inventory_summary')->result();
     }
 }
