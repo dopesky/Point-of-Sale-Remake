@@ -12,8 +12,15 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
-		<activity android:name=".ui.pos.PosDialog"
-			android:theme="@style/AppTheme.Dialog"></activity>
+		<activity
+			android:name=".ui.pos.Sales"
+			android:theme="@style/AppTheme.NoActionBar"></activity>
+		<activity
+			android:name=".ui.pos.Checkout"
+			android:theme="@style/AppTheme.Dialog" />
+		<activity
+			android:name=".ui.pos.PosDialog"
+			android:theme="@style/AppTheme.Dialog" />
 		<activity
 			android:name=".ui.pos.Purchases"
 			android:theme="@style/AppTheme.NoActionBar" />

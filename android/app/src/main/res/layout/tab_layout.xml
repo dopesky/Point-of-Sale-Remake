@@ -1,62 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-app:elevation="@dimen/margin_3rem"
-app:liftOnScroll="true"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:background="@color/colorPrimary"
-android:clipToPadding="false"
-android:padding="@dimen/margin_0"
-android:theme="@style/AppTheme.AppBarOverlay"
-android:elevation="3dp"
-android:outlineProvider="bounds">
-	<LinearLayout
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	<com.google.android.material.appbar.AppBarLayout
+		app:elevation="@dimen/margin_3rem"
+		app:liftOnScroll="true"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical">
-		<FrameLayout
-			android:id="@+id/toolbar_container"
-			android:layout_width="match_parent"
-			android:layout_height="?android:attr/actionBarSize"
-			android:padding="@dimen/margin_0">
-
-			<android.support.v7.widget.Toolbar
-				android:id="@+id/actual_toolbar"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				app:layout_scrollFlags="scroll|enterAlways"/>
-
-			<com.ferfalk.simplesearchview.SimpleSearchView
-				android:id="@+id/search_view"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				app:voiceSearch="true"
-				app:type="card"
-				app:layout_scrollFlags="scroll|enterAlways"
-				android:background="@color/colorPrimary" />
-		</FrameLayout>
-		<android.support.design.widget.TabLayout
-			android:id="@+id/tab_layout"
+		android:background="@color/colorPrimary"
+		android:clipToPadding="false"
+		android:padding="@dimen/margin_0"
+		android:theme="@style/AppTheme.AppBarOverlay"
+		android:elevation="3dp"
+		android:outlineProvider="bounds">
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@color/colorPrimary"
-			android:minHeight="?android:attr/actionBarSize"
-			android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
-			<android.support.design.widget.TabItem
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/products"/>
-			<android.support.design.widget.TabItem
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/cart"/>
-			<android.support.design.widget.TabItem
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/manage"/>
+			android:orientation="vertical">
+			<FrameLayout
+				android:id="@+id/toolbar_container"
+				android:layout_width="match_parent"
+				android:layout_height="?android:attr/actionBarSize"
+				android:padding="@dimen/margin_0">
 
-		</android.support.design.widget.TabLayout>
-	</LinearLayout>
-</android.support.design.widget.AppBarLayout>
+				<androidx.appcompat.widget.Toolbar
+					android:id="@+id/actual_toolbar"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					app:layout_scrollFlags="scroll|enterAlways"/>
+
+				<com.ferfalk.simplesearchview.SimpleSearchView
+					android:id="@+id/search_view"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					app:voiceSearch="true"
+					app:type="card"
+					app:layout_scrollFlags="scroll|enterAlways"
+					android:background="@color/colorPrimary" />
+			</FrameLayout>
+			<com.google.android.material.tabs.TabLayout
+				android:id="@+id/tab_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:tabGravity="fill"
+				app:tabMaxWidth="@dimen/margin_0"
+				app:tabMode="fixed"
+				app:tabBackground="@color/colorPrimary"
+				android:minHeight="?android:attr/actionBarSize">
+				<com.google.android.material.tabs.TabItem
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/products"/>
+				<com.google.android.material.tabs.TabItem
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/cart"/>
+				<com.google.android.material.tabs.TabItem
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/manage"/>
+
+			</com.google.android.material.tabs.TabLayout>
+		</LinearLayout>
+	</com.google.android.material.appbar.AppBarLayout>
+</layout>
 

@@ -3,22 +3,23 @@ package com.herokuapp.pointofsale.ui.resources;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.arch.lifecycle.MutableLiveData;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.text.HtmlCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.text.HtmlCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,21 +27,22 @@ import android.view.animation.LinearInterpolator;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.auth.MainActivity;
-import com.herokuapp.pointofsale.ui.owner.ManageEmployees;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
+
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
 public class Common {
 	public static final String USERDATA = "userdata" ;
@@ -77,6 +79,12 @@ public class Common {
 	public static void shakeElement(Context context, View view){
 		Animation shakeAnimation = AnimationUtils.loadAnimation(context, R.anim.shake);
 		view.startAnimation(shakeAnimation);
+	}
+
+	public static ArrayList copyArrayList(ArrayList<LinkedTreeMap<String, String>> list){
+		list = list == null ? new ArrayList<>() : list;
+		Gson gson = new Gson();
+		return gson.fromJson(gson.toJson(list), ArrayList.class);
 	}
 
 	public static void rotateElement(View view, float from, float to, int time){
@@ -147,14 +155,32 @@ public class Common {
 		return formatter.format(Float.parseFloat(number));
 	}
 
-	public static LinkedTreeMap<String, String> makePosRequestBody(ArrayList<LinkedTreeMap<String, String>> list){
+	public static LinkedTreeMap<String, String> makePosRequestBody(ArrayList<LinkedTreeMap<String, String>> list, String methodID){
 		LinkedTreeMap<String, String> body = new LinkedTreeMap<>();
 		for (int i = 0; i < list.size(); i++) {
 			body.put("data["+i+"][product_id]", list.get(i).get("product_id"));
 			body.put("data["+i+"][quantity]", list.get(i).get("amount"));
 			body.put("data["+i+"][total_cost]", list.get(i).get("cost"));
 			body.put("data["+i+"][discount]", list.get(i).get("discount"));
+			body.put("data["+i+"][method_id]", methodID);
 		}
 		return body;
+	}
+
+	public static Fragment getFragmentByTag(FragmentActivity activity, int viewPagerID, int fragmentPosition){
+		String tag = "android:switcher:"+viewPagerID+":"+fragmentPosition;
+		return activity.getSupportFragmentManager().findFragmentByTag(tag);
+	}
+
+	public static RecyclerView.Adapter getAdapterAnimation(RecyclerView.Adapter adapter){
+		return new ScaleInAnimationAdapter(new AlphaInAnimationAdapter(adapter));
+	}
+
+	public static RecyclerView.ItemAnimator getItemAnimator(){
+		return new OvershootInLeftAnimator();
+	}
+
+	public static RecyclerView.LayoutManager getLayoutManager(Context context){
+		return new LinearLayoutManager(context);
 	}
 }

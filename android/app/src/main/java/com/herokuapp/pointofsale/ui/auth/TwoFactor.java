@@ -1,30 +1,23 @@
 package com.herokuapp.pointofsale.ui.auth;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
-import android.graphics.drawable.Drawable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.button.MaterialButton;
-import android.support.design.card.MaterialCardView;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.alespero.expandablecardview.ExpandableCardView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.databinding.ActivityTwoFactorBinding;
 import com.herokuapp.pointofsale.models.authentication.Auth;
 import com.herokuapp.pointofsale.ui.owner.OwnerDashboard;
 import com.herokuapp.pointofsale.ui.resources.Common;
 import com.herokuapp.pointofsale.ui.resources.CustomToast;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TwoFactor extends AppCompatActivity {
 	private boolean isVerifying = false;

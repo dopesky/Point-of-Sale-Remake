@@ -4,5 +4,7 @@
 	android:layout_width="match_parent"
     android:layout_height="match_parent"
 	android:padding="@dimen/margin_2rem"
-	style="@style/TextAppearance.MaterialComponents.Caption"
+	android:textColor="@color/blacksmoke"
+	android:textAppearance="@style/TextAppearance.AppCompat.Widget.TextView.SpinnerItem"
+	style="@style/Widget.AppCompat.TextView.SpinnerItem"
 	android:textSize="20sp"/>

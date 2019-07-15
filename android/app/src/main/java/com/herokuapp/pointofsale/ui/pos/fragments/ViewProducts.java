@@ -1,15 +1,17 @@
 package com.herokuapp.pointofsale.ui.pos.fragments;
 
-import android.app.Activity;
-import android.arch.lifecycle.Observer;
+import androidx.lifecycle.Observer;
+
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +22,23 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.RecyclerViewAdapters.ProductsAdapter;
 import com.herokuapp.pointofsale.ui.pos.Purchases;
+import com.herokuapp.pointofsale.ui.pos.Sales;
+import com.herokuapp.pointofsale.ui.resources.Common;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ViewProducts extends Fragment {
 
+	private com.herokuapp.pointofsale.models.pos.Purchases purchasesVM;
+	private com.herokuapp.pointofsale.models.pos.Sales salesVM;
+
 	private boolean isPurchases;
-	private Activity activity;
 
 	private View viewProducts;
 	private RecyclerView recyclerView;
 	private SwipeRefreshLayout swipeToRefresh;
+	private Bundle recyclerViewState;
 
 	private ProductsAdapter adapter;
 	private LinkedTreeMap userDetails;
@@ -38,11 +46,16 @@ public class ViewProducts extends Fragment {
 	private Observer<LinkedTreeMap> getUserDataObserver = userdata -> {
 		if(userdata != null && !userdata.isEmpty()) {
 			userDetails = userdata;
+			if(isPurchases) purchasesVM.fetchPurchaseProducts();
+			if(!isPurchases) salesVM.fetchSaleProducts();
 		}else{
 			ConstraintLayout layout = viewProducts.findViewById(R.id.progress_bar);
 			ProgressBar progressBar = (ProgressBar) layout.getChildAt(0);
 			TextView textView = (TextView) layout.getChildAt(1);
+
+			layout.setVisibility(View.VISIBLE);
 			progressBar.setVisibility(View.GONE);
+			textView.setVisibility(View.GONE);
 			if(adapter == null || adapter.getItemCount() < 1)
 				textView.setVisibility(View.VISIBLE);
 		}
@@ -50,12 +63,15 @@ public class ViewProducts extends Fragment {
 
 	private Observer<ArrayList> getProductsObserver = products -> {
 		if(products != null && !products.isEmpty()){
-			showProducts(products);
+			showProducts(Common.copyArrayList(products));
 		}else{
 			ConstraintLayout layout = viewProducts.findViewById(R.id.progress_bar);
 			ProgressBar progressBar = (ProgressBar) layout.getChildAt(0);
 			TextView textView = (TextView) layout.getChildAt(1);
+
+			layout.setVisibility(View.VISIBLE);
 			progressBar.setVisibility(View.GONE);
+			textView.setVisibility(View.GONE);
 			if(adapter == null || adapter.getItemCount() < 1)
 				textView.setVisibility(View.VISIBLE);
 		}
@@ -67,44 +83,81 @@ public class ViewProducts extends Fragment {
 		}
 	};
 
-	public static ViewProducts newInstance(boolean isPurchases, Activity activity) {
-		ViewProducts viewProducts = new ViewProducts();
-		viewProducts.isPurchases = isPurchases;
-		viewProducts.activity = activity;
-		return viewProducts;
+	private Observer<Integer> getAddStatusObserver = status ->{
+		if(status != null && status == 0){
+			refreshProducts();
+		}
+	};
+
+	public static ViewProducts newInstance() {
+		return new ViewProducts();
 	}
 
 	@Override
-	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-							 @Nullable Bundle savedInstanceState) {
-		if(viewProducts != null) return viewProducts;
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		viewProducts = inflater.inflate(R.layout.view_products_fragment, container, false);
+		recyclerView = viewProducts.findViewById(R.id.recyclerview);
+		recyclerView.setItemAnimator(Common.getItemAnimator());
+		swipeToRefresh = viewProducts.findViewById(R.id.swipeToRefresh);
+		swipeToRefresh.setOnRefreshListener(this::refreshProducts);
 		return viewProducts;
 	}
 
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
-		if(recyclerView == null){
-			recyclerView = viewProducts.findViewById(R.id.recyclerview);
-			swipeToRefresh = viewProducts.findViewById(R.id.swipeToRefresh);
-			swipeToRefresh.setOnRefreshListener(this::refreshProducts);
-			if(isPurchases){
-				((Purchases)activity).getProducts().observe(this, getProductsObserver);
-				((Purchases)activity).getUserData().observe(this, getUserDataObserver);
-				((Purchases)activity).getFilter().observe(this, filterObserver);
-			}
+		isPurchases = getActivity() instanceof Purchases;
+		purchasesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Purchases.class);
+		salesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Sales.class);
+		if(isPurchases){
+			purchasesVM.getPurchaseProducts().observe(getViewLifecycleOwner(), getProductsObserver);
+			purchasesVM.getCurrentUserDetails().observe(getViewLifecycleOwner(), getUserDataObserver);
+			purchasesVM.getAddPurchaseStatus().observe(getViewLifecycleOwner(), getAddStatusObserver);
+			((Purchases) Objects.requireNonNull(getActivity())).getFilter().observe(getViewLifecycleOwner(), filterObserver);
+		}else{
+			salesVM.getSaleProducts().observe(getViewLifecycleOwner(), getProductsObserver);
+			salesVM.getCurrentUserDetails().observe(getViewLifecycleOwner(), getUserDataObserver);
+			salesVM.getAddSaleStatus().observe(getViewLifecycleOwner(), getAddStatusObserver);
+			((Sales) Objects.requireNonNull(getActivity())).getFilter().observe(getViewLifecycleOwner(), filterObserver);
 		}
-		refreshProducts();
+	}
+
+	@Override
+	public void onPause(){
+		super.onPause();
+		if(recyclerView.getLayoutManager() != null){
+			recyclerViewState = new Bundle();
+			Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
+			recyclerViewState.putParcelable("state", listState);
+		}
+	}
+
+	@Override
+	public void onResume(){
+		super.onResume();
+		isPurchases = getActivity() instanceof Purchases;
+		if(isPurchases && !((Purchases) Objects.requireNonNull(getActivity())).isSearchOpen()) {
+			purchasesVM.fetchUserDetails();
+		}else if(!isPurchases && !((Sales) Objects.requireNonNull(getActivity())).isSearchOpen()){
+			salesVM.fetchUserDetails();
+		}
+
+		if (recyclerViewState != null && recyclerViewState.containsKey("state") && recyclerView.getLayoutManager() != null) {
+			Parcelable listState = recyclerViewState.getParcelable("state");
+			recyclerView.getLayoutManager().onRestoreInstanceState(listState);
+		}
 	}
 
 	private void showProducts(ArrayList products) {
 		ConstraintLayout layout = viewProducts.findViewById(R.id.progress_bar);
 		layout.setVisibility(ConstraintLayout.GONE);
-		adapter = new ProductsAdapter(activity, products, userDetails);
-		recyclerView.setAdapter(adapter);
-		recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+		if(adapter == null){
+			adapter = new ProductsAdapter(Objects.requireNonNull(getActivity()), products, userDetails);
+			recyclerView.setAdapter(Common.getAdapterAnimation(adapter));
+			recyclerView.setLayoutManager(Common.getLayoutManager(getActivity()));
+		}else{
+			adapter.updateData(products);
+		}
 	}
 
 	private void refreshProducts(){
@@ -116,7 +169,11 @@ public class ViewProducts extends Fragment {
 		textView.setVisibility(View.GONE);
 		swipeToRefresh.setRefreshing(false);
 		if(isPurchases){
-			((Purchases)activity).refreshProducts();
+			((Purchases) Objects.requireNonNull(getActivity())).closeSearchView();
+			purchasesVM.fetchUserDetails();
+		}else{
+			((Sales) Objects.requireNonNull(getActivity())).closeSearchView();
+			salesVM.fetchUserDetails();
 		}
 	}
 

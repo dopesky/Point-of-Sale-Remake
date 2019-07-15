@@ -5,12 +5,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.herokuapp.pointofsale.ui.pos.fragments.ManagePurchases;
+import com.herokuapp.pointofsale.ui.pos.fragments.ManageSales;
 import com.herokuapp.pointofsale.ui.pos.fragments.ViewCart;
 import com.herokuapp.pointofsale.ui.pos.fragments.ViewProducts;
 
-public class PurchasesAdapter extends FragmentPagerAdapter {
-	public PurchasesAdapter(FragmentManager fm) {
+public class SalesAdapter extends FragmentPagerAdapter {
+	public SalesAdapter(FragmentManager fm) {
 		super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 	}
 
@@ -23,7 +23,7 @@ public class PurchasesAdapter extends FragmentPagerAdapter {
 			case 1:
 				return  ViewCart.newInstance();
 			case 2:
-				return new ManagePurchases();
+				return new ManageSales();
 			default:
 				throw new IllegalArgumentException("Illegal Access Index! No Fragment can be Loaded at that Index!");
 		}
@@ -34,3 +34,4 @@ public class PurchasesAdapter extends FragmentPagerAdapter {
 		return 3;
 	}
 }
+

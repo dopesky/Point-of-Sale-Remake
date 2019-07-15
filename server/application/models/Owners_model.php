@@ -39,6 +39,7 @@ class Owners_model extends CI_Model {
 		$this->db->where('owner.suspended',0);
 		$this->db->where('owner.owner_active',1);
 		$this->db->join('user_details as owner','owner.id_owner = user_details.owner_id');
+		$this->db->order_by("user_details.user_id", "ASC");
 		return $this->db->get('user_details')->result();
 	}
 
@@ -53,6 +54,7 @@ class Owners_model extends CI_Model {
 		}
 		$this->db->where('product_details.owner_suspended',0);
 		$this->db->where('product_details.owner_active',1);
+		$this->db->order_by("product_details.product_id", "ASC");
 		return $this->db->get('product_details')->result();
 	}
 

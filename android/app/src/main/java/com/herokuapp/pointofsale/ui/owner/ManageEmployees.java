@@ -1,21 +1,22 @@
 package com.herokuapp.pointofsale.ui.owner;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.LayoutInflaterCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +29,6 @@ import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.databinding.ActivityManangeEmployeesBinding;
 import com.herokuapp.pointofsale.models.owner.Owner;
 import com.herokuapp.pointofsale.ui.RecyclerViewAdapters.OwnerEmployeesAdapter;
-import com.herokuapp.pointofsale.ui.auth.MainActivity;
 import com.herokuapp.pointofsale.ui.resources.Common;
 import com.herokuapp.pointofsale.ui.resources.CustomToast;
 import com.herokuapp.pointofsale.ui.resources.NavigationBars;
@@ -45,10 +45,11 @@ public class ManageEmployees extends AppCompatActivity {
 	private OwnerEmployeesAdapter adapter;
 	private Owner ownerVM;
 	private SimpleSearchView searchView;
+	private Bundle recyclerViewState;
 
 	private Observer<ArrayList> getEmployeesObserver = employees -> {
 		if(employees != null && !employees.isEmpty()){
-			showEmployees(employees);
+			showEmployees(Common.copyArrayList(employees));
 		}
 	};
 
@@ -86,6 +87,7 @@ public class ManageEmployees extends AppCompatActivity {
 		NavigationBars.getNavBar(this, toolbar.findViewById(R.id.actual_toolbar), Objects.requireNonNull(ownerVM.getUserData().getValue()).getString("level", "-1"));
 
 		showEmployees = findViewById(R.id.recyclerview);
+		showEmployees.setItemAnimator(Common.getItemAnimator());
 		swipeToRefresh = findViewById(R.id.swipeToRefresh);
 		searchView = findViewById(R.id.search_view);
 		swipeToRefresh.setOnRefreshListener(this::refreshEmployees);
@@ -129,8 +131,24 @@ public class ManageEmployees extends AppCompatActivity {
 	}
 
 	@Override
+	public void onPause(){
+		super.onPause();
+		if(showEmployees.getLayoutManager() != null){
+			recyclerViewState = new Bundle();
+			Parcelable listState = showEmployees.getLayoutManager().onSaveInstanceState();
+			recyclerViewState.putParcelable("state", listState);
+		}
+	}
+
+	@Override
 	public void onResume(){
 		super.onResume();
+
+		if (recyclerViewState != null && recyclerViewState.containsKey("state") && showEmployees.getLayoutManager() != null) {
+			Parcelable listState = recyclerViewState.getParcelable("state");
+			showEmployees.getLayoutManager().onRestoreInstanceState(listState);
+		}
+
 		if(searchView != null && searchView.isSearchOpen()) return;
 		refreshEmployees();
 	}
@@ -198,8 +216,8 @@ public class ManageEmployees extends AppCompatActivity {
 		layout.setVisibility(ConstraintLayout.GONE);
 		if(adapter == null){
 			adapter = new OwnerEmployeesAdapter(this, employees);
-			showEmployees.setAdapter(adapter);
-			showEmployees.setLayoutManager(new LinearLayoutManager(this));
+			showEmployees.setAdapter(Common.getAdapterAnimation(adapter));
+			showEmployees.setLayoutManager(Common.getLayoutManager(this));
 		}else{
 			adapter.updateData(employees);
 		}

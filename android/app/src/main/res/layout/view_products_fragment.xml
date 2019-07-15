@@ -4,24 +4,24 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context=".ui.pos.fragments.ViewProducts">
-	<android.support.design.widget.CoordinatorLayout
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:background = "@color/transparent">
 
-		<android.support.v4.widget.SwipeRefreshLayout
+		<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 			android:id="@+id/swipeToRefresh"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">
 
-			<android.support.v7.widget.RecyclerView
+			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/recyclerview"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:layout_marginTop="@dimen/margin_1rem"
 				android:layout_marginBottom="@dimen/margin_1rem"/>
-		</android.support.v4.widget.SwipeRefreshLayout>
-		<android.support.constraint.ConstraintLayout
+		</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:id="@+id/progress_bar"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -47,6 +47,6 @@
 				style="@style/TextAppearance.MaterialComponents.Headline5"
 				android:textColor="@color/whitesmoke"
 				android:text="@string/nothing_to_show"/>
-		</android.support.constraint.ConstraintLayout>
-	</android.support.design.widget.CoordinatorLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

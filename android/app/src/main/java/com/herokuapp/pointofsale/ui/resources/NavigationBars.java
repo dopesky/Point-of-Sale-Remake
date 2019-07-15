@@ -5,17 +5,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.owner.ManageEmployees;
 import com.herokuapp.pointofsale.ui.owner.ManageProducts;
-import com.herokuapp.pointofsale.ui.owner.OwnerDashboard;
 import com.herokuapp.pointofsale.ui.pos.Purchases;
+import com.herokuapp.pointofsale.ui.pos.Sales;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -37,16 +38,16 @@ public class NavigationBars {
 		return context.getSharedPreferences(Common.USERDATA, Context.MODE_PRIVATE);
 	}
 
-	private static void getImageLoader(Context context){
+	private static void getImageLoader(){
 		DrawerImageLoader.init(new AbstractDrawerImageLoader() {
 			@Override
 			public void set(ImageView imageView, Uri uri, Drawable placeholder, String tag) {
-				Glide.with(context).load(uri).placeholder(placeholder).centerCrop().into(imageView);
+				Glide.with(imageView.getContext()).load(uri).placeholder(placeholder).centerCrop().into(imageView);
 			}
 
 			@Override
 			public void cancel(ImageView imageView) {
-				Glide.with(context).clear(imageView);
+				Glide.with(imageView.getContext()).clear(imageView);
 			}
 
 			@Override
@@ -57,7 +58,7 @@ public class NavigationBars {
 	}
 
 	private static AccountHeader getAccountHeader(Activity activity){
-		getImageLoader(activity);
+		getImageLoader();
 		String fullName = Common.capitalize(
 				getUserdata(activity).getString("lname", "")
 					+ " " +
@@ -72,6 +73,7 @@ public class NavigationBars {
 								.withEmail(getUserdata(activity).getString("email", "").toLowerCase())
 								.withIcon(getUserdata(activity).getString("photo", BLANK_PROFILE_IMAGE))
 				 )
+				.withTextColor(Color.WHITE)
 				.withOnAccountHeaderListener((view, profile, current) -> {
 					CustomToast.showToast(activity, " Hurray Wewe Ni Boss!", "success");
 					return false;
@@ -83,14 +85,14 @@ public class NavigationBars {
 		ArrayList<IDrawerItem> items = new ArrayList<>();
 		switch (level){
 			case 4:
+				items.add(new DividerDrawerItem());
 				items.add(new SecondaryDrawerItem()
 						.withIdentifier(1)
 						.withName("Dashboard")
 						.withIcon(FontAwesome.Icon.faw_home)
-						.withSelectable(false).withOnDrawerItemClickListener((view, position, drawerItem) ->{
-							if(activity instanceof OwnerDashboard) return false;
-							Intent intent = new Intent(activity, OwnerDashboard.class);
-							activity.startActivity(intent);
+						.withSelectable(false)
+						.withOnDrawerItemClickListener((view, position, drawerItem) ->{
+							Common.launchLauncherActivity(activity);
 							return false;
 						}));
 				items.add(new DividerDrawerItem());
@@ -117,10 +119,10 @@ public class NavigationBars {
 							activity.startActivity(intent);
 							return false;
 						}));
-				items.add(new DividerDrawerItem());
 			case 3:
 			case 2:
 			case 1:
+				items.add(new DividerDrawerItem());
 				items.add(new SecondaryDrawerItem()
 						.withIdentifier(3)
 						.withName("Purchases")
@@ -137,7 +139,13 @@ public class NavigationBars {
 						.withIdentifier(4)
 						.withName("Sales")
 						.withIcon(FontAwesome.Icon.faw_cart_arrow_down)
-						.withSelectable(false));
+						.withSelectable(false)
+						.withOnDrawerItemClickListener((view, position, drawerItem) ->{
+							if(activity instanceof Sales) return false;
+							Intent intent = new Intent(activity, Sales.class);
+							activity.startActivity(intent);
+							return false;
+						}));
 				items.add(new DividerDrawerItem());
 				items.add(new SecondaryDrawerItem()
 						.withIdentifier(4)
@@ -161,6 +169,7 @@ public class NavigationBars {
 		IDrawerItem[] items = getDrawerItems(Integer.parseInt(level), activity);
 		new DrawerBuilder().withActivity(activity).withToolbar(toolbar).withActionBarDrawerToggleAnimated(true)
 				.withAccountHeader(getAccountHeader(activity), true)
+				.withCloseOnClick(true)
 				.addDrawerItems(items)
 				.withSelectedItem(-1)
 				.withStickyFooter(R.layout.footer)

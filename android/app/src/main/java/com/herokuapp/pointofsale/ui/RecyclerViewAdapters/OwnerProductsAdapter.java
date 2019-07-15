@@ -4,28 +4,31 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.button.MaterialButton;
-import android.support.design.card.MaterialCardView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.owner.EditProductDetails;
 import com.herokuapp.pointofsale.ui.owner.ManageProducts;
 import com.herokuapp.pointofsale.ui.resources.Common;
 import com.herokuapp.pointofsale.ui.resources.CustomToast;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,7 +40,7 @@ import java.util.Objects;
 public class OwnerProductsAdapter extends
 		RecyclerView.Adapter<OwnerProductsAdapter.ViewHolder> {
 	private ArrayList<LinkedTreeMap<String,String>> dataToView;
-	private final ArrayList<LinkedTreeMap<String,String>> dataFromDB;
+	private ArrayList<LinkedTreeMap<String,String>> dataFromDB;
 	private LayoutInflater inflater;
 	private Activity activity;
 	private String filter;
@@ -50,26 +53,83 @@ public class OwnerProductsAdapter extends
 		filter = "";
 	}
 
-	public void updateData(ArrayList<LinkedTreeMap<String,String>> dataToView){
-		filter = "";
-		this.dataFromDB.clear();
-		this.dataFromDB.addAll(dataToView);
-		this.dataToView = dataToView;
-		notifyDataSetChanged();
+	public String getFilter(){
+		return filter == null ? "" : filter;
 	}
 
 	public void setFilter(String filter){
 		if(dataFromDB == null || dataFromDB.size() < 1) return;
 		this.filter = filter;
-		dataToView = new ArrayList<>();
+		ArrayList<LinkedTreeMap<String,String>> dataToView = new ArrayList<>();
 		for (LinkedTreeMap<String, String> current : dataFromDB) {
 			if(isFilterFound(current)) dataToView.add(current);
 		}
-		notifyDataSetChanged();
+		DiffUtil.DiffResult changes = DiffUtil.calculateDiff(getCallBack(dataToView), true);
+		this.dataToView = dataToView;
+		changes.dispatchUpdatesTo(this);
 	}
 
-	public String getFilter(){
-		return filter == null ? "" : filter;
+	public void updateData(ArrayList<LinkedTreeMap<String,String>> dataToView){
+		filter = "";
+		this.dataToView = dataFromDB;
+		DiffUtil.DiffResult changes = DiffUtil.calculateDiff(getCallBack(dataToView), true);
+		this.dataToView = dataToView;
+		dataFromDB = dataToView;
+		changes.dispatchUpdatesTo(this);
+	}
+
+	private DiffUtil.Callback getCallBack(ArrayList<LinkedTreeMap<String,String>> newList){
+		return new DiffUtil.Callback() {
+			@Override
+			public int getOldListSize() {
+				return dataToView.size();
+			}
+
+			@Override
+			public int getNewListSize() {
+				return newList.size();
+			}
+
+			@Override
+			public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+				String oldID = dataToView.get(oldItemPosition).get("product_id");
+				String newID = newList.get(newItemPosition).get("product_id");
+				return oldID != null && newID != null && oldID.trim().equals(newID.trim());
+			}
+
+			@Override
+			public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+				String oldName = dataToView.get(oldItemPosition).get("product");
+				String oldCategory = dataToView.get(oldItemPosition).get("category_name");
+				String oldCost = dataToView.get(oldItemPosition).get("cost_per_unit");
+				String oldInventory = dataToView.get(oldItemPosition).get("status");
+				String oldTurnover = dataToView.get(oldItemPosition).get("modified_date");
+				String oldUnitCost = dataToView.get(oldItemPosition).get("category_id");
+				String oldStates = dataToView.get(oldItemPosition).get("active") + dataToView.get(oldItemPosition).get("suspended") +
+						dataToView.get(oldItemPosition).get("owner_suspended") + dataToView.get(oldItemPosition).get("owner_active");
+
+				String newName = newList.get(newItemPosition).get("product");
+				String newCategory = newList.get(newItemPosition).get("category_name");
+				String newCost = newList.get(newItemPosition).get("cost_per_unit");
+				String newInventory = newList.get(newItemPosition).get("status");
+				String newTurnover = newList.get(newItemPosition).get("modified_date");
+				String newUnitCost = newList.get(newItemPosition).get("category_id");
+				String newStates = newList.get(newItemPosition).get("active") + newList.get(newItemPosition).get("suspended") +
+						newList.get(newItemPosition).get("owner_suspended") + newList.get(newItemPosition).get("owner_active");
+
+				return oldName != null && oldCategory != null && oldCost != null && oldInventory != null
+						&& oldTurnover != null && oldUnitCost != null && !oldStates.toLowerCase().contains("null")
+						&& oldName.equals(newName) && oldCategory.equals(newCategory) && oldCost.equals(newCost)
+						&& oldInventory.equals(newInventory) && oldTurnover.equals(newTurnover) && oldUnitCost.equals(newUnitCost)
+						&& oldStates.equals(newStates);
+			}
+
+			@Nullable
+			@Override
+			public Object getChangePayload(int oldItemPosition, int newItemPosition) {
+				return super.getChangePayload(oldItemPosition, newItemPosition);
+			}
+		};
 	}
 
 	private boolean isFilterFound(LinkedTreeMap<String, String> current){
@@ -122,8 +182,6 @@ public class OwnerProductsAdapter extends
 			format.applyPattern("dd MMM yyyy • hh:mma");
 			time = format.format(date);
 		} catch (ParseException e) {System.out.println(e.getMessage());}
-		viewHolder.setIsRecyclable(false);
-		viewHolder.layout.setInRecyclerView(true);
 		String color = Common.getRandomDarkColor(i);
 		viewHolder.profile.setBackgroundColor(Color.parseColor(color));
 		viewHolder.profileLetter.setText(name.trim().isEmpty() ? "?" : Common.capitalize(name.substring(0,1)));
@@ -147,6 +205,12 @@ public class OwnerProductsAdapter extends
 	}
 
 	@Override
+	public void onViewDetachedFromWindow(@NonNull OwnerProductsAdapter.ViewHolder viewHolder){
+		if(viewHolder.layout.isExpanded()) viewHolder.expandView(viewHolder.itemView.findViewById(R.id.show_more));
+		super.onViewDetachedFromWindow(viewHolder);
+	}
+
+	@Override
 	public int getItemCount() {
 		return dataToView.size();
 	}
@@ -158,7 +222,7 @@ public class OwnerProductsAdapter extends
 		final TextView status;
 		final TextView time;
 		final OwnerProductsAdapter adapter;
-		final ExpandableLinearLayout layout;
+		final ExpandableLayout layout;
 		final ImageView profile;
 		final TextView profileLetter;
 		final Bundle currentBundle;
@@ -177,7 +241,7 @@ public class OwnerProductsAdapter extends
 			MaterialButton button = itemView.findViewById(R.id.show_more);
 			button.setOnClickListener(v -> expandView(button));
 			((RelativeLayout)name.getParent()).setOnClickListener(v -> button.performClick());
-			((MaterialCardView)profile.getParent().getParent()).setOnClickListener(v -> {
+			((MaterialCardView)profile.getParent().getParent().getParent()).setOnClickListener(v -> {
 				if(currentBundle.getBoolean("suspended")){
 					CustomToast.showToast(inflater.getContext(), " Product Details Cannot be Updated!", "warning");
 					return;
@@ -185,8 +249,7 @@ public class OwnerProductsAdapter extends
 				String transitionName = inflater.getContext().getString(R.string.default_transition_name);
 				Intent intent = new Intent(activity, EditProductDetails.class);
 				intent.putExtras(currentBundle);
-				ActivityOptionsCompat options =
-						ActivityOptionsCompat.makeSceneTransitionAnimation(activity, profile, transitionName);
+				ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, profileLetter, transitionName);
 				ActivityCompat.startActivityForResult(activity, intent, 1, options.toBundle());
 			});
 			this.adapter = adapter;

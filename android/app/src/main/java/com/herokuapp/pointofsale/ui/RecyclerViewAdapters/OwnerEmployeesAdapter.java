@@ -3,12 +3,14 @@ package com.herokuapp.pointofsale.ui.RecyclerViewAdapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.button.MaterialButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.button.MaterialButton;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.owner.EditEmployeeDetails;
 import com.herokuapp.pointofsale.ui.resources.Common;
 import com.herokuapp.pointofsale.ui.resources.CustomToast;
 import com.herokuapp.pointofsale.ui.resources.NavigationBars;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class OwnerEmployeesAdapter extends
 		RecyclerView.Adapter<OwnerEmployeesAdapter.ViewHolder> {
 	private ArrayList<LinkedTreeMap<String,String>> dataToView;
-	private final ArrayList<LinkedTreeMap<String,String>> dataFromDB;
+	private ArrayList<LinkedTreeMap<String,String>> dataFromDB;
 	private LayoutInflater inflater;
 	private Activity activity;
 	private String filter;
@@ -49,26 +52,81 @@ public class OwnerEmployeesAdapter extends
 		filter = "";
 	}
 
-	public void updateData(ArrayList<LinkedTreeMap<String,String>> dataToView){
-		filter = "";
-		this.dataFromDB.clear();
-		this.dataFromDB.addAll(dataToView);
-		this.dataToView = dataToView;
-		notifyDataSetChanged();
+	public String getFilter(){
+		return filter == null ? "" : filter;
 	}
 
 	public void setFilter(String filter){
 		if(dataFromDB == null || dataFromDB.size() < 1) return;
 		this.filter = filter;
-		dataToView = new ArrayList<>();
+		ArrayList<LinkedTreeMap<String,String>> dataToView = new ArrayList<>();
 		for (LinkedTreeMap<String, String> current : dataFromDB) {
 			if(isFilterFound(current)) dataToView.add(current);
 		}
-		notifyDataSetChanged();
+		DiffUtil.DiffResult changes = DiffUtil.calculateDiff(getCallBack(dataToView), true);
+		this.dataToView = dataToView;
+		changes.dispatchUpdatesTo(this);
 	}
 
-	public String getFilter(){
-		return filter == null ? "" : filter;
+	public void updateData(ArrayList<LinkedTreeMap<String,String>> dataToView){
+		filter = "";
+		this.dataToView = dataFromDB;
+		DiffUtil.DiffResult changes = DiffUtil.calculateDiff(getCallBack(dataToView), true);
+		this.dataToView = dataToView;
+		dataFromDB = dataToView;
+		changes.dispatchUpdatesTo(this);
+	}
+
+	private DiffUtil.Callback getCallBack(ArrayList<LinkedTreeMap<String,String>> newList){
+		return new DiffUtil.Callback() {
+			@Override
+			public int getOldListSize() {
+				return dataToView.size();
+			}
+
+			@Override
+			public int getNewListSize() {
+				return newList.size();
+			}
+
+			@Override
+			public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+				String oldID = dataToView.get(oldItemPosition).get("employee_id");
+				String newID = newList.get(newItemPosition).get("employee_id");
+				return oldID != null && newID != null && oldID.trim().equals(newID.trim());
+			}
+
+			@Override
+			public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+				String oldName = dataToView.get(oldItemPosition).get("first_name") + dataToView.get(oldItemPosition).get("last_name");
+				String oldCategory = dataToView.get(oldItemPosition).get("department");
+				String oldCost = dataToView.get(oldItemPosition).get("email");
+				String oldInventory = dataToView.get(oldItemPosition).get("status");
+				String oldTurnover = dataToView.get(oldItemPosition).get("last_access_time");
+				String oldUnitCost = dataToView.get(oldItemPosition).get("profile_photo");
+				String oldDept = dataToView.get(oldItemPosition).get("department_id");
+
+				String newName = newList.get(newItemPosition).get("first_name") + newList.get(newItemPosition).get("last_name");
+				String newCategory = newList.get(newItemPosition).get("department");
+				String newCost = newList.get(newItemPosition).get("email");
+				String newInventory = newList.get(newItemPosition).get("status");
+				String newTurnover = newList.get(newItemPosition).get("last_access_time");
+				String newUnitCost = newList.get(newItemPosition).get("profile_photo");
+				String newDept = newList.get(newItemPosition).get("department_id");
+
+				return !oldName.toLowerCase().contains("null") && oldCategory != null && oldCost != null && oldInventory != null
+						&& oldTurnover != null && oldUnitCost != null && oldDept != null
+						&& oldName.equals(newName) && oldCategory.equals(newCategory) && oldCost.equals(newCost)
+						&& oldInventory.equals(newInventory) && oldTurnover.equals(newTurnover) && oldUnitCost.equals(newUnitCost)
+						&& oldDept.equals(newDept);
+			}
+
+			@Nullable
+			@Override
+			public Object getChangePayload(int oldItemPosition, int newItemPosition) {
+				return super.getChangePayload(oldItemPosition, newItemPosition);
+			}
+		};
 	}
 
 	private boolean isFilterFound(LinkedTreeMap<String, String> current){
@@ -115,8 +173,6 @@ public class OwnerEmployeesAdapter extends
 			format.applyPattern("dd MMM yyyy • hh:mma");
 			time = format.format(date);
 		} catch (ParseException e) {System.out.println(e.getMessage());}
-		viewHolder.setIsRecyclable(false);
-		viewHolder.layout.setInRecyclerView(true);
 		if(current.get("profile_photo") == null){
 			Glide.with(inflater.getContext()).load(NavigationBars.BLANK_PROFILE_IMAGE).placeholder(R.drawable.image_pre_loader).into(viewHolder.photo);
 			Glide.with(inflater.getContext()).load(NavigationBars.BLANK_PROFILE_IMAGE).placeholder(R.drawable.image_pre_loader).into(viewHolder.profile);
@@ -143,6 +199,12 @@ public class OwnerEmployeesAdapter extends
 	}
 
 	@Override
+	public  void onViewDetachedFromWindow(@NonNull OwnerEmployeesAdapter.ViewHolder viewHolder){
+		if(viewHolder.layout.isExpanded()) viewHolder.expandView(viewHolder.itemView.findViewById(R.id.show_more));
+		super.onViewDetachedFromWindow(viewHolder);
+	}
+
+	@Override
 	public int getItemCount() {
 		return dataToView.size();
 	}
@@ -155,7 +217,7 @@ public class OwnerEmployeesAdapter extends
 		final TextView time;
 		final ImageView photo;
 		final OwnerEmployeesAdapter adapter;
-		final ExpandableLinearLayout layout;
+		final ExpandableLayout layout;
 		final CircleImageView profile;
 		final Bundle currentBundle;
 
@@ -171,14 +233,7 @@ public class OwnerEmployeesAdapter extends
 			profile = itemView.findViewById(R.id.profile_image);
 			currentBundle = new Bundle();
 			MaterialButton button = itemView.findViewById(R.id.show_more);
-			((ConstraintLayout)name.getParent()).setOnClickListener(v -> {
-				if(layout.isExpanded()){
-					Common.rotateElement(button, 180f, 0f, 300);
-				}else{
-					Common.rotateElement(button, 0f, 180f, 300);
-				}
-				layout.toggle();
-			});
+			((ConstraintLayout)name.getParent()).setOnClickListener(v -> expandView(button));
 			photo.setOnClickListener(v -> {
 				if(currentBundle.getBoolean("suspended")){
 					CustomToast.showToast(inflater.getContext(), " Employee Details Cannot be Updated!", "warning");
@@ -192,6 +247,15 @@ public class OwnerEmployeesAdapter extends
 				ActivityCompat.startActivityForResult(activity, intent, 1, options.toBundle());
 			});
 			this.adapter = adapter;
+		}
+
+		void expandView(MaterialButton button){
+			if(layout.isExpanded()){
+				Common.rotateElement(button, 180f, 0f, 300);
+			}else{
+				Common.rotateElement(button, 0f, 180f, 300);
+			}
+			layout.toggle();
 		}
 	}
 }

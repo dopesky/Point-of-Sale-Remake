@@ -1,10 +1,7 @@
 package com.herokuapp.pointofsale.api.Retrofit;
 
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 
-import com.google.gson.internal.LinkedTreeMap;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +10,6 @@ import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -48,6 +44,9 @@ public interface Annotations {
 	@GET("jsons/get_valid_categories")
 	Call<HashMap> getCategories();
 
+	@GET("jsons/get_valid_payment_methods")
+	Call<HashMap> getValidPaymentMethods();
+
 	@GET("jsons/get_employees_by_owner_user_id/{user_id}")
 	Call<HashMap> getOwnerEmployees(@Path("user_id") String user_id);
 
@@ -81,7 +80,14 @@ public interface Annotations {
 	@GET("jsons/get_inventory_for_purchases/{owner_id}")
 	Call<HashMap> getProductsForPurchase(@Path("owner_id") String owner_id);
 
+	@GET("jsons/get_inventory_for_sales/{owner_id}")
+	Call<HashMap> getProductsForSale(@Path("owner_id") String owner_id);
+
 	@FormUrlEncoded
 	@POST("pos/add_purchase")
 	Call<HashMap> addPurchase(@FieldMap Map<String, String> data, @Field("user_id") String user_id);
+
+	@FormUrlEncoded
+	@POST("pos/add_sale")
+	Call<HashMap> addSale(@FieldMap Map<String, String> data, @Field("user_id") String user_id);
 }

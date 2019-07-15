@@ -1,39 +1,27 @@
 package com.herokuapp.pointofsale.ui.owner;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.Intent;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.core.view.LayoutInflaterCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatCallback;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import androidx.appcompat.app.AppCompatCallback;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.widget.Toolbar;
 
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.models.owner.Owner;
-import com.herokuapp.pointofsale.ui.RecyclerViewAdapters.OwnerEmployeesAdapter;
-import com.herokuapp.pointofsale.ui.auth.MainActivity;
 import com.herokuapp.pointofsale.ui.resources.Common;
 
-import java.util.ArrayList;
 import java.util.Objects;;
 
 import com.herokuapp.pointofsale.ui.resources.NavigationBars;
-import com.mikepenz.iconics.context.IconicsContextWrapper;
-import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.mikepenz.iconics.context.IconicsLayoutInflater2;
 
 public class OwnerDashboard extends AppCompatActivity {

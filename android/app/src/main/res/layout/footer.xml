@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<android.support.design.bottomappbar.BottomAppBar
+	<com.google.android.material.bottomappbar.BottomAppBar
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:backgroundTint="@color/whitesmoke"
 		android:layout_gravity="bottom|center_horizontal"
 		app:navigationIcon="@drawable/ic_copyright_black_24dp"
 		android:padding="@dimen/margin_1rem">
-		<android.support.constraint.ConstraintLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 			<TextView
@@ -38,6 +38,6 @@
 				style="@style/TextAppearance.MaterialComponents.Caption"
 				android:layout_marginEnd="@dimen/margin_3rem"
 				android:drawableEnd="@drawable/ic_sentiment_satisfied_black_24dp"/>
-		</android.support.constraint.ConstraintLayout>
-	</android.support.design.bottomappbar.BottomAppBar>
-</android.support.design.widget.CoordinatorLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+	</com.google.android.material.bottomappbar.BottomAppBar>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

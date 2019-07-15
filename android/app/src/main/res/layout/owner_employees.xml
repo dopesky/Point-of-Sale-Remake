@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
     android:layout_height="wrap_content"
 	android:layout_margin = "@dimen/margin_3rem">
-	<android.support.design.card.MaterialCardView
+	<com.google.android.material.card.MaterialCardView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:elevation="50dp"
@@ -20,12 +20,11 @@
 			<ImageView
 				android:id="@+id/employee_photo"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:minHeight="@dimen/image_height_default"
+				android:layout_height="@dimen/image_height_default"
 				android:contentDescription="@string/employee_image_description"
 				android:transitionName="@string/default_transition_name"
 				android:scaleType="centerCrop"/>
-			<android.support.constraint.ConstraintLayout
+			<androidx.constraintlayout.widget.ConstraintLayout
 				android:id="@+id/employee_title"
 				android:layout_width="match_parent"
 				android:layout_below="@id/employee_photo"
@@ -60,7 +59,7 @@
 					android:layout_marginStart="@dimen/margin_3rem"
 					app:layout_constraintTop_toBottomOf="@id/employee_name"
 					app:layout_constraintLeft_toRightOf="@id/profile_image"/>
-				<android.support.design.button.MaterialButton
+				<com.google.android.material.button.MaterialButton
 					android:id="@+id/show_more"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -74,28 +73,27 @@
 					app:layout_constraintRight_toRightOf="parent"
 					app:layout_constraintTop_toTopOf="parent"
 					app:layout_constraintBottom_toBottomOf="parent"/>
-			</android.support.constraint.ConstraintLayout>
+			</androidx.constraintlayout.widget.ConstraintLayout>
 			<HorizontalScrollView
 				android:id="@+id/horizontal_scroll"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_below="@id/employee_title">
-				<com.github.aakira.expandablelayout.ExpandableLinearLayout
+				<net.cachapa.expandablelayout.ExpandableLayout
 					android:id="@+id/expandable_layout"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:padding="@dimen/margin_3rem"
-					app:ael_expanded="false"
-					app:ael_duration="300"
-					app:ael_orientation="vertical"
-					android:orientation="vertical">
+					app:el_expanded="false"
+					app:el_duration="300"
+					app:el_parallax="1.0">
 					<LinearLayout
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:showDividers="middle"
 						android:divider="@drawable/spacing"
 						android:orientation="vertical">
-						<android.support.constraint.ConstraintLayout
+						<androidx.constraintlayout.widget.ConstraintLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content">
 							<com.mikepenz.iconics.view.IconicsImageView
@@ -131,9 +129,9 @@
 								app:layout_constraintTop_toBottomOf="@id/employee_dept"
 								app:layout_constraintBottom_toBottomOf="parent"
 								app:layout_constraintLeft_toRightOf="@id/dept_img"/>
-						</android.support.constraint.ConstraintLayout>
+						</androidx.constraintlayout.widget.ConstraintLayout>
 
-						<android.support.constraint.ConstraintLayout
+						<androidx.constraintlayout.widget.ConstraintLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content">
 							<com.mikepenz.iconics.view.IconicsImageView
@@ -168,9 +166,9 @@
 								app:layout_constraintTop_toBottomOf="@id/employee_email"
 								app:layout_constraintLeft_toRightOf="@id/email_img"
 								android:layout_marginStart="@dimen/margin_3rem"/>
-						</android.support.constraint.ConstraintLayout>
+						</androidx.constraintlayout.widget.ConstraintLayout>
 
-						<android.support.constraint.ConstraintLayout
+						<androidx.constraintlayout.widget.ConstraintLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content">
 							<com.mikepenz.iconics.view.IconicsImageView
@@ -205,9 +203,9 @@
 								android:layout_marginStart="@dimen/margin_3rem"
 								app:layout_constraintTop_toBottomOf="@id/employee_status"
 								app:layout_constraintLeft_toRightOf="@id/status_img"/>
-						</android.support.constraint.ConstraintLayout>
+						</androidx.constraintlayout.widget.ConstraintLayout>
 
-						<android.support.constraint.ConstraintLayout
+						<androidx.constraintlayout.widget.ConstraintLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content">
 							<com.mikepenz.iconics.view.IconicsImageView
@@ -242,10 +240,10 @@
 								android:layout_marginStart="@dimen/margin_3rem"
 								app:layout_constraintTop_toBottomOf="@id/employee_time"
 								app:layout_constraintLeft_toRightOf="@id/time_img"/>
-						</android.support.constraint.ConstraintLayout>
+						</androidx.constraintlayout.widget.ConstraintLayout>
 					</LinearLayout>
-				</com.github.aakira.expandablelayout.ExpandableLinearLayout>
+				</net.cachapa.expandablelayout.ExpandableLayout>
 			</HorizontalScrollView>
 		</RelativeLayout>
-	</android.support.design.card.MaterialCardView>
-</android.support.constraint.ConstraintLayout>
+	</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

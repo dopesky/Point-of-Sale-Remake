@@ -4,16 +4,17 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	tools:context=".ui.pos.fragments.ManagePurchases">
+	tools:context=".ui.pos.fragments.ManageSales">
 
+	<!-- TODO: Update blank fragment layout -->
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Manage Purchases"
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		app:layout_constraintRight_toRightOf="parent"
+		android:text="Manage Sales"
+		android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"/>
+		app:layout_constraintRight_toRightOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -75,8 +75,20 @@
 	<string name="product_discount">Product Discount</string>
 	<string name="product_amount">Product Quantity</string>
 	<string name="remove">Remove</string>
-	<string name="change">Change</string>
+	<string name="change">Update</string>
 	<string name="add_to_cart">Add To Cart</string>
 	<string name="product_quantity">Product Quantity</string>
 	<string name="make_purchases">Make Purchases</string>
+	<string name="x_to_close">×</string>
+	<string name="cart_summary">Cart Summary</string>
+	<string name="gross_cost">Gross Cost</string>
+	<string name="total_discount">Discount</string>
+	<string name="net_cost">Net Cost</string>
+	<string name="purchasing">Purchasing . . .</string>
+	<string name="checkout">Checkout</string>
+	<string name="faw_sign_out_alt_checkout">{faw-sign-out-alt} Checkout</string>
+	<string name="amount_paid">Amount Paid</string>
+	<string name="balance">Balance</string>
+	<string name="select_a_payment_method">Select a Payment Method</string>
+	<string name="selling">Selling . . .</string>
 </resources>

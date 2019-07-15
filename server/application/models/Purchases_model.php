@@ -57,6 +57,7 @@ class Purchases_model extends CI_Model {
       $this->db->where('purchase_details.owner_suspended', 0);
       $this->db->where('purchase_details.owner_active', 1);
       $this->db->where('products.suspended', 0);
+      $this->db->order_by("purchase_details.purchase_id", "ASC");
       return $this->db->get('purchase_details')->result();
     }
 

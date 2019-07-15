@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
@@ -8,7 +8,7 @@
 	android:layout_marginStart = "@dimen/margin_3rem"
 	android:layout_marginEnd = "@dimen/margin_3rem"
 	android:layout_marginBottom = "@dimen/margin_1rem">
-	<android.support.design.card.MaterialCardView
+	<com.google.android.material.card.MaterialCardView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:elevation="50dp"
@@ -26,7 +26,7 @@
 				android:padding="@dimen/margin_3rem"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal">
-				<android.support.design.card.MaterialCardView
+				<com.google.android.material.card.MaterialCardView
 					android:layout_width="@dimen/circle_image_size"
 					android:layout_height="@dimen/circle_image_size"
 					android:layout_gravity="center"
@@ -53,7 +53,7 @@
 							android:layout_alignParentStart="true"
 							android:layout_alignParentEnd="true"/>
 					</RelativeLayout>
-				</android.support.design.card.MaterialCardView>
+				</com.google.android.material.card.MaterialCardView>
 				<RelativeLayout
 					android:layout_width="0dp"
 					android:layout_weight="6"
@@ -80,7 +80,7 @@
 						android:layout_marginStart="@dimen/margin_3rem"
 						android:layout_below="@id/product_name"/>
 				</RelativeLayout>
-				<android.support.design.button.MaterialButton
+				<com.google.android.material.button.MaterialButton
 					android:id="@+id/show_more"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -99,22 +99,21 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_below="@id/product_title">
-				<com.github.aakira.expandablelayout.ExpandableLinearLayout
+				<net.cachapa.expandablelayout.ExpandableLayout
 					android:id="@+id/expandable_layout"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:padding="@dimen/margin_3rem"
-					app:ael_expanded="false"
-					app:ael_duration="300"
-					app:ael_orientation="vertical"
-					android:orientation="vertical">
+					app:el_expanded="false"
+					app:el_duration="300"
+					app:el_parallax="1.0">
 					<LinearLayout
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:showDividers="middle"
 						android:divider="@drawable/spacing"
 						android:orientation="vertical">
-						<android.support.constraint.ConstraintLayout
+						<androidx.constraintlayout.widget.ConstraintLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content">
 							<com.mikepenz.iconics.view.IconicsImageView
@@ -150,9 +149,9 @@
 								app:layout_constraintTop_toBottomOf="@id/product_category"
 								app:layout_constraintBottom_toBottomOf="parent"
 								app:layout_constraintLeft_toRightOf="@id/category_img"/>
-						</android.support.constraint.ConstraintLayout>
+						</androidx.constraintlayout.widget.ConstraintLayout>
 
-						<android.support.constraint.ConstraintLayout
+						<androidx.constraintlayout.widget.ConstraintLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content">
 							<com.mikepenz.iconics.view.IconicsImageView
@@ -187,9 +186,9 @@
 								app:layout_constraintTop_toBottomOf="@id/product_cost"
 								app:layout_constraintLeft_toRightOf="@id/cost_img"
 								android:layout_marginStart="@dimen/margin_3rem"/>
-						</android.support.constraint.ConstraintLayout>
+						</androidx.constraintlayout.widget.ConstraintLayout>
 
-						<android.support.constraint.ConstraintLayout
+						<androidx.constraintlayout.widget.ConstraintLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content">
 							<com.mikepenz.iconics.view.IconicsImageView
@@ -224,9 +223,9 @@
 								android:layout_marginStart="@dimen/margin_3rem"
 								app:layout_constraintTop_toBottomOf="@id/product_inventory"
 								app:layout_constraintLeft_toRightOf="@id/inventory_img"/>
-						</android.support.constraint.ConstraintLayout>
+						</androidx.constraintlayout.widget.ConstraintLayout>
 
-						<android.support.constraint.ConstraintLayout
+						<androidx.constraintlayout.widget.ConstraintLayout
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content">
 							<com.mikepenz.iconics.view.IconicsImageView
@@ -261,10 +260,10 @@
 								android:layout_marginStart="@dimen/margin_3rem"
 								app:layout_constraintTop_toBottomOf="@id/product_turnover"
 								app:layout_constraintLeft_toRightOf="@id/turnover_img"/>
-						</android.support.constraint.ConstraintLayout>
+						</androidx.constraintlayout.widget.ConstraintLayout>
 					</LinearLayout>
-				</com.github.aakira.expandablelayout.ExpandableLinearLayout>
+				</net.cachapa.expandablelayout.ExpandableLayout>
 			</HorizontalScrollView>
 		</RelativeLayout>
-	</android.support.design.card.MaterialCardView>
-</android.support.constraint.ConstraintLayout>
+	</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

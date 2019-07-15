@@ -57,6 +57,7 @@ class Sales_model extends CI_Model {
       $this->db->where('sale_details.owner_suspended', 0);
       $this->db->where('sale_details.owner_active', 1);
       $this->db->where('products.suspended', 0);
+       $this->db->order_by("sale_details.sale_id", "ASC");
       return $this->db->get('sale_details')->result();
     }
 

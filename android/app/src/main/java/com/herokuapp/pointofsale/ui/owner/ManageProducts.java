@@ -1,23 +1,24 @@
 package com.herokuapp.pointofsale.ui.owner;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.LayoutInflaterCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -47,10 +48,11 @@ public class ManageProducts extends AppCompatActivity {
 	private OwnerProductsAdapter adapter;
 	private Owner ownerVM;
 	private SimpleSearchView searchView;
+	private Bundle recyclerViewState;
 
 	private Observer<ArrayList> getProductsObserver = products -> {
 		if(products != null && !products.isEmpty()){
-			showProducts(products);
+			showProducts(Common.copyArrayList(products));
 		}
 	};
 
@@ -74,7 +76,6 @@ public class ManageProducts extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		LayoutInflaterCompat.setFactory2(getLayoutInflater(), new IconicsLayoutInflater2(getDelegate()));
-
 		super.onCreate(savedInstanceState);
 		ActivityManageProductsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_manage_products);
 
@@ -88,6 +89,7 @@ public class ManageProducts extends AppCompatActivity {
 		NavigationBars.getNavBar(this, toolbar.findViewById(R.id.actual_toolbar), Objects.requireNonNull(ownerVM.getUserData().getValue()).getString("level", "-1"));
 
 		showProducts = findViewById(R.id.recyclerview);
+		showProducts.setItemAnimator(Common.getItemAnimator());
 		swipeToRefresh = findViewById(R.id.swipeToRefresh);
 		searchView = findViewById(R.id.search_view);
 		swipeToRefresh.setOnRefreshListener(this::refreshProducts);
@@ -131,8 +133,24 @@ public class ManageProducts extends AppCompatActivity {
 	}
 
 	@Override
+	public void onPause(){
+		super.onPause();
+		if(showProducts.getLayoutManager() != null){
+			recyclerViewState = new Bundle();
+			Parcelable listState = showProducts.getLayoutManager().onSaveInstanceState();
+			recyclerViewState.putParcelable("state", listState);
+		}
+	}
+
+	@Override
 	public void onResume(){
 		super.onResume();
+
+		if (recyclerViewState != null && recyclerViewState.containsKey("state") && showProducts.getLayoutManager() != null) {
+			Parcelable listState = recyclerViewState.getParcelable("state");
+			showProducts.getLayoutManager().onRestoreInstanceState(listState);
+		}
+
 		if(searchView != null && searchView.isSearchOpen()) return;
 		refreshProducts();
 	}
@@ -200,8 +218,8 @@ public class ManageProducts extends AppCompatActivity {
 		layout.setVisibility(ConstraintLayout.GONE);
 		if(adapter == null){
 			adapter = new OwnerProductsAdapter(this, products);
-			showProducts.setAdapter(adapter);
-			showProducts.setLayoutManager(new LinearLayoutManager(this));
+			showProducts.setAdapter(Common.getAdapterAnimation(adapter));
+			showProducts.setLayoutManager(Common.getLayoutManager(this));
 		}else{
 			adapter.updateData(products);
 		}

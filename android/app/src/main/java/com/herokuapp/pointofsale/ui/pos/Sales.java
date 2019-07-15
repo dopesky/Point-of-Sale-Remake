@@ -22,16 +22,16 @@ import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.resources.Common;
 import com.herokuapp.pointofsale.ui.resources.CustomToast;
 import com.herokuapp.pointofsale.ui.resources.NavigationBars;
-import com.herokuapp.pointofsale.ui.resources.PurchasesAdapter;
+import com.herokuapp.pointofsale.ui.resources.SalesAdapter;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.context.IconicsLayoutInflater2;
 
 import java.util.Objects;
 
-public class Purchases extends AppCompatActivity {
+public class Sales extends AppCompatActivity {
 
-	private com.herokuapp.pointofsale.models.pos.Purchases purchasesVM;
+	private com.herokuapp.pointofsale.models.pos.Sales salesVM;
 
 	private MutableLiveData<String> filter;
 	public LiveData<String> getFilter(){return filter;}
@@ -53,15 +53,14 @@ public class Purchases extends AppCompatActivity {
 		setContentView(R.layout.activity_purchases);
 
 		filter = new MutableLiveData<>();
-		purchasesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Purchases.class);
-		purchasesVM.getUserData().observe(this, getUserdataObserver);
-		purchasesVM.fetchUserDetails();
-
+		salesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Sales.class);
+		salesVM.getUserData().observe(this, getUserdataObserver);
+		salesVM.fetchUserDetails();
 
 		toolbar = findViewById(R.id.toolbar);
 		initializeTabLayout(toolbar.findViewById(R.id.tab_layout));
 		Common.setCustomActionBar(this, toolbar.findViewById(R.id.actual_toolbar));
-		NavigationBars.getNavBar(this, toolbar.findViewById(R.id.actual_toolbar), Objects.requireNonNull(purchasesVM.getUserData().getValue()).getString("level", "-1"));
+		NavigationBars.getNavBar(this, toolbar.findViewById(R.id.actual_toolbar), Objects.requireNonNull(salesVM.getUserData().getValue()).getString("level", "-1"));
 
 		searchView = findViewById(R.id.search_view);
 		searchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
@@ -102,7 +101,7 @@ public class Purchases extends AppCompatActivity {
 	}
 
 	private void initializeTabLayout(TabLayout tabLayout){
-		SharedPreferences preferences = purchasesVM.getUserData().getValue();
+		SharedPreferences preferences = salesVM.getUserData().getValue();
 		int drawableColor = R.color.colorPrimaryDark;
 		Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(new IconicsDrawable(this)
 				.icon(FontAwesome.Icon.faw_shopping_cart)
@@ -117,7 +116,7 @@ public class Purchases extends AppCompatActivity {
 			tabLayout.removeTabAt(2);
 		}
 		ViewPager pager = findViewById(R.id.view_pager);
-		PurchasesAdapter adapter = new PurchasesAdapter(getSupportFragmentManager());
+		SalesAdapter adapter = new SalesAdapter(getSupportFragmentManager());
 		pager.setAdapter(adapter);
 		pager.setOffscreenPageLimit(2);
 		pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
