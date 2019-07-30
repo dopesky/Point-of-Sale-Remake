@@ -12,12 +12,12 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 
 import com.google.gson.internal.LinkedTreeMap;
-import com.herokuapp.pointofsale.api.Retrofit.Annotations;
-import com.herokuapp.pointofsale.ui.resources.Common;
+import com.herokuapp.pointofsale.api.retrofit.Annotations;
+import com.herokuapp.pointofsale.resources.Common;
 import java.util.HashMap;
 import java.util.Objects;
 
-import static com.herokuapp.pointofsale.api.Retrofit.Common.*;
+import static com.herokuapp.pointofsale.api.retrofit.Common.*;
 
 import okhttp3.internal.annotations.EverythingIsNonNull;
 import retrofit2.Call;

@@ -9,8 +9,8 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import com.google.gson.internal.LinkedTreeMap;
-import com.herokuapp.pointofsale.api.Retrofit.Annotations;
-import com.herokuapp.pointofsale.ui.resources.Common;
+import com.herokuapp.pointofsale.api.retrofit.Annotations;
+import com.herokuapp.pointofsale.resources.Common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,13 +21,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.herokuapp.pointofsale.api.Retrofit.Common.getErrorObject;
-import static com.herokuapp.pointofsale.api.Retrofit.Common.getRetrofitInstance;
+import static com.herokuapp.pointofsale.api.retrofit.Common.getErrorObject;
+import static com.herokuapp.pointofsale.api.retrofit.Common.getRetrofitInstance;
 
-public class Sales extends AndroidViewModel {
+public class Purchases extends AndroidViewModel {
 
-	private MutableLiveData<ArrayList> saleProducts;
-	public LiveData<ArrayList> getSaleProducts(){return saleProducts;}
+	private MutableLiveData<ArrayList> purchaseProducts;
+	public LiveData<ArrayList> getPurchaseProducts(){return purchaseProducts;}
 
 	private  MutableLiveData<ArrayList<LinkedTreeMap<String, String>>> selectedData;
 	public LiveData<ArrayList<LinkedTreeMap<String, String>>> getSelectedData(){return selectedData;}
@@ -38,13 +38,17 @@ public class Sales extends AndroidViewModel {
 	private MutableLiveData<LinkedTreeMap> userDetails;
 	public LiveData<LinkedTreeMap> getCurrentUserDetails(){return userDetails;}
 
-	private MutableLiveData<Integer> addSaleStatus;
-	public LiveData<Integer> getAddSaleStatus(){return addSaleStatus;}
-	private MutableLiveData<String> addSaleError;
-	public LiveData<String> getAddSaleError(){return addSaleError;}
+	private MutableLiveData<ArrayList> methods;
+	public LiveData<ArrayList> getPaymentMethods(){return methods;}
+	private MutableLiveData<String> getMethodsError;
+
+	private MutableLiveData<Integer> addPurchaseStatus;
+	public LiveData<Integer> getAddPurchaseStatus(){return addPurchaseStatus;}
+	private MutableLiveData<String> addPurchaseError;
+	public LiveData<String> getAddPurchaseError(){return addPurchaseError;}
 
 
-	public Sales(@NonNull Application application) {
+	public Purchases(@NonNull Application application) {
 		super(application);
 		preferences = application.getSharedPreferences(Common.USERDATA, Context.MODE_PRIVATE);
 		preferences.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
@@ -54,11 +58,13 @@ public class Sales extends AndroidViewModel {
 		});
 
 		userdata = new MutableLiveData<>();
-		saleProducts = new MutableLiveData<>();
+		purchaseProducts = new MutableLiveData<>();
 		userDetails = new MutableLiveData<>();
-		addSaleStatus = new MutableLiveData<>();
-		addSaleError = new MutableLiveData<>();
+		addPurchaseStatus = new MutableLiveData<>();
+		addPurchaseError = new MutableLiveData<>();
 		selectedData = new MutableLiveData<>();
+		methods = new MutableLiveData<>();
+		getMethodsError = new MutableLiveData<>();
 
 		userdata.setValue(preferences);
 	}
@@ -87,12 +93,9 @@ public class Sales extends AndroidViewModel {
 		});
 	}
 
-	public void fetchSaleProducts(){
-		String owner_id = Objects.requireNonNull(userDetails.getValue()).get("owner_id") != null ?
-				Objects.requireNonNull(userDetails.getValue().get("owner_id")).toString() :
-				Objects.requireNonNull(userDetails.getValue().get("id_owner")).toString();
+	public void fetchPaymentMethods(){
 		Annotations service = getRetrofitInstance().create(Annotations.class);
-		Call<HashMap> request = service.getProductsForSale(owner_id);
+		Call<HashMap> request = service.getValidPaymentMethods();
 		request.enqueue(new Callback<HashMap>() {
 			@EverythingIsNonNull
 			@Override
@@ -100,29 +103,28 @@ public class Sales extends AndroidViewModel {
 				HashMap map = (response.isSuccessful()) ? response.body() : getErrorObject(response);
 
 				if (map != null && Double.parseDouble(Objects.requireNonNull(map.get("status")).toString()) == (double)202 ) {
-					saleProducts.setValue((ArrayList) map.get("response"));
+					methods.setValue((ArrayList) map.get("response"));
+				} else if(map != null) {
+					getMethodsError.setValue(Common.parseHtml(Objects.requireNonNull(map.get("errors")).toString()));
 				}else{
-					saleProducts.setValue(null);
+					getMethodsError.setValue("An Unnexpected Error Occurred");
 				}
 			}
 
 			@EverythingIsNonNull
 			@Override
 			public void onFailure(Call<HashMap> call, Throwable t) {
-				saleProducts.setValue(null);
+				getMethodsError.setValue(Common.parseHtml("<br><br><span>An Unnexpected Error Occurred.</span><br><br><span>Check Your Internet Connection</span>"));
 			}
 		});
 	}
 
-	public void addSales(String methodID){
-		if(selectedData.getValue() == null || selectedData.getValue().isEmpty()){
-			addSaleStatus.setValue(1);
-			addSaleError.setValue("No Sales Made Yet!");
-			return;
-		}
-		LinkedTreeMap<String, String> dataSelected = Common.makePosRequestBody(selectedData.getValue(), methodID);
+	public void fetchPurchaseProducts(){
+		String owner_id = Objects.requireNonNull(userDetails.getValue()).get("owner_id") != null ?
+				Objects.requireNonNull(userDetails.getValue().get("owner_id")).toString() :
+				Objects.requireNonNull(userDetails.getValue().get("id_owner")).toString();
 		Annotations service = getRetrofitInstance().create(Annotations.class);
-		Call<HashMap> request = service.addSale(dataSelected, preferences.getString("user_id", "-1"));
+		Call<HashMap> request = service.getProductsForPurchase(owner_id);
 		request.enqueue(new Callback<HashMap>() {
 			@EverythingIsNonNull
 			@Override
@@ -130,26 +132,60 @@ public class Sales extends AndroidViewModel {
 				HashMap map = (response.isSuccessful()) ? response.body() : getErrorObject(response);
 
 				if (map != null && Double.parseDouble(Objects.requireNonNull(map.get("status")).toString()) == (double)202 ) {
-					addSaleStatus.setValue(0);
-				}else if(map != null){
-					addSaleStatus.setValue(1);
-					addSaleError.setValue(Common.parseHtml(Objects.requireNonNull(map.get("errors")).toString()));
+					purchaseProducts.setValue((ArrayList) map.get("response"));
 				}else{
-					addSaleStatus.setValue(1);
-					addSaleError.setValue("An Unnexpected Error Occurred");
+					purchaseProducts.setValue(null);
 				}
 			}
 
 			@EverythingIsNonNull
 			@Override
 			public void onFailure(Call<HashMap> call, Throwable t) {
-				addSaleStatus.setValue(1);
-				addSaleError.setValue(Common.parseHtml("<br><br><span>An Unnexpected Error Occurred.</span><br><br><span>Check Your Internet Connection</span>"));
+				purchaseProducts.setValue(null);
+			}
+		});
+	}
+
+	public void addPurchases(String methodID){
+		if(selectedData.getValue() == null || selectedData.getValue().isEmpty()){
+			addPurchaseStatus.setValue(1);
+			addPurchaseError.setValue("No Purchases Selected Yet!");
+			return;
+		}
+		LinkedTreeMap<String, String> dataSelected = Common.makePosRequestBody(selectedData.getValue(), methodID);
+		Annotations service = getRetrofitInstance().create(Annotations.class);
+		Call<HashMap> request = service.addPurchase(dataSelected, preferences.getString("user_id", "-1"));
+		request.enqueue(new Callback<HashMap>() {
+			@EverythingIsNonNull
+			@Override
+			public void onResponse(Call<HashMap> call, Response<HashMap> response) {
+				HashMap map = (response.isSuccessful()) ? response.body() : getErrorObject(response);
+
+				if (map != null && Double.parseDouble(Objects.requireNonNull(map.get("status")).toString()) == (double)202 ) {
+					addPurchaseStatus.setValue(0);
+				}else if(map != null){
+					addPurchaseStatus.setValue(1);
+					addPurchaseError.setValue(Common.parseHtml(Objects.requireNonNull(map.get("errors")).toString()));
+				}else{
+					addPurchaseStatus.setValue(1);
+					addPurchaseError.setValue("An Unnexpected Error Occurred");
+				}
+			}
+
+			@EverythingIsNonNull
+			@Override
+			public void onFailure(Call<HashMap> call, Throwable t) {
+				addPurchaseStatus.setValue(1);
+				addPurchaseError.setValue(Common.parseHtml("<br><br><span>An Unnexpected Error Occurred.</span><br><br><span>Check Your Internet Connection</span>"));
 			}
 		});
 	}
 
 	public void addSelectedData(ArrayList<LinkedTreeMap<String, String>> selectedData){
 		this.selectedData.setValue(selectedData);
+	}
+
+	public void addStatus(int status){
+		addPurchaseStatus.setValue(status);
 	}
 }

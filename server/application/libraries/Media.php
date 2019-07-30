@@ -28,7 +28,7 @@ class Media {
 			return array('ok' => false, 'msg' => '<br><br><span>File Size too High. Maximum File Size 25MB.</span>');
 		}
 		if(strpos(strtolower($file_array['type']), 'image') === false){
-			return array('ok' => false, 'msg' => '<br><br><span>File Size too High. Maximum File Size 25MB.</span>');
+			return array('ok' => false, 'msg' => '<br><br><span>Invalid File Type. Please Upload Only Images!</span>');
 		}
 		return array('ok' => true, 'msg' => '');
 	}

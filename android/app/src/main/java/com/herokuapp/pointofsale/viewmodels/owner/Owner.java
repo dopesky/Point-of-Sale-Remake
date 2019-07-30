@@ -11,8 +11,8 @@ import androidx.databinding.Bindable;
 import androidx.annotation.NonNull;
 
 import com.google.gson.internal.LinkedTreeMap;
-import com.herokuapp.pointofsale.api.Retrofit.Annotations;
-import com.herokuapp.pointofsale.ui.resources.Common;
+import com.herokuapp.pointofsale.api.retrofit.Annotations;
+import com.herokuapp.pointofsale.resources.Common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +23,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.herokuapp.pointofsale.api.Retrofit.Common.getErrorObject;
-import static com.herokuapp.pointofsale.api.Retrofit.Common.getRetrofitInstance;
+import static com.herokuapp.pointofsale.api.retrofit.Common.getErrorObject;
+import static com.herokuapp.pointofsale.api.retrofit.Common.getRetrofitInstance;
 
 public class Owner extends AndroidViewModel {
 	private HashMap<String,String> employeeEditData;
