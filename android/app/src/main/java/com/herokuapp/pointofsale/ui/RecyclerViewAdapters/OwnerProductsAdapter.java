@@ -25,8 +25,8 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.owner.EditProductDetails;
 import com.herokuapp.pointofsale.ui.owner.ManageProducts;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -187,8 +187,6 @@ public class OwnerProductsAdapter extends
 		viewHolder.profileLetter.setText(name.trim().isEmpty() ? "?" : Common.capitalize(name.substring(0,1)));
 		viewHolder.currentBundle.putString("profile", color);
 		viewHolder.name.setText(name);
-		viewHolder.name.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-		viewHolder.name.setSelected(true);
 		viewHolder.currentBundle.putString("product", name);
 		viewHolder.category.setText(category);
 		viewHolder.currentBundle.putString("category", current.get("category_id"));
@@ -205,8 +203,17 @@ public class OwnerProductsAdapter extends
 	}
 
 	@Override
+	public void onViewAttachedToWindow(@NonNull OwnerProductsAdapter.ViewHolder viewHolder){
+		super.onViewAttachedToWindow(viewHolder);
+		viewHolder.name.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+		viewHolder.name.setSelected(true);
+	}
+
+	@Override
 	public void onViewDetachedFromWindow(@NonNull OwnerProductsAdapter.ViewHolder viewHolder){
 		if(viewHolder.layout.isExpanded()) viewHolder.expandView(viewHolder.itemView.findViewById(R.id.show_more));
+		viewHolder.name.setEllipsize(TextUtils.TruncateAt.END);
+		viewHolder.name.setSelected(false);
 		super.onViewDetachedFromWindow(viewHolder);
 	}
 

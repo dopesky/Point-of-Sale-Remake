@@ -5,9 +5,9 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context=".ui.pos.PosDialog">
 	<data>
-		<import type="com.herokuapp.pointofsale.ui.resources.PosDataBinder.DataBinder" />
+		<import type="com.herokuapp.pointofsale.resources.PosDataBinder.DataBinder" />
 		<import type="android.view.View" />
-		<import type="com.herokuapp.pointofsale.ui.resources.Common" />
+		<import type="com.herokuapp.pointofsale.resources.Common" />
 		<import type="com.mikepenz.fontawesome_typeface_library.FontAwesome.Icon" />
 		<variable name="dataBinder" type="DataBinder" />
 	</data>

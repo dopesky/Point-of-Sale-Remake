@@ -13,10 +13,9 @@ import android.view.View;
 
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.databinding.ActivityMainBinding;
-import com.herokuapp.pointofsale.models.authentication.Auth;
-import com.herokuapp.pointofsale.ui.owner.OwnerDashboard;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
+import com.herokuapp.pointofsale.viewmodels.authentication.Auth;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,15 +27,14 @@ public class MainActivity extends AppCompatActivity {
 
 	private Observer<SharedPreferences> sessionDataObserver = sharedPreferences -> {
 		if(sharedPreferences != null && sharedPreferences.contains("user_id")){
-			launchLoggedInActivity(false);
+			Common.launchLauncherActivity(this);
 		}
 	};
 
 	private Observer<Integer> loginObserver = loginStatus -> {
 		if(loginStatus != null && loginStatus > -1){
 			if(loginStatus == 0) {
-				launchLoggedInActivity(true);
-
+				Common.launchLauncherActivity(this);
 			}
 			loginButton.setAlpha((float)1.0);
 			loginButton.setText(R.string.main_activity_header);
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		//Common.logoutUser(this);
+		Common.logoutUser(this);
 		super.onCreate(savedInstanceState);
 
 		ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -80,24 +78,6 @@ public class MainActivity extends AppCompatActivity {
 	public void launchForgotPassword(View view) {
 		Intent intent = new Intent(this, ForgotPassword.class);
 		startActivity(intent);
-	}
-
-	public void launchLoggedInActivity(boolean showAnimation){
-		SharedPreferences preferences = authVM.getUserData().getValue();
-		if(preferences == null || !preferences.contains("user_id") || !preferences.contains("2FA") || !preferences.contains("level")) return;
-		if( preferences.getBoolean("2FA", false) ){
-			Intent intent = new Intent(this, TwoFactor.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-			startActivity(intent);
-			if(!showAnimation)
-				overridePendingTransition(0,0);
-		}else if(!preferences.getBoolean("2FA", true)){
-			Intent intent = new Intent(this, OwnerDashboard.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-			startActivity(intent);
-			if(!showAnimation)
-				overridePendingTransition(0,0);
-		}
 	}
 
 	public void loginLogic(View view) {

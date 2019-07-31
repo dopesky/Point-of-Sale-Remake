@@ -1,14 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	tools:context=".ui.settings.fragments.MyProfile">
-
-	<!-- TODO: Update blank fragment layout -->
-	<TextView
+	<data>
+		<import type="com.herokuapp.pointofsale.viewmodels.settings.Settings.DataBinder" />
+		<import type="com.herokuapp.pointofsale.resources.Common" />
+		<import type="android.view.View" />
+		<variable name="settingsDB"	type="DataBinder" />
+	</data>
+	<ScrollView
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+		android:layout_height="wrap_content">
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingBottom="@dimen/margin_5rem">
+			<ProgressBar
+				android:id="@+id/progress_bar"
+				android:minHeight="@dimen/progress_bar_min_dimension"
+				android:minWidth="@dimen/progress_bar_min_dimension"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:indeterminateTint="@color/colorAccent"
+				android:layout_marginTop="@dimen/progress_bar_min_dimension"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
+			<com.google.android.material.card.MaterialCardView
+				android:visibility="gone"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintLeft_toLeftOf="parent"
+				android:elevation="50dp"
+				android:padding="@dimen/margin_0"
+				android:layout_marginStart="@dimen/margin_3rem"
+				android:layout_marginEnd="@dimen/margin_3rem"
+				android:backgroundTint="@color/whitesmoke">
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:showDividers="middle"
+					android:divider="@drawable/spacing"
+					android:orientation="vertical"
+					android:gravity="center"
+					android:paddingBottom="@dimen/margin_3rem">
+					<pl.droidsonroids.gif.GifImageView
+						android:id="@+id/profile_image"
+						android:backgroundTint="@color/whitesmoke"
+						android:layout_width="match_parent"
+						android:src="@drawable/image_pre_loader"
+						android:layout_height="@dimen/image_height_default"
+						android:contentDescription="@string/profile_image"
+						android:scaleType="centerCrop"/>
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/capture_button"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/capture"
+						android:layout_margin="@dimen/margin_3rem"
+						style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+					<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="@dimen/margin_3rem"
+						android:layout_marginEnd="@dimen/margin_3rem"
+						app:helperText="e.g John"
+						android:hint="@string/enter_first_name">
+						<com.google.android.material.textfield.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:layout_alignParentTop="true"
+							android:layout_alignParentEnd="true"
+							android:inputType="textCapWords"
+							android:text="@={settingsDB.firstName}"
+							android:singleLine="true"/>
+					</com.google.android.material.textfield.TextInputLayout>
+					<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="@dimen/margin_3rem"
+						android:layout_marginEnd="@dimen/margin_3rem"
+						app:helperText="e.g Doe"
+						android:hint="@string/enter_last_name">
+						<com.google.android.material.textfield.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:layout_alignParentTop="true"
+							android:layout_alignParentEnd="true"
+							android:inputType="textCapWords"
+							android:text="@={settingsDB.lastName}"
+							android:singleLine="true"/>
+					</com.google.android.material.textfield.TextInputLayout>
+					<com.google.android.material.textfield.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="@dimen/margin_3rem"
+						android:layout_marginEnd="@dimen/margin_3rem"
+						app:helperText="e.g Glovin Inc"
+						android:hint="@string/company_name"
+						android:visibility="@{settingsDB.owner ? View.VISIBLE : View.GONE}">
+						<com.google.android.material.textfield.TextInputEditText
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:layout_alignParentTop="true"
+							android:layout_alignParentEnd="true"
+							android:text="@={settingsDB.companyName}"
+							android:inputType="textCapWords"
+							android:singleLine="true"/>
+					</com.google.android.material.textfield.TextInputLayout>
+					<com.google.android.material.button.MaterialButton
+						android:layout_margin="@dimen/margin_3rem"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="end"
+						style="@style/Widget.MaterialComponents.Button"
+						android:text="@string/save"/>
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+	</ScrollView>
+</layout>

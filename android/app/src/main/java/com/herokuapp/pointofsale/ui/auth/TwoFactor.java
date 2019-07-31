@@ -2,10 +2,8 @@ package com.herokuapp.pointofsale.ui.auth;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,10 +12,11 @@ import android.view.View;
 
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.databinding.ActivityTwoFactorBinding;
-import com.herokuapp.pointofsale.models.authentication.Auth;
-import com.herokuapp.pointofsale.ui.owner.OwnerDashboard;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
+import com.herokuapp.pointofsale.viewmodels.authentication.Auth;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
 
 public class TwoFactor extends AppCompatActivity {
 	private boolean isVerifying = false;
@@ -28,15 +27,13 @@ public class TwoFactor extends AppCompatActivity {
 	private Auth authVM;
 
 	private Observer<SharedPreferences> sessionDataObserver = sharedPreferences -> {
-		if(sharedPreferences == null || !sharedPreferences.contains("user_id")){
-			launchMainActivity();
-		}else if(!sharedPreferences.getBoolean("2FA", true)){
-			launchLoggedInActivity(false);
+		if(sharedPreferences == null || !sharedPreferences.contains("user_id") || !sharedPreferences.getBoolean("2FA", false)){
+			Common.launchLauncherActivity(this);
 		}
 	};
 	private Observer<Integer> loginObserver = loginStatus ->{
 		if(loginStatus != null && loginStatus == 0){
-			launchLoggedInActivity(true);
+			Common.launchLauncherActivity(this);
 		}
 		googleButton.setAlpha(1.0f);
 		googleButton.setText(getString(R.string.verify));
@@ -64,10 +61,7 @@ public class TwoFactor extends AppCompatActivity {
 		email_button.setAlpha(1.0f);
 		isSending = false;
 	};
-
-	private ConstraintLayout codeButton;
 	private TextInputLayout codeEditText;
-	private ConstraintLayout emailButton;
 	private TextInputLayout emailEditText;
 
 
@@ -75,10 +69,8 @@ public class TwoFactor extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ActivityTwoFactorBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_two_factor);
-		codeButton = findViewById(R.id.code_button);
 		codeEditText = findViewById(R.id.code_edit_text);
 		emailEditText = findViewById(R.id.email_edit_text);
-		emailButton = findViewById(R.id.emailLayout);
 		googleButton = findViewById(R.id.google_authenticator_button);
 		email_button = findViewById(R.id.email_button);
 		emailAuthButton = findViewById(R.id.email_authenticator_button);
@@ -93,21 +85,6 @@ public class TwoFactor extends AppCompatActivity {
 		Auth.DataBinder dataBinder = authVM.new DataBinder();
 		binding.setLifecycleOwner(this);
 		binding.setAuthVm(dataBinder);
-	}
-
-	public void launchMainActivity(){
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-		startActivity(intent);
-		overridePendingTransition(0,0);
-	}
-
-	public void launchLoggedInActivity(boolean showAnimation){
-		Intent intent = new Intent(this, OwnerDashboard.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-		startActivity(intent);
-		if(!showAnimation)
-			overridePendingTransition(0,0);
 	}
 
 	public void verifyGoogleCode(View view) {
@@ -151,7 +128,7 @@ public class TwoFactor extends AppCompatActivity {
 			return "This is a Required Field";
 		}
 		try {
-			int codeInt = Integer.parseInt(code);
+			Integer.parseInt(code);
 			return "";
 		}catch (NumberFormatException nfe){
 			layout.setError("This Must be a Number");
@@ -161,39 +138,35 @@ public class TwoFactor extends AppCompatActivity {
 
 	public void googleCollapse(View view) {
 		MaterialButton emailToggle = findViewById(R.id.email_toggle);
-		if(codeButton.getVisibility() == View.GONE){
-			codeButton.setVisibility(View.VISIBLE);
-			codeEditText.setVisibility(View.VISIBLE);
-			Common.rotateElement(view, 180f, 0f, 150);
-			emailButton.setVisibility(View.GONE);
-			emailEditText.setVisibility(View.GONE);
-			Common.rotateElement(emailToggle, 180f, 0f, 0);
+		MaterialButton googleToggle = findViewById(R.id.google_toggle);
+		ExpandableLayout googleLayout = findViewById(R.id.googleExpand);
+		ExpandableLayout emailLayout = findViewById(R.id.emailExpand);
+		if(!googleLayout.isExpanded()){
+			Common.rotateElement(googleToggle, 180f, 0f, 300);
+			if(emailLayout.isExpanded()){
+				emailLayout.toggle(true);
+				Common.rotateElement(emailToggle, 180f, 0f, 300);
+			}
 		}else{
-			codeButton.setVisibility(View.GONE);
-			codeEditText.setVisibility(View.GONE);
-			Common.rotateElement(view, 0f, 180f, 150);
-			emailButton.setVisibility(View.VISIBLE);
-			emailEditText.setVisibility(View.VISIBLE);
-			Common.rotateElement(emailToggle, 0f, 180f, 0);
+			Common.rotateElement(googleToggle, 0f, 180f, 300);
 		}
+		googleLayout.toggle(true);
 	}
 
 	public void emailCollapse(View view) {
 		MaterialButton googleToggle = findViewById(R.id.google_toggle);
-		if(emailButton.getVisibility() == View.GONE){
-			emailButton.setVisibility(View.VISIBLE);
-			emailEditText.setVisibility(View.VISIBLE);
-			Common.rotateElement(view, 0f, 180f, 150);
-			codeButton.setVisibility(View.GONE);
-			codeEditText.setVisibility(View.GONE);
-			Common.rotateElement(googleToggle, 0f, 180f, 0);
+		MaterialButton emailToggle = findViewById(R.id.email_toggle);
+		ExpandableLayout googleLayout = findViewById(R.id.googleExpand);
+		ExpandableLayout emailLayout = findViewById(R.id.emailExpand);
+		if(!emailLayout.isExpanded()){
+			Common.rotateElement(emailToggle, 0f, 180f, 300);
+			if(googleLayout.isExpanded()){
+				Common.rotateElement(googleToggle, 0f, 180f, 300);
+				googleLayout.toggle(true);
+			}
 		}else{
-			emailButton.setVisibility(View.GONE);
-			emailEditText.setVisibility(View.GONE);
-			Common.rotateElement(view, 180f, 0f, 150);
-			codeButton.setVisibility(View.VISIBLE);
-			codeEditText.setVisibility(View.VISIBLE);
-			Common.rotateElement(googleToggle, 180f, 0f, 0);
+			Common.rotateElement(emailToggle, 180f, 0f, 300);
 		}
+		emailLayout.toggle(true);
 	}
 }

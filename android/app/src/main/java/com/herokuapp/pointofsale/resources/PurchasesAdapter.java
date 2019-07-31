@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.ui.resources;
+package com.herokuapp.pointofsale.resources;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

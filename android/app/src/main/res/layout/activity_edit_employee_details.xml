@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context=".ui.owner.EditEmployeeDetails">
 	<data>
-		<import type="com.herokuapp.pointofsale.models.owner.Owner.DataBinder" />
+		<import type="com.herokuapp.pointofsale.viewmodels.owner.Owner.DataBinder" />
 		<variable name="ownerVM" type="DataBinder" />
 	</data>
 	<ScrollView
@@ -23,7 +23,7 @@
 				android:elevation="@dimen/margin_1rem"
 				app:layout_constraintTop_toTopOf="parent"
 				app:layout_constraintLeft_toLeftOf="parent"/>
-			<ImageView
+			<pl.droidsonroids.gif.GifImageView
 				android:id="@+id/profile_image"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

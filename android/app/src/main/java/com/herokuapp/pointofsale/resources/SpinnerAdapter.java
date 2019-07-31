@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.ui.resources;
+package com.herokuapp.pointofsale.resources;
 
 import android.content.Context;
 import android.view.LayoutInflater;

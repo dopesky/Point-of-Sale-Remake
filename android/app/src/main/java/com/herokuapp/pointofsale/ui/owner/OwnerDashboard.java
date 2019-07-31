@@ -4,24 +4,19 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.SharedPreferences;
-import androidx.annotation.Nullable;
 
 import com.google.android.material.appbar.AppBarLayout;
 import androidx.core.view.LayoutInflaterCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatCallback;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.view.ActionMode;
-import androidx.appcompat.widget.Toolbar;
 
 import com.herokuapp.pointofsale.R;
-import com.herokuapp.pointofsale.models.owner.Owner;
-import com.herokuapp.pointofsale.ui.resources.Common;
+import com.herokuapp.pointofsale.viewmodels.owner.Owner;
+import com.herokuapp.pointofsale.resources.Common;
 
 import java.util.Objects;;
 
-import com.herokuapp.pointofsale.ui.resources.NavigationBars;
+import com.herokuapp.pointofsale.resources.NavigationBars;
 import com.mikepenz.iconics.context.IconicsLayoutInflater2;
 
 public class OwnerDashboard extends AppCompatActivity {

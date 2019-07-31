@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.models.pos;
+package com.herokuapp.pointofsale.viewmodels.pos;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;

@@ -11,9 +11,9 @@ import android.view.View;
 
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.databinding.ActivityForgotPasswordBinding;
-import com.herokuapp.pointofsale.models.authentication.Auth;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
+import com.herokuapp.pointofsale.viewmodels.authentication.Auth;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
 
 public class ForgotPassword extends AppCompatActivity {
 	private boolean isResetting = false;

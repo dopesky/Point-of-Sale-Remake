@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.herokuapp.pointofsale.R;
-import com.herokuapp.pointofsale.models.pos.Purchases;
+import com.herokuapp.pointofsale.viewmodels.pos.Purchases;
 
 public class ManagePurchases extends Fragment {
 

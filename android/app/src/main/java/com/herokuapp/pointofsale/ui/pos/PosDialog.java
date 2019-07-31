@@ -12,9 +12,9 @@ import android.view.View;
 
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.databinding.ActivityPosDialogBinding;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
-import com.herokuapp.pointofsale.ui.resources.PosDataBinder;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
+import com.herokuapp.pointofsale.resources.PosDataBinder;
 import com.mikepenz.iconics.context.IconicsLayoutInflater2;
 
 public class PosDialog extends AppCompatActivity {
@@ -76,6 +76,7 @@ public class PosDialog extends AppCompatActivity {
 		extras.putString("cost", binder.getCost());
 		extras.putString("amount", binder.getQuantity());
 		extras.putString("discount", binder.getDiscount());
+		extras.putString("unit_cost", binder.getUnitCost());
 		intent.putExtras(extras);
 		setResult(RESULT_OK, intent);
 		resetEverything();

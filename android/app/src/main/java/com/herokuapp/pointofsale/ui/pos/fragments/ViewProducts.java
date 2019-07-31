@@ -23,15 +23,15 @@ import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.RecyclerViewAdapters.ProductsAdapter;
 import com.herokuapp.pointofsale.ui.pos.Purchases;
 import com.herokuapp.pointofsale.ui.pos.Sales;
-import com.herokuapp.pointofsale.ui.resources.Common;
+import com.herokuapp.pointofsale.resources.Common;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class ViewProducts extends Fragment {
 
-	private com.herokuapp.pointofsale.models.pos.Purchases purchasesVM;
-	private com.herokuapp.pointofsale.models.pos.Sales salesVM;
+	private com.herokuapp.pointofsale.viewmodels.pos.Purchases purchasesVM;
+	private com.herokuapp.pointofsale.viewmodels.pos.Sales salesVM;
 
 	private boolean isPurchases;
 
@@ -107,8 +107,8 @@ public class ViewProducts extends Fragment {
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		isPurchases = getActivity() instanceof Purchases;
-		purchasesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Purchases.class);
-		salesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Sales.class);
+		purchasesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.viewmodels.pos.Purchases.class);
+		salesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.viewmodels.pos.Sales.class);
 		if(isPurchases){
 			purchasesVM.getPurchaseProducts().observe(getViewLifecycleOwner(), getProductsObserver);
 			purchasesVM.getCurrentUserDetails().observe(getViewLifecycleOwner(), getUserDataObserver);

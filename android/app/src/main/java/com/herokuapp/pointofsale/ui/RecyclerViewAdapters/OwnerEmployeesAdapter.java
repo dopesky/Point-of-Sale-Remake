@@ -11,6 +11,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +23,9 @@ import com.bumptech.glide.Glide;
 import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.owner.EditEmployeeDetails;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
-import com.herokuapp.pointofsale.ui.resources.NavigationBars;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
+import com.herokuapp.pointofsale.resources.NavigationBars;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -199,8 +201,17 @@ public class OwnerEmployeesAdapter extends
 	}
 
 	@Override
+	public void onViewAttachedToWindow(@NonNull OwnerEmployeesAdapter.ViewHolder viewHolder){
+		super.onViewAttachedToWindow(viewHolder);
+		viewHolder.name.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+		viewHolder.name.setSelected(true);
+	}
+
+	@Override
 	public  void onViewDetachedFromWindow(@NonNull OwnerEmployeesAdapter.ViewHolder viewHolder){
 		if(viewHolder.layout.isExpanded()) viewHolder.expandView(viewHolder.itemView.findViewById(R.id.show_more));
+		viewHolder.name.setEllipsize(TextUtils.TruncateAt.END);
+		viewHolder.name.setSelected(false);
 		super.onViewDetachedFromWindow(viewHolder);
 	}
 

@@ -26,7 +26,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.pos.PosDialog;
 import com.herokuapp.pointofsale.ui.pos.Purchases;
-import com.herokuapp.pointofsale.ui.resources.Common;
+import com.herokuapp.pointofsale.resources.Common;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -164,8 +164,6 @@ public class ProductsAdapter extends
 		viewHolder.profile.setBackgroundColor(Color.parseColor(color));
 		viewHolder.profileLetter.setText(name.trim().isEmpty() ? "?" : Common.capitalize(name.substring(0,1)));
 		viewHolder.name.setText(name);
-		viewHolder.name.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-		viewHolder.name.setSelected(true);
 		viewHolder.category.setText(category);
 		viewHolder.cost.setText(cost);
 		viewHolder.inventory.setText(inventory);
@@ -177,8 +175,17 @@ public class ProductsAdapter extends
 	}
 
 	@Override
+	public void onViewAttachedToWindow(@NonNull ProductsAdapter.ViewHolder viewHolder){
+		super.onViewAttachedToWindow(viewHolder);
+		viewHolder.name.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+		viewHolder.name.setSelected(true);
+	}
+
+	@Override
 	public  void onViewDetachedFromWindow(@NonNull ProductsAdapter.ViewHolder viewHolder){
 		if(viewHolder.layout.isExpanded()) viewHolder.expandView();
+		viewHolder.name.setEllipsize(TextUtils.TruncateAt.END);
+		viewHolder.name.setSelected(false);
 		super.onViewDetachedFromWindow(viewHolder);
 	}
 

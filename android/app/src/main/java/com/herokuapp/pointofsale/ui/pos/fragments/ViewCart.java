@@ -24,8 +24,8 @@ import com.herokuapp.pointofsale.ui.RecyclerViewAdapters.CartAdapter;
 import com.herokuapp.pointofsale.ui.pos.Checkout;
 import com.herokuapp.pointofsale.ui.pos.Purchases;
 import com.herokuapp.pointofsale.ui.pos.Sales;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.iconics.IconicsDrawable;
 
@@ -36,8 +36,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class ViewCart extends Fragment {
 
-	private com.herokuapp.pointofsale.models.pos.Purchases purchasesVM;
-	private com.herokuapp.pointofsale.models.pos.Sales salesVM;
+	private com.herokuapp.pointofsale.viewmodels.pos.Purchases purchasesVM;
+	private com.herokuapp.pointofsale.viewmodels.pos.Sales salesVM;
 
 	private boolean isPurchases;
 	private boolean isAdding;
@@ -97,7 +97,13 @@ public class ViewCart extends Fragment {
 
 	private Observer<String> getAddErrorObserver = error ->{
 		if(error != null && !error.trim().isEmpty()){
-			CustomToast.showToast(getActivity(), " " + error, "danger");
+			if(isPurchases && purchasesVM.getAddPurchaseStatus().getValue() != null && purchasesVM.getAddPurchaseStatus().getValue() == 1){
+				purchasesVM.addStatus(-1);
+				CustomToast.showToast(getActivity(), " " + error, "danger");
+			}else if(!isPurchases && salesVM.getAddSaleStatus().getValue() != null && salesVM.getAddSaleStatus().getValue() == 1){
+				salesVM.addStatus(-1);
+				CustomToast.showToast(getActivity(), " " + error, "danger");
+			}
 		}
 	};
 
@@ -133,8 +139,8 @@ public class ViewCart extends Fragment {
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		isPurchases = getActivity() instanceof Purchases;
-		purchasesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Purchases.class);
-		salesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Sales.class);
+		purchasesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.viewmodels.pos.Purchases.class);
+		salesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.viewmodels.pos.Sales.class);
 		if(isPurchases){
 			ArrayList list = purchasesVM.getSelectedData().getValue();
 			purchasesVM.getCurrentUserDetails().observe(getViewLifecycleOwner(), getUserDataObserver);

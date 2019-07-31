@@ -21,11 +21,11 @@ import android.widget.Spinner;
 import com.bumptech.glide.Glide;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.databinding.ActivityAddEmployeeBinding;
-import com.herokuapp.pointofsale.models.owner.Owner;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
-import com.herokuapp.pointofsale.ui.resources.NavigationBars;
-import com.herokuapp.pointofsale.ui.resources.SpinnerAdapter;
+import com.herokuapp.pointofsale.viewmodels.owner.Owner;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
+import com.herokuapp.pointofsale.resources.NavigationBars;
+import com.herokuapp.pointofsale.resources.SpinnerAdapter;
 import com.mikepenz.iconics.context.IconicsLayoutInflater2;
 
 import java.util.ArrayList;
@@ -133,8 +133,8 @@ public class AddEmployee extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed(){
-		layout.animate().alpha(0f).setDuration(150);
-		spinner.animate().alpha(0f).setDuration(150);
+		layout.setAlpha(0f);
+		spinner.setAlpha(0f);
 		super.onBackPressed();
 	}
 

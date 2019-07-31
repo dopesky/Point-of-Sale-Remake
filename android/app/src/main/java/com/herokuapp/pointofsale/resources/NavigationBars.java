@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.ui.resources;
+package com.herokuapp.pointofsale.resources;
 
 
 import android.app.Activity;
@@ -9,6 +9,9 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +20,7 @@ import com.herokuapp.pointofsale.ui.owner.ManageEmployees;
 import com.herokuapp.pointofsale.ui.owner.ManageProducts;
 import com.herokuapp.pointofsale.ui.pos.Purchases;
 import com.herokuapp.pointofsale.ui.pos.Sales;
+import com.herokuapp.pointofsale.ui.settings.Settings;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -75,7 +79,10 @@ public class NavigationBars {
 				 )
 				.withTextColor(Color.WHITE)
 				.withOnAccountHeaderListener((view, profile, current) -> {
-					CustomToast.showToast(activity, " Hurray Wewe Ni Boss!", "success");
+					Intent intent = new Intent(activity, Settings.class);
+					ActivityOptionsCompat options =
+							ActivityOptionsCompat.makeScaleUpAnimation(view, view.getWidth()/2, view.getHeight()/2, 0, 0);
+					ActivityCompat.startActivity(activity, intent, options.toBundle());
 					return false;
 				})
 				.build();

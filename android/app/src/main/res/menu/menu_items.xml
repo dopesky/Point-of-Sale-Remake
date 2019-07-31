@@ -13,4 +13,10 @@
 		android:title="@string/search_hint"
 		app:iconTint="@android:color/white"
 		app:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/log_out"
+		android:icon="@drawable/ic_keyboard_arrow_up_black_24dp"
+		android:title="@string/search_hint"
+		app:iconTint="@android:color/white"
+		app:showAsAction="ifRoom" />
 </menu>

@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.models.owner;
+package com.herokuapp.pointofsale.viewmodels.owner;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;

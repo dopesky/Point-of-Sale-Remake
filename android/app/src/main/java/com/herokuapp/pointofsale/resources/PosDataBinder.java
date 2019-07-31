@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.ui.resources;
+package com.herokuapp.pointofsale.resources;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 public class PosDataBinder {
 	private static PosDataBinder dataBinder;
 	private HashMap<String, String> posData;
+	private HashMap<String, String> settingsData;
 	private HashMap<String, String> checkoutData;
 	private boolean isPurchase;
 	private String currencyCode;
@@ -18,6 +19,7 @@ public class PosDataBinder {
 			dataBinder = new PosDataBinder();
 			dataBinder.posData = new HashMap<>();
 			dataBinder.checkoutData = new HashMap<>();
+			dataBinder.settingsData = new HashMap<>();
 			dataBinder.isPurchase = false;
 			dataBinder.currencyCode = null;
 		}
@@ -34,7 +36,7 @@ public class PosDataBinder {
 			PosDataBinder.this.currencyCode = currencyCode;
 		}
 
-		String getUnitCost(){
+		public String getUnitCost(){
 			return posData.containsKey("unit_cost") ? posData.get("unit_cost") : "";
 		}
 
@@ -179,6 +181,19 @@ public class PosDataBinder {
 
 		public void setMethod(String method){
 			checkoutData.put("method_id", method);
+		}
+
+
+
+		@Bindable
+		public boolean getIsOwner(){
+			String isOwner = settingsData.get("isOwner");
+			return isOwner != null && isOwner.equals("1");
+		}
+
+		public void setIsOwner(boolean isOwner){
+			String isOwnerString = isOwner ? "1" : "0";
+			settingsData.put("isOwner", isOwnerString);
 		}
 	}
 }

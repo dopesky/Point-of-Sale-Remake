@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context=".ui.owner.AddProduct">
 	<data>
-		<import type="com.herokuapp.pointofsale.models.owner.Owner.DataBinder" />
+		<import type="com.herokuapp.pointofsale.viewmodels.owner.Owner.DataBinder" />
 		<variable name="ownerVM" type="DataBinder" />
 	</data>
 	<ScrollView

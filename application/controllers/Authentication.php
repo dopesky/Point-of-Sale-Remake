@@ -156,8 +156,8 @@ class Authentication extends CI_Controller {
 		$repeat_password = $this->input->post('repeat_password');
 		$password_reset = new Registration(getenv('API_KEY'));
 		$response = $password_reset->reset_password($new_password,$repeat_password,$token,$id);
-		if($response->status === 202){
-			$this->set_userdata($response->response);
+		if($response->status === 202 || $response->status === 200){
+			$this->set_userdata($response);
 			echo json_encode(array('ok'=>true));
 			return true;
 		}

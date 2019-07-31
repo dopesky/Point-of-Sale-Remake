@@ -6,7 +6,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import androidx.core.view.LayoutInflaterCompat;
@@ -14,15 +13,12 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import com.ferfalk.simplesearchview.SimpleSearchView;
 import com.herokuapp.pointofsale.R;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
-import com.herokuapp.pointofsale.ui.resources.NavigationBars;
-import com.herokuapp.pointofsale.ui.resources.SalesAdapter;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.NavigationBars;
+import com.herokuapp.pointofsale.resources.SalesAdapter;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.context.IconicsLayoutInflater2;
@@ -31,7 +27,7 @@ import java.util.Objects;
 
 public class Sales extends AppCompatActivity {
 
-	private com.herokuapp.pointofsale.models.pos.Sales salesVM;
+	private com.herokuapp.pointofsale.viewmodels.pos.Sales salesVM;
 
 	private MutableLiveData<String> filter;
 	public LiveData<String> getFilter(){return filter;}
@@ -50,10 +46,10 @@ public class Sales extends AppCompatActivity {
 		LayoutInflaterCompat.setFactory2(getLayoutInflater(), new IconicsLayoutInflater2(getDelegate()));
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_purchases);
+		setContentView(R.layout.activity_sales);
 
 		filter = new MutableLiveData<>();
-		salesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.models.pos.Sales.class);
+		salesVM = ViewModelProviders.of(this).get(com.herokuapp.pointofsale.viewmodels.pos.Sales.class);
 		salesVM.getUserData().observe(this, getUserdataObserver);
 		salesVM.fetchUserDetails();
 
@@ -151,20 +147,7 @@ public class Sales extends AppCompatActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu_items, menu);
-
-		MenuItem search = menu.findItem(R.id.action_search);
-		MenuItem notification = menu.findItem(R.id.action_notification);
-		IconicsDrawable drawable = new IconicsDrawable(this).icon(FontAwesome.Icon.faw_bell).color(Color.WHITE).actionBar();
-		notification.setIcon(drawable);
-		notification.setOnMenuItemClickListener(item -> {
-			CustomToast.showToast(this, " That Functionality is not Available Yet!", "info");
-			return false;
-		});
-		searchView.setMenuItem(search);
-
-		return true;
+		return Common.inflateMenu(searchView, menu, this);
 	}
 
 	@Override

@@ -1,111 +1,158 @@
 package com.herokuapp.pointofsale.ui.settings.fragments;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.card.MaterialCardView;
+import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
+import com.herokuapp.pointofsale.databinding.FragmentMyProfileBinding;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.CustomToast;
+import com.herokuapp.pointofsale.viewmodels.settings.Settings;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.iconics.IconicsDrawable;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MyProfile.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MyProfile#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.io.File;
+import java.util.Objects;
+
 public class MyProfile extends Fragment {
-	// TODO: Rename parameter arguments, choose names that match
-	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-	private static final String ARG_PARAM1 = "param1";
-	private static final String ARG_PARAM2 = "param2";
+	private Settings settingsVM;
+	private FragmentMyProfileBinding binding;
+	private boolean isSaving;
+	private String saveFilePath;
 
-	// TODO: Rename and change types of parameters
-	private String mParam1;
-	private String mParam2;
+	private Observer<LinkedTreeMap> userDataObserver = userdata -> {
+		if(userdata != null && binding != null && binding.getSettingsDB() != null){
+			Glide.with(this).load(binding.getSettingsDB().getImageSRC()).placeholder(R.drawable.image_pre_loader).into(binding.profileImage);
+			ProgressBar bar = Objects.requireNonNull(getView()).findViewById(R.id.progress_bar);
+			MaterialCardView card = (MaterialCardView) ((ConstraintLayout) bar.getParent()).getChildAt(1);
+			bar.setVisibility(View.GONE);
+			card.setVisibility(View.VISIBLE);
+		}
+	};
 
-	private OnFragmentInteractionListener mListener;
+	private Observer<Integer> updateStatusObserver = status -> {
+		if(status != null && status == 0){
+			CustomToast.showToast(getActivity(), "Update Made Successfully!", "success");
+		}
+		isSaving = false;
+		binding.captureButton.setIcon(new IconicsDrawable(Objects.requireNonNull(getActivity()))
+				.icon(FontAwesome.Icon.faw_camera).actionBar());
+		binding.captureButton.setText(R.string.capture);
+		binding.captureButton.setAlpha(1.0f);
+		Glide.with(this).load(binding.getSettingsDB().getImageSRC()).placeholder(R.drawable.image_pre_loader).into(binding.profileImage);
+	};
 
-	public MyProfile() {
-		// Required empty public constructor
-	}
+	private Observer<String> updateErrorObserver = error -> {
+		if(error != null && error.length() > 1){
+			CustomToast.showToast(getActivity(), " " + error, "danger");
+			settingsVM.resetErrors();
+		}
+	};
 
-	/**
-	 * Use this factory method to create a new instance of
-	 * this fragment using the provided parameters.
-	 *
-	 * @param param1 Parameter 1.
-	 * @param param2 Parameter 2.
-	 * @return A new instance of fragment MyProfile.
-	 */
-	// TODO: Rename and change types and number of parameters
-	public static MyProfile newInstance(String param1, String param2) {
-		MyProfile fragment = new MyProfile();
-		Bundle args = new Bundle();
-		args.putString(ARG_PARAM1, param1);
-		args.putString(ARG_PARAM2, param2);
-		fragment.setArguments(args);
-		return fragment;
+	public static MyProfile newInstance() {
+		return new MyProfile();
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-			mParam1 = getArguments().getString(ARG_PARAM1);
-			mParam2 = getArguments().getString(ARG_PARAM2);
-		}
+		isSaving = false;
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_my_profile, container, false);
-	}
-
-	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		binding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_profile, container, false);
+		binding.profileImage.setOnClickListener(this::uploadImage);
+		binding.captureButton.setIcon(
+				new IconicsDrawable(Objects.requireNonNull(getActivity())).icon(FontAwesome.Icon.faw_camera).actionBar());
+		if(!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)){
+			binding.captureButton.setVisibility(View.GONE);
 		}
+		binding.captureButton.setOnClickListener(this::takePhoto);
+		return binding.getRoot();
 	}
 
 	@Override
-	public void onAttach(Context context) {
-		super.onAttach(context);
-		if (context instanceof OnFragmentInteractionListener) {
-			mListener = (OnFragmentInteractionListener) context;
-		} else {
-			throw new RuntimeException(context.toString()
-					+ " must implement OnFragmentInteractionListener");
-		}
+	public void onActivityCreated(@Nullable Bundle savedInstance){
+		super.onActivityCreated(savedInstance);
+
+		settingsVM = ViewModelProviders.of(this).get(Settings.class);
+		binding.setLifecycleOwner(getViewLifecycleOwner());
+		binding.setSettingsDB(settingsVM.new DataBinder());
+		settingsVM.getCurrentUserData().observe(getViewLifecycleOwner(), userDataObserver);
+		settingsVM.getUpdateStatus().observe(getViewLifecycleOwner(), updateStatusObserver);
+		settingsVM.getUpdateError().observe(getViewLifecycleOwner(), updateErrorObserver);
 	}
 
 	@Override
-	public void onDetach() {
-		super.onDetach();
-		mListener = null;
+	public void onActivityResult(int requestCode, int resultCode, Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+			if(data == null){
+				prepareUIForUpload();
+				Uri imageUri = Common.getUriFromFile(getActivity(), new File(saveFilePath), ContentResolver.SCHEME_CONTENT);
+				settingsVM.uploadPhoto(Common.getImageUploadObject(Objects.requireNonNull(getActivity()), imageUri));
+				return;
+			}
+
+			Uri uploadedPhoto = data.getData();
+
+			if(uploadedPhoto != null){
+				prepareUIForUpload();
+				settingsVM.uploadPhoto(Common.getImageUploadObject(Objects.requireNonNull(getActivity()), uploadedPhoto));
+			}
+		}
 	}
 
-	/**
-	 * This interface must be implemented by activities that contain this
-	 * fragment to allow an interaction in this fragment to be communicated
-	 * to the activity and potentially other fragments contained in that
-	 * activity.
-	 * <p>
-	 * See the Android Training lesson <a href=
-	 * "http://developer.android.com/training/basics/fragments/communicating.html"
-	 * >Communicating with Other Fragments</a> for more information.
-	 */
-	public interface OnFragmentInteractionListener {
-		// TODO: Update argument type and name
-		void onFragmentInteraction(Uri uri);
+	private void prepareUIForUpload(){
+		isSaving = true;
+		binding.captureButton.setIcon(new IconicsDrawable(Objects.requireNonNull(getActivity()))
+				.icon(FontAwesome.Icon.faw_cloud_upload_alt).actionBar());
+		binding.captureButton.setText(R.string.uploading);
+		binding.captureButton.setAlpha(0.6f);
+		binding.profileImage.setImageResource(R.drawable.image_pre_loader);
+	}
+
+	private void uploadImage(View view){
+		if(isSaving) return;
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType("image/*");
+		if(getActivity() != null && intent.resolveActivity(getActivity().getPackageManager()) != null){
+			startActivityForResult(intent, 1);
+		}
+	}
+
+	private void takePhoto(View view){
+		if(isSaving || binding.captureButton.getVisibility() == View.GONE) return;
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+		File saveFile = Common.generateTempFile(Objects.requireNonNull(getActivity()), ".jpg");
+		if (saveFile != null && getActivity() != null && intent.resolveActivity(getActivity().getPackageManager()) != null) {
+			saveFilePath = saveFile.getAbsolutePath();
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, Common.getUriFromFile(getActivity(), saveFile, ContentResolver.SCHEME_CONTENT));
+			startActivityForResult(intent, 1);
+		}
 	}
 }

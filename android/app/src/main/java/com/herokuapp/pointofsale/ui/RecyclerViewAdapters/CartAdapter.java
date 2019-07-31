@@ -26,7 +26,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.ui.pos.PosDialog;
 import com.herokuapp.pointofsale.ui.pos.Purchases;
-import com.herokuapp.pointofsale.ui.resources.Common;
+import com.herokuapp.pointofsale.resources.Common;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -112,7 +112,7 @@ public class CartAdapter extends
 				String newUnitCost = newList.get(newItemPosition).get("unit_cost");
 
 				return oldName != null && oldCategory != null && oldCost != null && oldInventory != null && oldTurnover != null
-						&& (oldUnitCost != null && newUnitCost != null)
+						&& oldUnitCost != null
 						&& oldName.equals(newName) && oldCategory.equals(newCategory) && oldCost.equals(newCost)
 						&& oldInventory.equals(newInventory) && oldTurnover.equals(newTurnover) && oldUnitCost.equals(newUnitCost);
 			}
@@ -165,8 +165,6 @@ public class CartAdapter extends
 		viewHolder.profile.setBackgroundColor(Color.parseColor(color));
 		viewHolder.profileLetter.setText(name.trim().isEmpty() ? "?" : Common.capitalize(name.substring(0,1)));
 		viewHolder.name.setText(name);
-		viewHolder.name.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-		viewHolder.name.setSelected(true);
 		viewHolder.category.setText(category);
 		viewHolder.cost.setText(cost);
 		viewHolder.amount.setText(amount);
@@ -180,11 +178,21 @@ public class CartAdapter extends
 		viewHolder.bundle.putString("cost", current.get("cost"));
 		viewHolder.bundle.putString("discount", current.get("discount"));
 		viewHolder.bundle.putString("unit_cost", current.get("unit_cost"));
+		viewHolder.bundle.putString("currencyCode", currencyCode);
+	}
+
+	@Override
+	public void onViewAttachedToWindow(@NonNull CartAdapter.ViewHolder viewHolder){
+		super.onViewAttachedToWindow(viewHolder);
+		viewHolder.name.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+		viewHolder.name.setSelected(true);
 	}
 
 	@Override
 	public  void onViewDetachedFromWindow(@NonNull CartAdapter.ViewHolder viewHolder){
 		if(viewHolder.layout.isExpanded()) viewHolder.expandView(viewHolder.itemView.findViewById(R.id.show_more));
+		viewHolder.name.setEllipsize(TextUtils.TruncateAt.END);
+		viewHolder.name.setSelected(false);
 		super.onViewDetachedFromWindow(viewHolder);
 	}
 

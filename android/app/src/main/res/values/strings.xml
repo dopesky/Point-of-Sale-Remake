@@ -91,4 +91,14 @@
 	<string name="balance">Balance</string>
 	<string name="select_a_payment_method">Select a Payment Method</string>
 	<string name="selling">Selling . . .</string>
+	<string name="launcher_action">Launcher Action</string>
+	<string name="point_of_sale_system_by_dopesky">😉 👨‍ Point of Sale System by Dopesky! 😊 💸</string>
+	<string name="favicon_image">Favicon Image</string>
+	<string name="launching">Launching 🚀</string>
+	<string name="my_profile">My Profile</string>
+	<string name="security">Security</string>
+	<string name="miscelleneous">Miscellaneous</string>
+	<string name="capture">Capture</string>
+	<string name="company_name">Enter Company Name</string>
+	<string name="uploading">Uploading . . .</string>
 </resources>

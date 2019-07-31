@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
-import android.graphics.Color;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.appbar.AppBarLayout;
 import androidx.core.app.ActivityCompat;
@@ -18,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,13 +24,10 @@ import android.widget.TextView;
 import com.ferfalk.simplesearchview.SimpleSearchView;
 import com.herokuapp.pointofsale.R;
 import com.herokuapp.pointofsale.databinding.ActivityManangeEmployeesBinding;
-import com.herokuapp.pointofsale.models.owner.Owner;
+import com.herokuapp.pointofsale.viewmodels.owner.Owner;
 import com.herokuapp.pointofsale.ui.RecyclerViewAdapters.OwnerEmployeesAdapter;
-import com.herokuapp.pointofsale.ui.resources.Common;
-import com.herokuapp.pointofsale.ui.resources.CustomToast;
-import com.herokuapp.pointofsale.ui.resources.NavigationBars;
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.iconics.IconicsDrawable;
+import com.herokuapp.pointofsale.resources.Common;
+import com.herokuapp.pointofsale.resources.NavigationBars;
 import com.mikepenz.iconics.context.IconicsLayoutInflater2;
 
 import java.util.ArrayList;
@@ -155,20 +149,7 @@ public class ManageEmployees extends AppCompatActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu_items, menu);
-
-		MenuItem search = menu.findItem(R.id.action_search);
-		MenuItem notification = menu.findItem(R.id.action_notification);
-		IconicsDrawable drawable = new IconicsDrawable(this).icon(FontAwesome.Icon.faw_bell).color(Color.WHITE).actionBar();
-		notification.setIcon(drawable);
-		notification.setOnMenuItemClickListener(item -> {
-			CustomToast.showToast(this, " That Functionality is not Available Yet!", "info");
-			return false;
-		});
-		searchView.setMenuItem(search);
-
-		return true;
+		return Common.inflateMenu(searchView, menu, this);
 	}
 
 	@Override

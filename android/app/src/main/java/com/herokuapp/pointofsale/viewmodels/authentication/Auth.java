@@ -1,4 +1,4 @@
-package com.herokuapp.pointofsale.models.authentication;
+package com.herokuapp.pointofsale.viewmodels.authentication;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;

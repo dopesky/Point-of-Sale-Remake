@@ -1,16 +1,18 @@
-package com.herokuapp.pointofsale.api.Retrofit;
-
-import androidx.core.util.Pair;
+package com.herokuapp.pointofsale.api.retrofit;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface Annotations {
@@ -90,4 +92,12 @@ public interface Annotations {
 	@FormUrlEncoded
 	@POST("pos/add_sale")
 	Call<HashMap> addSale(@FieldMap Map<String, String> data, @Field("user_id") String user_id);
+
+	@Multipart
+	@POST("settings/update_owner_details")
+	Call<HashMap> updateOwnerDetails(@Part("user_id") RequestBody user_id, @Part("first_name") RequestBody fname, @Part("last_name") RequestBody lname, @Part("company") RequestBody company, @Part MultipartBody.Part photo);
+
+	@Multipart
+	@POST("settings/update_employee_details")
+	Call<HashMap> updateEmployeeDetails(@Part("user_id") RequestBody user_id, @Part("first_name") RequestBody fname, @Part("last_name") RequestBody lname, @Part MultipartBody.Part photo);
 }

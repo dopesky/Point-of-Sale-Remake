@@ -17,7 +17,7 @@
 		<RelativeLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">
-			<ImageView
+			<pl.droidsonroids.gif.GifImageView
 				android:id="@+id/employee_photo"
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/image_height_default"
