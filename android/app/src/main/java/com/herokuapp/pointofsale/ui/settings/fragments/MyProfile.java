@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.internal.LinkedTreeMap;
 import com.herokuapp.pointofsale.R;
@@ -54,12 +55,15 @@ public class MyProfile extends Fragment {
 	private Observer<Integer> updateStatusObserver = status -> {
 		if(status != null && status == 0){
 			CustomToast.showToast(getActivity(), "Update Made Successfully!", "success");
+			settingsVM.resetErrors();
 		}
 		isSaving = false;
 		binding.captureButton.setIcon(new IconicsDrawable(Objects.requireNonNull(getActivity()))
 				.icon(FontAwesome.Icon.faw_camera).actionBar());
 		binding.captureButton.setText(R.string.capture);
 		binding.captureButton.setAlpha(1.0f);
+		binding.detailsSaveButton.setText(R.string.save);
+		binding.detailsSaveButton.setAlpha(1.0f);
 		Glide.with(this).load(binding.getSettingsDB().getImageSRC()).placeholder(R.drawable.image_pre_loader).into(binding.profileImage);
 	};
 
@@ -90,6 +94,7 @@ public class MyProfile extends Fragment {
 			binding.captureButton.setVisibility(View.GONE);
 		}
 		binding.captureButton.setOnClickListener(this::takePhoto);
+		binding.detailsSaveButton.setOnClickListener(this::updateUserDetails);
 		return binding.getRoot();
 	}
 
@@ -154,5 +159,52 @@ public class MyProfile extends Fragment {
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, Common.getUriFromFile(getActivity(), saveFile, ContentResolver.SCHEME_CONTENT));
 			startActivityForResult(intent, 1);
 		}
+	}
+
+	private void updateUserDetails(View view){
+		if(isSaving) return;
+		boolean errors = this.validateData();
+		if(!errors){
+			Common.shakeElement(getActivity(), view);
+			return;
+		}
+		isSaving = true;
+		MaterialButton button = (MaterialButton) view;
+		button.setAlpha((float)0.6);
+		button.setText(R.string.saving);
+		settingsVM.updateUserDetails();
+	}
+
+	private boolean validateData(){
+		Settings.DataBinder binder = binding.getSettingsDB();
+		if(binder == null) return false;
+		binding.firstNameEditText.setError(null);
+		binding.lastNameEditText.setError(null);
+		binding.companyNameEditText.setError(null);
+		if(binder.getFirstName().trim().isEmpty()){
+			binding.firstNameEditText.setError("This is a Required Field!");
+			return false;
+		}
+		if(binder.getLastName().trim().isEmpty()){
+			binding.lastNameEditText.setError("This is a Required Field!");
+			return false;
+		}
+		if(binder.isOwner() && binder.getCompanyName().trim().isEmpty()){
+			binding.companyNameEditText.setError("This is a Required Field!");
+			return false;
+		}
+		if(!binder.getFirstName().toLowerCase().trim().matches("^[a-z '-]+$")){
+			binding.firstNameEditText.setError("This Field Contains Invalid Characters!");
+			return false;
+		}
+		if(!binder.getLastName().toLowerCase().trim().matches("^[a-z '-]+$")){
+			binding.lastNameEditText.setError("This Field Contains Invalid Characters!");
+			return false;
+		}
+		if(binder.isOwner() && !binder.getCompanyName().toLowerCase().trim().matches("^[a-z '-]+$")){
+			binding.companyNameEditText.setError("This Field Contains Invalid Characters!");
+			return false;
+		}
+		return true;
 	}
 }

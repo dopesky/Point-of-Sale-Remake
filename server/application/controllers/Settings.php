@@ -42,7 +42,9 @@ class Settings extends CI_Controller {
 		$lname = $this->input->post('last_name');
 		$company = $this->input->post('company');
 		$photo = $this->input->post('profile_photo');
-		$photo = $photo ? $photo : $_FILES['profile_photo'];
+		if(!$photo && array_key_exists('profile_photo', $_FILES)){
+			$photo = $_FILES['profile_photo'];
+		}
 		$user_details = $this->users_model->get_user_by_id($user_id);
 		if(!$user_details || !$user_details->id_owner || ($user_details->suspended == 1 && $user_details->password)){
 			$this->common->set_headers(409);
@@ -91,7 +93,9 @@ class Settings extends CI_Controller {
 		$fname = $this->input->post('first_name');
 		$lname = $this->input->post('last_name');
 		$photo = $this->input->post('profile_photo');
-		$photo = $photo ? $photo : $_FILES['profile_photo'];
+		if(!$photo && array_key_exists('profile_photo', $_FILES)){
+			$photo = $_FILES['profile_photo'];
+		}
 		$user_details = $this->users_model->get_user_by_id($user_id);
 		if(!$user_details || !$user_details->owner_id || ($user_details->suspended == 1 && $user_details->password)){
 			$this->common->set_headers(409);

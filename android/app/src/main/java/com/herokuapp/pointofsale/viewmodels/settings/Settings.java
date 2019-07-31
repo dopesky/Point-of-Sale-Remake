@@ -91,12 +91,12 @@ public class Settings extends AndroidViewModel {
 
 	public void uploadPhoto(MultipartBody.Part photo){
 		LinkedTreeMap map = userDetails.getValue();
+		DataBinder binder = new DataBinder();
 		if(map == null || map.get("user_id") == null || photo == null){
 			updateStatus.setValue(1);
 			updateError.setValue("An Unnexpected Error Occurred!");
 			return;
 		}
-		DataBinder binder = new DataBinder();
 		String userID = Objects.requireNonNull(map.get("user_id")).toString();
 		Annotations service = getRetrofitInstance().create(Annotations.class);
 		Call<HashMap> request;
@@ -123,9 +123,61 @@ public class Settings extends AndroidViewModel {
 				if ( map != null && Double.parseDouble(Objects.requireNonNull(map.get("status")).toString()) == (double)202 ) {
 					SharedPreferences.Editor editor = Settings.this.preferences.edit();
 					String fileName = Objects.requireNonNull(map.get("photo")).toString();
-					DataBinder binder = new DataBinder();
 					binder.setImageSRC(fileName);
 					editor.putString("photo", fileName);
+					editor.apply();
+					updateStatus.setValue(0);
+				} else if(map != null) {
+					updateStatus.setValue(1);
+					updateError.setValue(Common.parseHtml(Objects.requireNonNull(map.get("errors")).toString()));
+				} else {
+					updateStatus.setValue(1);
+					updateError.setValue("An Unnexpected Error Occurred");
+				}
+			}
+
+			@EverythingIsNonNull
+			@Override
+			public void onFailure(Call<HashMap> call, Throwable t) {
+				updateError.setValue(Common.parseHtml("<br><br><span>An Unnexpected Error Occurred.</span><br><br><span>Check Your Internet Connection</span>"));
+				updateStatus.setValue(1);
+			}
+		});
+	}
+
+	public void updateUserDetails(){
+		LinkedTreeMap map = userData.getValue();
+		DataBinder binder = new DataBinder();
+		if(map == null || map.get("user_id") == null){
+			updateStatus.setValue(1);
+			updateError.setValue("An Unnexpected Error Occurred!");
+			return;
+		}
+		String userID = Objects.requireNonNull(map.get("user_id")).toString();
+		Annotations service = getRetrofitInstance().create(Annotations.class);
+		Call<HashMap> request;
+		if(binder.isOwner()){
+			request = service.
+					updateOwnerDetails(RequestBody.create(MultipartBody.FORM, userID),
+							RequestBody.create(MultipartBody.FORM, binder.getFirstName()),
+							RequestBody.create(MultipartBody.FORM, binder.getLastName()),
+							RequestBody.create(MultipartBody.FORM, binder.getCompanyName()));
+		}else{
+			request = service.
+					updateEmployeeDetails(RequestBody.create(MultipartBody.FORM, userID),
+							RequestBody.create(MultipartBody.FORM, binder.getFirstName()),
+							RequestBody.create(MultipartBody.FORM, binder.getLastName()));
+		}
+		request.enqueue(new Callback<HashMap>() {
+			@EverythingIsNonNull
+			@Override
+			public void onResponse(Call<HashMap> call, Response<HashMap> response) {
+				HashMap map = (response.isSuccessful()) ? response.body() : getErrorObject(response);
+
+				if ( map != null && Double.parseDouble(Objects.requireNonNull(map.get("status")).toString()) == (double)202 ) {
+					SharedPreferences.Editor editor = Settings.this.preferences.edit();
+					editor.putString("fname", binder.getFirstName());
+					editor.putString("lname", binder.getLastName());
 					editor.apply();
 					updateStatus.setValue(0);
 				} else if(map != null) {

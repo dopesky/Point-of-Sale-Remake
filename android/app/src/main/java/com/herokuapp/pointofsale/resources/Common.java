@@ -16,7 +16,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -29,9 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -237,7 +234,6 @@ public class Common {
 		String uriType = context.getContentResolver().getType(photo);
 		File imageFile = getFileFromUri(context, photo);
 		if (imageFile == null || uriType == null) return null;
-		Log.e("Image Type", uriType);
 		RequestBody requestFile = RequestBody.create(MediaType.parse(uriType), imageFile);
 		return MultipartBody.Part.createFormData("profile_photo", imageFile.getName(), requestFile);
 	}
@@ -277,7 +273,6 @@ public class Common {
 			tempFile.deleteOnExit();
 			return tempFile;
 		}catch(IOException ioe){
-			ioe.printStackTrace();
 			return null;
 		}
 	}

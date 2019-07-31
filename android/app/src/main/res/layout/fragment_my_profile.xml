@@ -16,7 +16,7 @@
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingBottom="@dimen/margin_5rem">
+			android:paddingBottom="@dimen/margin_2rem">
 			<ProgressBar
 				android:id="@+id/progress_bar"
 				android:minHeight="@dimen/progress_bar_min_dimension"
@@ -38,6 +38,7 @@
 				android:padding="@dimen/margin_0"
 				android:layout_marginStart="@dimen/margin_3rem"
 				android:layout_marginEnd="@dimen/margin_3rem"
+				android:layout_marginTop="8dp"
 				android:backgroundTint="@color/whitesmoke">
 				<LinearLayout
 					android:layout_width="match_parent"
@@ -46,23 +47,32 @@
 					android:divider="@drawable/spacing"
 					android:orientation="vertical"
 					android:gravity="center"
-					android:paddingBottom="@dimen/margin_3rem">
-					<pl.droidsonroids.gif.GifImageView
-						android:id="@+id/profile_image"
-						android:backgroundTint="@color/whitesmoke"
+					android:paddingBottom="@dimen/margin_1rem">
+					<RelativeLayout
 						android:layout_width="match_parent"
-						android:src="@drawable/image_pre_loader"
-						android:layout_height="@dimen/image_height_default"
-						android:contentDescription="@string/profile_image"
-						android:scaleType="centerCrop"/>
-					<com.google.android.material.button.MaterialButton
-						android:id="@+id/capture_button"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="@string/capture"
-						android:layout_margin="@dimen/margin_3rem"
-						style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+						android:layout_height="wrap_content">
+						<pl.droidsonroids.gif.GifImageView
+							android:id="@+id/profile_image"
+							android:backgroundTint="@color/whitesmoke"
+							android:layout_width="match_parent"
+							android:src="@drawable/image_pre_loader"
+							android:layout_height="@dimen/image_height_default"
+							android:contentDescription="@string/profile_image"
+							android:scaleType="centerCrop"/>
+
+						<com.google.android.material.button.MaterialButton
+							android:id="@+id/capture_button"
+							style="@style/Widget.MaterialComponents.Button"
+							android:backgroundTint="@color/colorAccent"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentEnd="true"
+							android:layout_alignParentBottom="true"
+							android:layout_margin="@dimen/margin_3rem"
+							android:text="@string/capture" />
+					</RelativeLayout>
 					<com.google.android.material.textfield.TextInputLayout
+						android:id="@+id/first_name_edit_text"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="@dimen/margin_3rem"
@@ -79,6 +89,7 @@
 							android:singleLine="true"/>
 					</com.google.android.material.textfield.TextInputLayout>
 					<com.google.android.material.textfield.TextInputLayout
+						android:id="@+id/last_name_edit_text"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="@dimen/margin_3rem"
@@ -95,6 +106,7 @@
 							android:singleLine="true"/>
 					</com.google.android.material.textfield.TextInputLayout>
 					<com.google.android.material.textfield.TextInputLayout
+						android:id="@+id/company_name_edit_text"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="@dimen/margin_3rem"
@@ -112,11 +124,13 @@
 							android:singleLine="true"/>
 					</com.google.android.material.textfield.TextInputLayout>
 					<com.google.android.material.button.MaterialButton
+						android:id="@+id/details_save_button"
 						android:layout_margin="@dimen/margin_3rem"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_gravity="end"
 						style="@style/Widget.MaterialComponents.Button"
+						android:backgroundTint="@color/colorAccent"
 						android:text="@string/save"/>
 				</LinearLayout>
 			</com.google.android.material.card.MaterialCardView>
