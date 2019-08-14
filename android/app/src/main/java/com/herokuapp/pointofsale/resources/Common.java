@@ -217,6 +217,12 @@ public class Common {
 		return gson.fromJson(gson.toJson(list), ArrayList.class);
 	}
 
+	public static LinkedTreeMap copyLinkedTreeMap(LinkedTreeMap<String, String> list) {
+		list = list == null ? new LinkedTreeMap<>() : list;
+		Gson gson = new Gson();
+		return gson.fromJson(gson.toJson(list), LinkedTreeMap.class);
+	}
+
 	public static LinkedTreeMap<String, String> makePosRequestBody(ArrayList<LinkedTreeMap<String, String>> list, String methodID) {
 		LinkedTreeMap<String, String> body = new LinkedTreeMap<>();
 		for (int i = 0; i < list.size(); i++) {

@@ -22,7 +22,7 @@ class Spreadsheets {
 		$this->spreadsheet = new Spreadsheet();  /*----Spreadsheet object-----*/
 		$this->writer = new Xlsx($this->spreadsheet);  /*----- Excel (Xlsx) Object*/
 
-		$this->alphabet = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+		$this->alphabet = range('A','Z');
 		$this->center_alignment = array(
 	        'alignment' => array('horizontal' => Alignment::HORIZONTAL_CENTER)
 	    );
@@ -87,7 +87,7 @@ class Spreadsheets {
 		header('Content-Disposition: attachment;filename="'.$header."'s ".$subheader.'.xlsx"'); /*-- $filename is  xsl filename ---*/
 		header('Cache-Control: max-age=0');
 
-		ob_end_clean();
+		if(ob_get_length()) ob_end_clean();
 	}
 
 	public function write_to_excel($data_array = array()){

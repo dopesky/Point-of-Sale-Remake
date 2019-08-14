@@ -54,7 +54,7 @@ public class MyProfile extends Fragment {
 
 	private Observer<Integer> updateStatusObserver = status -> {
 		if(status != null && status == 0){
-			CustomToast.showToast(getActivity(), "Update Made Successfully!", "success");
+			CustomToast.showToast(getActivity(), " Update Made Successfully!", "success");
 			settingsVM.resetErrors();
 		}
 		isSaving = false;

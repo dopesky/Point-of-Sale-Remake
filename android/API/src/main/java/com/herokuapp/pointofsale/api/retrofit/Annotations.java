@@ -100,12 +100,4 @@ public interface Annotations {
 	@Multipart
 	@POST("settings/update_employee_details")
 	Call<HashMap> updateEmployeeDetails(@Part("user_id") RequestBody user_id, @Part("first_name") RequestBody fname, @Part("last_name") RequestBody lname, @Part MultipartBody.Part photo);
-
-	@Multipart
-	@POST("settings/update_owner_details")
-	Call<HashMap> updateOwnerDetails(@Part("user_id") RequestBody user_id, @Part("first_name") RequestBody fname, @Part("last_name") RequestBody lname, @Part("company") RequestBody company);
-
-	@Multipart
-	@POST("settings/update_employee_details")
-	Call<HashMap> updateEmployeeDetails(@Part("user_id") RequestBody user_id, @Part("first_name") RequestBody fname, @Part("last_name") RequestBody lname);
 }

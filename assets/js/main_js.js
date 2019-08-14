@@ -214,7 +214,8 @@ function change_helper_texts(span,text,color){
 }
 
 function capitalize(word){
-	var array = word.split(' ')
+	if(!word) return ''
+	var array = word.trim().split(' ')
 	array.forEach((element,index)=>{
 		array[index] = array[index].charAt(0).toUpperCase() + array[index].slice(1).toLowerCase()
 	})

@@ -73,7 +73,7 @@ public class Settings extends AndroidViewModel {
 
 				if (map != null && Double.parseDouble(Objects.requireNonNull(map.get("status")).toString()) == (double)202 ) {
 					userDetails.setValue((LinkedTreeMap) map.get("response"));
-					userData.setValue((LinkedTreeMap) map.get("response"));
+					userData.setValue(capitalizeInitial((LinkedTreeMap) map.get("response")));
 				} else{
 					userDetails.setValue(null);
 					userData.setValue(null);
@@ -161,12 +161,14 @@ public class Settings extends AndroidViewModel {
 					updateOwnerDetails(RequestBody.create(MultipartBody.FORM, userID),
 							RequestBody.create(MultipartBody.FORM, binder.getFirstName()),
 							RequestBody.create(MultipartBody.FORM, binder.getLastName()),
-							RequestBody.create(MultipartBody.FORM, binder.getCompanyName()));
+							RequestBody.create(MultipartBody.FORM, binder.getCompanyName()),
+							null);
 		}else{
 			request = service.
 					updateEmployeeDetails(RequestBody.create(MultipartBody.FORM, userID),
 							RequestBody.create(MultipartBody.FORM, binder.getFirstName()),
-							RequestBody.create(MultipartBody.FORM, binder.getLastName()));
+							RequestBody.create(MultipartBody.FORM, binder.getLastName()),
+							null);
 		}
 		request.enqueue(new Callback<HashMap>() {
 			@EverythingIsNonNull
@@ -201,6 +203,19 @@ public class Settings extends AndroidViewModel {
 	public void resetErrors(){
 		updateError.setValue(null);
 		updateStatus.setValue(-1);
+	}
+
+	private LinkedTreeMap capitalizeInitial(LinkedTreeMap map){
+		LinkedTreeMap newMap = Common.copyLinkedTreeMap(map);
+		if(newMap != null && newMap.get("id_owner") != null){
+			newMap.put("owner_fname", Common.capitalize(Objects.requireNonNull(newMap.get("owner_fname")).toString()));
+			newMap.put("owner_lname", Common.capitalize(Objects.requireNonNull(newMap.get("owner_lname")).toString()));
+			newMap.put("company", Common.capitalize(Objects.requireNonNull(newMap.get("company")).toString()));
+		}else if(newMap != null && newMap.get("owner_id") != null) {
+			newMap.put("first_name", Common.capitalize(Objects.requireNonNull(newMap.get("first_name")).toString()));
+			newMap.put("last_name", Common.capitalize(Objects.requireNonNull(newMap.get("last_name")).toString()));
+		}
+		return newMap;
 	}
 
 	public class DataBinder extends BaseObservable{
