@@ -7,7 +7,7 @@ class Owner extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
-		if(!$this->session->userdata('userdata') || (int)$this->session->userdata('userdata')['level'] < 4){
+		if(!$this->session->userdata('userdata') || ((int)$this->session->userdata('userdata')['level'] < 4 && $this->session->userdata('userdata')['fname'])){
 			redirect(site_url('auth/log_out'),'location');
 		}
 		//csrfProtector::init();
