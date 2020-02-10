@@ -19,7 +19,7 @@ body{
 	width: 100px;
 }
 input:focus,button:focus,select:focus{
-	box-shadow: 0 0 0 0.03rem rgba(0,123,255) !important;
+	box-shadow: 0 0 0 0.03rem rgb(0, 123, 255) !important;
 }
 .alert{
 	padding-top: 0.5rem !important;
@@ -27,18 +27,18 @@ input:focus,button:focus,select:focus{
 	text-align: left !important;
 }
 .box-shadow{
-	box-shadow: 0.3rem 0.3rem 1rem 0.3rem rgba(0,0,0,0.85);
-	border-radius:0.25rem;
+	box-shadow: 0.3rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.85);
+	border-radius: 0.25rem;
 	padding-top: 2.5rem !important;
-	background-color: rgba(248,248,248,.85);
+	background-color: rgba(248, 248, 248, .85);
 }
-.timeline-seperator{
+.timeline-separator{
 	display: block !important;
     text-align: center !important;
     color: #999 !important;
 }
 
-.timeline-seperator>:first-child{
+.timeline-separator>:first-child{
 	padding: 4px 5px !important;
     border: 1px dashed rgba(0,0,0,.15) !important;
     background: whitesmoke !important;
@@ -46,7 +46,7 @@ input:focus,button:focus,select:focus{
     border-radius: 4px !important;
 }
 
-.timeline-seperator:after {
+.timeline-separator:after {
     display: block !important;
     content: " " !important;
     border-bottom: 1px dashed rgba(0,0,0,.15) !important;
@@ -81,8 +81,8 @@ button.close,button.close:focus{
 @media only screen and (max-width: 320px) {
   	#site-info{
   		width: 320px;
-		top: 0%;
-		left: 0%;
+		top: 0;
+		left: 0;
 	}
 	#site-info .toast{
 		max-width: 320px;

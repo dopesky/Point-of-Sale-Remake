@@ -1,200 +1,194 @@
-function viewPassword(span,input){
-	$input = $(input).attr('type')
-	if($input.localeCompare('password') === 0){
-		$(input).attr('type','text')
-		$(span).find("i").removeClass('fa-eye').addClass('fa-eye-slash')
-	}else{
-		$(input).attr('type','password')
-		$(span).find("i").removeClass('fa-eye-slash').addClass('fa-eye')
-	}
-	$(input).focus()
-	return false
-}
-
-var app = angular.module('main',[])
+let app = angular.module('main',[]);
 
 app.controller('mainController',['$scope','getApis','register','login','$timeout',function($scope,getApis,register,login,$timeout){
 	$scope.userdata = {};
-	$scope.apiKeys = []
-	$scope.keysFetched = false
-	$scope.new_scope = 0
-	$scope.email = ''
-	$scope.password = ''
-	$scope.apikey_id = ''
-	$scope.registerUser = async function ($event,$sending,$initial){
-		if($scope.email.length<1){
-			$('#site-info>div.toast>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Error: </strong>Please Fill all Fields!</div>").parent().toast('show')
-			return
+	$scope.apiKeys = [];
+	$scope.keysFetched = false;
+	$scope.new_scope = 0;
+	$scope.apikey_id = '';
+	$scope.inputs = {email: '', password: ''};
+	$scope.registerUser = async function ($event, $sending, $initial){
+		if($scope.inputs.email.length < 1){
+			setToast(`<div><i class='fas fa-exclamation-circle'><i><strong> Error: </strong>Please Fill all Fields!</div>`, 'danger');
+			return false;
 		}
-		var url = $($event.currentTarget).attr('action')
-		$($event.currentTarget).find('button').attr('disabled',true).removeClass('width-100').addClass('disabled').html('<span class="spinner-border spinner-border-sm"></span> '+$sending)
-		var response = await register.save(url,$scope.email)
-		$scope.email = ''
+		let url = $($event.currentTarget).attr('action');
+		let button = $($event.currentTarget).find('button');
+		toggleButton(button, '<span class="spinner-border spinner-border-sm"></span> ' + $sending);
+		let response = await register.save(url, $scope.inputs.email);
+		$scope.inputs.email = '';
+		$($event.currentTarget).parents('.modal').modal('hide');
+		toggleButton(button, $initial);
 		if(response.ok){
-			window.location.reload(true)
+			setToast(`<div><i class='fas fa-exclamation-circle'><i><strong> Success: </strong>Check Your Email to Complete Registration!</div>`, 'success');
 		}else{
-			$($event.currentTarget).parents('.modal').modal('hide')
-			$($event.currentTarget).find('button').attr('disabled',false).removeClass('disabled').addClass('width-100').html($initial)
-			$('#page-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			setPageErrors('#page-errors>div.toast-body', response.errors);
 		}
-		$scope.$apply()
-	}
+		$scope.$apply();
+		return response.ok;
+	};
 	$scope.loginUser = async function ($event) {
-		if($scope.email.length<1 || $scope.password.length<1){
-			$('#site-info>div.toast>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Error: </strong>Please Fill all Fields!</div>").parent().toast('show')
-			return
+		if($scope.inputs.email.length < 1 || $scope.inputs.password.length < 8){
+			setToast("<div><i class='fas fa-exclamation-circle'><i><strong> Error: </strong>Please Fill all Fields!</div>", 'danger');
+			return false;
 		}
-		var url = $($event.currentTarget).attr('action')
-		$($event.currentTarget).find('button').attr('disabled',true).removeClass('width-100').addClass('disabled').html('<span class="spinner-border spinner-border-sm"></span> Signing in . . . ')
-		var response = await login.auth(url,$scope.email,$scope.password)
+		let url = $($event.currentTarget).attr('action');
+		let button = $($event.currentTarget).find('button');
+		toggleButton(button, '<span class="spinner-border spinner-border-sm"></span> Signing in . . . ');
+		let response = await login.auth(url, $scope.inputs);
+		toggleButton(button, 'Login');
 		if(response.ok){
-			$scope.email = ''
-			$scope.password = ''
-			$scope.userdata = response.userdata
-			$scope.$apply()
-			response = await getApis.getApiKeys(apiKeysUrl,$scope.userdata.owner_id)
-			$scope.keysFetched = true
+			$scope.inputs.email = '';
+			$scope.inputs.password = '';
+			$scope.userdata = response.userdata;
+			$scope.$apply();
+			response = await getApis.getApiKeys(apiKeysUrl, $scope.userdata.owner_id);
+			$scope.keysFetched = true;
 			$scope.apiKeys = response.keys
 		}else{
-			$('#page-errors>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			setPageErrors('#page-errors>div.toast-body', response.errors);
 		}
-		$($event.currentTarget).find('button').attr('disabled',false).removeClass('disabled').addClass('width-100').html('Login')
-		$scope.$apply()
-	}
+		$scope.$apply();
+		return response.ok;
+	};
 	$scope.generateKey = async function ($event) {
-		if($scope.new_scope<1){
-			$('#site-info>div.toast>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Error: </strong>Please Select an API Key Power First!</div>").parent().toast('show')
-			return
+		if($scope.new_scope < 1){
+			setToast("<div><i class='fas fa-exclamation-circle'><i><strong> Error: </strong>Please Select an API Key Power First!</div>", 'danger');
+			return false;
 		}
-		var url = $($event.currentTarget).attr('action')
-		$($event.currentTarget).find('button').attr('disabled',true).removeClass('width-100').addClass('disabled').html('<span class="spinner-border spinner-border-sm"></span> Generating . . . ')
-		$scope.apiKeys = []
-		$scope.keysFetched = false
-		var response = await getApis.getNewApiKey(url,$scope.userdata.owner_id,$scope.new_scope)
-		$($event.currentTarget).parents('.modal').modal('hide')
+		let url = $($event.currentTarget).attr('action');
+		let button = $($event.currentTarget).find('button');
+		toggleButton(button, '<span class="spinner-border spinner-border-sm"></span> Generating . . . ');
+		$scope.apiKeys = [];
+		$scope.keysFetched = false;
+		let response = await getApis.getNewApiKey(url, $scope.userdata.owner_id, $scope.new_scope);
+		$($event.currentTarget).parents('.modal').modal('hide');
 		if(response.ok){
-			$scope.new_scope = 0
-			$scope.keysFetched = true
-			$scope.apiKeys = response.keys
+			$scope.new_scope = 0;
+			$scope.keysFetched = true;
+			$scope.apiKeys = response.keys;
 		}else{
-			$('#page-errors-logged-in>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			setPageErrors('#page-errors-logged-in>div.toast-body', response.errors);
 		}
-		$($event.currentTarget).find('button').attr('disabled',false).removeClass('disabled').addClass('width-100').html('Generate')
-		$scope.$apply()
-	}
+		toggleButton(button, '<span class="spinner-border spinner-border-sm"></span> Generate . . . ');
+		$scope.$apply();
+		return response.ok;
+	};
 	$scope.copyText = function($index){
-		$scope.copy_text = $scope.apiKeys[$index].apikey
+		$scope.copy_text = $scope.apiKeys[$index].apikey;
 		$timeout(function(){
-			$('input[name=copy_text]').select()
+			$('input[name=copy_text]').select();
 			document.execCommand('copy');
-			$('#site-info>div.toast>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Info: </strong>API Key Copied!</div>").parent().toast('show')
-		})
-	}
+			setToast("<div><i class='fas fa-exclamation-circle'><i><strong> Info: </strong>API Key Copied!</div>", 'info');
+		});
+	};
 	$scope.prepareUpdateModal = function($index){
-		$scope.scope = parseInt($scope.apiKeys[$index].apikeypower_id)
-		$scope.apikey_id = $scope.apiKeys[$index].apikey_id
-	}
+		$scope.scope = parseInt($scope.apiKeys[$index].apikeypower_id);
+		$scope.apikey_id = $scope.apiKeys[$index].apikey_id;
+	};
 	$scope.updateKey = async function($event){
-		var url = $($event.currentTarget).parents('form').data('update')
-		$($event.currentTarget).parents('form').find('button').attr('disabled',true).addClass('disabled').not('.btn-danger').removeClass('width-100').html('<span class="spinner-border spinner-border-sm"></span> Updating . . . ')
-		$scope.apiKeys = []
-		$scope.keysFetched = false
-		var response = await getApis.updateApiKey(url,$scope.apikey_id,$scope.scope)
-		$($event.currentTarget).parents('.modal').modal('hide')
+		let url = $($event.currentTarget).parents('form').data('update');
+		let updateButton = $($event.currentTarget).parents('form').find('button.btn_info');
+		let deleteButton = $($event.currentTarget).parents('form').find('button.btn_danger');
+		toggleButton(updateButton, '<span class="spinner-border spinner-border-sm"></span> Updating . . . ');
+		deleteButton.attr({'disabled': true}).addClass('disabled');
+		$scope.apiKeys = [];
+		$scope.keysFetched = false;
+		let response = await getApis.updateApiKey(url,$scope.apikey_id,$scope.scope);
+		$($event.currentTarget).parents('.modal').modal('hide');
 		if(response.ok){
-			$scope.keysFetched = true
-			$scope.apiKeys = response.keys
+			$scope.keysFetched = true;
+			$scope.apiKeys = response.keys;
 		}else{
-			$('#page-errors-logged-in>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			setPageErrors('#page-errors-logged-in>div.toast-body', response.errors);
 		}
-		$($event.currentTarget).parents('form').find('button').attr('disabled',false).removeClass('disabled').not('.btn-danger').addClass('width-100').html('Update')
-		$scope.$apply()
-	}
+		toggleButton(updateButton, 'Update');
+		deleteButton.attr({'disabled': false}).removeClass('disabled');
+		$scope.$apply();
+		return response.ok;
+	};
 	$scope.deleteKey = async function(deleteButton){
-		var url = $(deleteButton).parents('form').data('delete')
-		$(deleteButton).parents('form').find('button').attr('disabled',true).addClass('disabled').not('.btn-info').removeClass('width-100').html('<span class="spinner-border spinner-border-sm"></span> Deleting . . . ')
-		$scope.apiKeys = []
-		$scope.keysFetched = false
-		var response = await getApis.deleteApiKey(url,$scope.apikey_id)
-		$(deleteButton).parents('.modal').modal('hide')
+		let url = $(deleteButton).parents('form').data('delete');
+		let updateButton = $(deleteButton).parents('form').find('button.btn-info');
+		deleteButton = $(deleteButton);
+		toggleButton(deleteButton, '<span class="spinner-border spinner-border-sm"></span> Deleting . . . ');
+		updateButton.attr({'disabled': true}).addClass('disabled');
+		$scope.apiKeys = [];
+		$scope.keysFetched = false;
+		let response = await getApis.deleteApiKey(url,$scope.apikey_id);
+		$(deleteButton).parents('.modal').modal('hide');
 		if(response.ok){
-			$scope.keysFetched = true
-			$scope.apiKeys = response.keys
+			$scope.keysFetched = true;
+			$scope.apiKeys = response.keys;
 		}else{
-			$('#page-errors-logged-in>div.toast-body').html("<div><i class='fas fa-exclamation-circle'><i><strong> Errors: </strong>"+response.errors+"</div>").parent().toast({delay:5000}).toast('show')
+			setPageErrors('#page-errors-logged-in>div.toast-body', response.errors);
 		}
-		$(deleteButton).parents('form').find('button').attr('disabled',false).removeClass('disabled').not('.btn-info').addClass('width-100').html('Delete')
-		$scope.$apply()
+		toggleButton(deleteButton, 'Delete');
+		updateButton.attr({'disabled': false}).removeClass('disabled');
+		$scope.$apply();
+		return response.ok;
 	}
-}])
+}]);
 
 app.factory('register',[function(){
-    return {
-	    save: function ($url,$email){
-		    return $.ajax({
-			    url: $url,
-			    data: {email:$email},
-			    dataType:'json',
-			    method: 'POST'
+	return {
+		save: function (url, email){
+			return $.ajax({
+				url,
+				data: {email},
+				dataType:'json',
+				method: 'POST'
 			})
 		}
 	}
-}])
+}]);
 
 app.factory('login',[function(){
-    return {
-	    auth: function ($url,$email,$password){
-		    return $.ajax({
-			    url: $url,
-			    data: {email:$email,password: $password},
-			    dataType:'json',
-			    method: 'POST'
+	return {
+		auth: function (url, {email, password}){
+			return $.ajax({
+				url,
+				data: {email, password},
+				dataType:'json',
+				method: 'POST'
 			})
 		}
 	}
-}])
+}]);
 
 app.factory('getApis',[function(){
-    return {
-	    getApiKeys: function ($url,$owner_id){
-		    return $.ajax({
-			    url: $url,
-			    data: {owner_id:$owner_id},
-			    dataType:'json',
-			    method: 'POST'
+	return {
+		getApiKeys: function (url, owner_id){
+			return $.ajax({
+				url,
+				data: {owner_id},
+				dataType:'json',
+				method: 'POST'
 			})
 		},
-		getNewApiKey: function ($url, $owner_id, $scope){
+		getNewApiKey: function (url, owner_id, scope){
 			return $.ajax({
-				url: $url,
-				data: {
-					owner_id: $owner_id,
-					scope: $scope
-				},
+				url,
+				data: {owner_id, scope},
 				dataType: 'json',
 				method: 'POST'
 			})
 		},
-		updateApiKey: function($url, $apikey_id, $scope){
+		updateApiKey: function(url, apikey_id, scope){
 			return $.ajax({
-				url: $url,
-				data: {
-					apikey_id: $apikey_id,
-					scope: $scope
-				},
+				url,
+				data: {apikey_id, scope},
 				dataType: 'json',
 				method: 'POST'
 			})
 		},
-		deleteApiKey: function($url, $apikey_id){
+		deleteApiKey: function(url, apikey_id){
 			return $.ajax({
-				url: $url,
-				data: {
-					apikey_id: $apikey_id
-				},
+				url: url,
+				data: {apikey_id},
 				dataType: 'json',
 				method: 'POST'
 			})
 		}
 	}
-}])
+}]);

@@ -199,9 +199,9 @@ if($user_details->owner_photo && $user_details->id_owner){
 			$('#password-modal').modal('show')
 		}
 		$scope.changeEmailOrPassword = async function($event){
-			$('#password-modal').modal('hide')
-			$event.preventDefault()
-			reset_helper_texts()
+			$('#password-modal').modal('hide');
+			$event.preventDefault();
+			reset_helper_texts();
 			switch($scope.actionEmail){
 				case true:
 					if(!$scope.user.password || $scope.user.password.length < 8){

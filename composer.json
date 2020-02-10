@@ -2,13 +2,13 @@
 	"require": {
 		"php": "^7.1.0",
 		"ext-intl": "*",
-		"owasp/csrf-protector-php": "dev-master",
 		"vlucas/phpdotenv": "3.*",
 		"phpmailer/phpmailer": "~6",
 		"phpoffice/phpspreadsheet":"~1",
 		"phpgangsta/googleauthenticator":"dev-master",
-		"cloudinary/cloudinary_php": "~1"
-	},
+		"cloudinary/cloudinary_php": "~1",
+      	"ext-json": "*"
+    },
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
 	}
