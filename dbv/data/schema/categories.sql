@@ -1,6 +1,9 @@
 CREATE TABLE `categories` (
-  `Category-id` int(30) NOT NULL AUTO_INCREMENT,
-  `Category-name` varchar(30) NOT NULL,
-  PRIMARY KEY (`Category-id`),
-  KEY `Category-id` (`Category-id`)
+  `category_id` INT(30) NOT NULL AUTO_INCREMENT,
+  `category_name` VARCHAR(30) NOT NULL,
+  `measuring_unit` VARCHAR(10) NOT NULL,
+  `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_date` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `suspended` BOOLEAN NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1

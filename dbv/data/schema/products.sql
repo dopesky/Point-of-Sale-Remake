@@ -1,12 +1,15 @@
 CREATE TABLE `products` (
-  `Product-id` int(11) NOT NULL AUTO_INCREMENT,
-  `Product-name` varchar(30) NOT NULL,
-  `Category-id` int(30) NOT NULL,
-  `Weight` varchar(30) NOT NULL,
-  `Amount` int(30) NOT NULL,
-  `Cost-per-unit` int(30) NOT NULL,
-  PRIMARY KEY (`Product-id`),
-  KEY `Category-id` (`Category-id`),
-  KEY `Product-name` (`Product-name`),
-  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`Category-id`) REFERENCES `categories` (`Category-id`)
+  `product_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `product` VARCHAR(30) NOT NULL,
+  `category_id` INT(30) NOT NULL,
+  `cost_per_unit` VARCHAR(30) NOT NULL,
+  `owner_id` INT(30) NOT NULL,
+  `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_date` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `active` BOOLEAN NOT NULL DEFAULT TRUE,
+  `suspended` BOOLEAN NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (`product_id`),
+  UNIQUE(`product`),
+  FOREIGN KEY (`owner_id`) REFERENCES `owner`(`owner_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  FOREIGN KEY (`category_id`) REFERENCES `categories`(`category_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
