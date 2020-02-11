@@ -96,6 +96,8 @@ class Api_key extends MY_Controller {
 		}
 		$data = array('owner_password' => password_hash($this->input->post('new_password'), PASSWORD_DEFAULT), 'suspended' => 0, 'token_expire' => 0);
 		$database_response = $this->apikeys_model->update_user_details($id, $data);
+		$database_response = $database_response ? $this->api_activity_logs->add_log($id, 'Reset Password for Self.')
+			: $database_response;
 		if ($database_response) {
 			$this->session->set_flashdata('info', "<br><br><span>Password Reset Successful! Now Log in!</span>");
 			redirect(base_url(), 'location');
@@ -168,7 +170,7 @@ class Api_key extends MY_Controller {
 		}
 		$database_response = $this->apikeys_model->delete_api_key($_POST['apikey_id']);
 		if ($database_response) {
-			$_POST['owner_id'] = $this->apikeys_model->get_api_key_by_id($_POST['apikey_id'])->owner_id;
+			$_POST['owner_id'] = $this->apikeys_model->get_api_key_by_id($_POST['apikey_id'], true, false)->owner_id;
 			return $this->get_api_keys();
 		} else {
 			echo json_encode(array('ok' => false, 'errors' => '<br><br><span>An Unexpected Error Occurred!</span>'));
@@ -183,7 +185,8 @@ class Api_key extends MY_Controller {
 			return false;
 		}
 		$owner_keys = $this->apikeys_model->get_user_keys($this->input->post('owner_id'));
-		echo json_encode(array('ok' => true, 'keys' => $owner_keys));
+		$owner_logs = $this->api_activity_logs->get_user_specific_logs($this->input->post('owner_id'));
+		echo json_encode(array('ok' => true, 'keys' => $owner_keys, 'logs' => $owner_logs));
 		return true;
 	}
 }

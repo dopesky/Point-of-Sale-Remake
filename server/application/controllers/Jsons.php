@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
 * This class contains all get requests available in the system. All get requests made to server should be made to this class.
 */
-class Jsons extends CI_Controller {
+class Jsons extends MY_Controller {
 
 	private $api_key;
 

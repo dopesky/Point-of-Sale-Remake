@@ -1,8 +1,11 @@
 let app = angular.module('main',[]);
 
 app.controller('mainController',['$scope','getApis','register','login','$timeout',function($scope,getApis,register,login,$timeout){
+	$scope.dateFormat = getTimezoneEquivalentDate;
+	$scope.moment = moment;
 	$scope.userdata = {};
 	$scope.apiKeys = [];
+	$scope.logs = [];
 	$scope.keysFetched = false;
 	$scope.new_scope = 0;
 	$scope.apikey_id = '';
@@ -44,7 +47,8 @@ app.controller('mainController',['$scope','getApis','register','login','$timeout
 			$scope.$apply();
 			response = await getApis.getApiKeys(apiKeysUrl, $scope.userdata.owner_id);
 			$scope.keysFetched = true;
-			$scope.apiKeys = response.keys
+			$scope.apiKeys = response.keys;
+			$scope.logs = response.logs;
 		}else{
 			setPageErrors('#page-errors>div.toast-body', response.errors);
 		}
@@ -67,10 +71,11 @@ app.controller('mainController',['$scope','getApis','register','login','$timeout
 			$scope.new_scope = 0;
 			$scope.keysFetched = true;
 			$scope.apiKeys = response.keys;
+			$scope.logs = response.logs;
 		}else{
 			setPageErrors('#page-errors-logged-in>div.toast-body', response.errors);
 		}
-		toggleButton(button, '<span class="spinner-border spinner-border-sm"></span> Generate . . . ');
+		toggleButton(button, 'Generate');
 		$scope.$apply();
 		return response.ok;
 	};
@@ -99,6 +104,7 @@ app.controller('mainController',['$scope','getApis','register','login','$timeout
 		if(response.ok){
 			$scope.keysFetched = true;
 			$scope.apiKeys = response.keys;
+			$scope.logs = response.logs;
 		}else{
 			setPageErrors('#page-errors-logged-in>div.toast-body', response.errors);
 		}
@@ -120,6 +126,7 @@ app.controller('mainController',['$scope','getApis','register','login','$timeout
 		if(response.ok){
 			$scope.keysFetched = true;
 			$scope.apiKeys = response.keys;
+			$scope.logs = response.logs;
 		}else{
 			setPageErrors('#page-errors-logged-in>div.toast-body', response.errors);
 		}

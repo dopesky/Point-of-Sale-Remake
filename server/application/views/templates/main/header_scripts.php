@@ -25,6 +25,7 @@
 	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 	<script defer src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/af-2.3.3/b-1.5.6/b-colvis-1.5.6/b-html5-1.5.6/b-print-1.5.6/cr-1.5.0/kt-2.5.0/r-2.2.2/datatables.min.js"></script>
 	<script defer src='https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
 	<script defer src="<?=base_url('assets/js/common.js')?>"></script>
 	<script defer src="<?=base_url('assets/js/main-js.js')?>"></script>
 	<!--End of Dependencies. Comment out the above lines to remove any styling and front-end validation used. Note: Do not remove jquery and angularjs-->

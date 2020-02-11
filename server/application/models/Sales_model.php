@@ -1,6 +1,6 @@
 <?php !defined(BASEPATH) or die('No direct script access allowed');
 
-class Sales_model extends CI_Model {
+class Sales_model extends MY_Model {
 
     //The constructor function
   	public function __construct(){

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Pos extends CI_Controller {
+class Pos extends MY_Controller {
 
 	private $api_key;
 
